@@ -16,6 +16,13 @@ const soldSummary = document.querySelector("#soldSummary");
 const bidStatus = document.querySelector("#bidStatus");
 const eventCount = document.querySelector("#eventCount");
 const bidderCards = document.querySelectorAll(".bidder-card");
+const openPictureBookButton = document.querySelector("#openPictureBook");
+const pictureBookModal = document.querySelector("#pictureBookModal");
+const closePictureBookButton = document.querySelector("#closePictureBook");
+const prevPicturePageButton = document.querySelector("#prevPicturePage");
+const nextPicturePageButton = document.querySelector("#nextPicturePage");
+const pictureBookImage = document.querySelector("#pictureBookImage");
+const pictureBookPageCount = document.querySelector("#pictureBookPageCount");
 
 const fishData = {
   head: {
@@ -196,6 +203,110 @@ document.querySelectorAll("[data-fallback]").forEach((image) => {
     image.src = image.dataset.fallback;
   });
 });
+
+if (
+  openPictureBookButton &&
+  pictureBookModal &&
+  closePictureBookButton &&
+  prevPicturePageButton &&
+  nextPicturePageButton &&
+  pictureBookImage &&
+  pictureBookPageCount
+) {
+  const pictureBookPages = [
+    { src: "assets/封面.png", alt: "《黑潮來的時候》封面" },
+    ...Array.from({ length: 26 }, (_, index) => ({
+      src: `assets/p${index + 1}.png`,
+      alt: `《黑潮來的時候》第 ${index + 1} 頁`
+    }))
+  ];
+  let currentPicturePage = 0;
+  let lastFocusedElement = null;
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  const updatePictureBookControls = () => {
+    pictureBookPageCount.textContent = `第 ${currentPicturePage + 1} / ${pictureBookPages.length} 頁`;
+    prevPicturePageButton.disabled = currentPicturePage === 0;
+    nextPicturePageButton.disabled = currentPicturePage === pictureBookPages.length - 1;
+  };
+
+  const showPicturePage = (pageIndex) => {
+    const nextPage = Math.max(0, Math.min(pictureBookPages.length - 1, pageIndex));
+    if (nextPage === currentPicturePage && pictureBookImage.src.includes(pictureBookPages[nextPage].src)) {
+      updatePictureBookControls();
+      return;
+    }
+
+    currentPicturePage = nextPage;
+    pictureBookImage.classList.add("is-changing");
+
+    window.setTimeout(() => {
+      const page = pictureBookPages[currentPicturePage];
+      pictureBookImage.src = page.src;
+      pictureBookImage.alt = page.alt;
+      updatePictureBookControls();
+      window.requestAnimationFrame(() => pictureBookImage.classList.remove("is-changing"));
+    }, 300);
+  };
+
+  const openPictureBook = () => {
+    lastFocusedElement = document.activeElement;
+    pictureBookModal.classList.add("is-open");
+    pictureBookModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("reader-open");
+    showPicturePage(0);
+    closePictureBookButton.focus();
+  };
+
+  const closePictureBook = () => {
+    pictureBookModal.classList.remove("is-open");
+    pictureBookModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("reader-open");
+    lastFocusedElement?.focus?.();
+  };
+
+  openPictureBookButton.addEventListener("click", openPictureBook);
+  closePictureBookButton.addEventListener("click", closePictureBook);
+  prevPicturePageButton.addEventListener("click", () => showPicturePage(currentPicturePage - 1));
+  nextPicturePageButton.addEventListener("click", () => showPicturePage(currentPicturePage + 1));
+
+  pictureBookModal.addEventListener("touchstart", (event) => {
+    const touch = event.changedTouches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+  }, { passive: true });
+
+  pictureBookModal.addEventListener("touchend", (event) => {
+    const touch = event.changedTouches[0];
+    const diffX = touch.clientX - touchStartX;
+    const diffY = touch.clientY - touchStartY;
+
+    if (Math.abs(diffX) < 48 || Math.abs(diffX) < Math.abs(diffY) * 1.2) return;
+    showPicturePage(currentPicturePage + (diffX < 0 ? 1 : -1));
+  }, { passive: true });
+
+  window.addEventListener("keydown", (event) => {
+    if (!pictureBookModal.classList.contains("is-open")) return;
+
+    if (event.key === "Escape") {
+      closePictureBook();
+      return;
+    }
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      showPicturePage(currentPicturePage - 1);
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      showPicturePage(currentPicturePage + 1);
+    }
+  });
+
+  updatePictureBookControls();
+}
 
 if (
   auctionSimulator &&

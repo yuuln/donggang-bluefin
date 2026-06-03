@@ -26,6 +26,7 @@
       <button class="nav-toggle" type="button" aria-label="開啟選單">☰</button>
       <div class="nav-links">
         <a href="#culture">關於文化</a>
+        <a href="#picture-book">文化繪本</a>
         <a href="#auction">第一鮪</a>
         <a href="#daily">東港日常</a>
         <a href="#food">美食探索</a>
@@ -206,6 +207,18 @@
         </div>
       </section>
 
+      <section id="picture-book" class="picture-book-section section-pad">
+        <div class="picture-book-banner reveal">
+          <img src="assets/封面.png" alt="《黑潮來的時候》繪本封面" />
+          <div class="picture-book-copy">
+            <p class="eyebrow">CULTURAL PICTURE BOOK</p>
+            <h2>東港黑鮪魚文化繪本</h2>
+            <p>以水彩故事走進黑潮、港口與一尾魚的旅程</p>
+            <button id="openPictureBook" class="button primary" type="button">開始閱讀</button>
+          </div>
+        </div>
+      </section>
+
       <section class="fish-section section-pad">
         <div class="section-heading reveal">
           <p class="eyebrow">Interactive Bluefin Anatomy</p>
@@ -277,6 +290,21 @@
         </div>
       </section>
     </main>
+
+    <div id="pictureBookModal" class="picture-book-modal" role="dialog" aria-modal="true" aria-labelledby="pictureBookTitle" aria-hidden="true">
+      <div class="picture-book-reader">
+        <div class="reader-meta">
+          <h2 id="pictureBookTitle">黑潮來的時候</h2>
+          <span id="pictureBookPageCount">第 1 / 27 頁</span>
+        </div>
+        <button id="closePictureBook" class="reader-close" type="button" aria-label="關閉閱讀模式">×</button>
+
+        <img id="pictureBookImage" class="book-page-image" src="assets/封面.png" alt="《黑潮來的時候》封面" />
+
+        <button id="prevPicturePage" class="reader-hotspot prev" type="button" aria-label="上一頁"><span>‹</span></button>
+        <button id="nextPicturePage" class="reader-hotspot next" type="button" aria-label="下一頁"><span>›</span></button>
+      </div>
+    </div>
 
     <footer class="site-footer">
       <p>東港黑鮪魚文化 · 屏東東港</p>
