@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>東港黑鮪魚｜沉浸式互動一頁式網站</title>
+    <meta
+      name="description"
+      content="以沉浸式敘事探索屏東東港黑鮪魚文化：第一鮪拍賣、漁民生活、港口信仰與料理記憶。"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="cursor-glow" aria-hidden="true"></div>
+    <nav class="site-nav" aria-label="主要導覽">
+      <a class="brand" href="#hero" aria-label="回到首頁">
+        <span class="brand-mark"></span>
+        東港黑鮪魚文化
+      </a>
+      <button class="nav-toggle" type="button" aria-label="開啟選單">☰</button>
+      <div class="nav-links">
+        <a href="#culture">關於文化</a>
+        <a href="#auction">第一鮪</a>
+        <a href="#daily">東港日常</a>
+        <a href="#food">美食探索</a>
+        <a href="#journey">探索東港</a>
+      </div>
+    </nav>
+
+    <main>
+      <section id="hero" class="hero depth-scene">
+        <div class="hero-media depth-layer" data-depth="0.18"></div>
+        <div class="ocean-film" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="hero-content depth-layer" data-depth="0.08">
+          <p class="eyebrow reveal">Pingtung Donggang Bluefin Heritage</p>
+          <h1 class="reveal">東港黑鮪魚文化</h1>
+          <p class="hero-subtitle reveal">一尾魚，承載一座港口的海洋記憶。</p>
+          <div class="hero-actions reveal">
+            <a class="button primary" href="#culture">探索文化</a>
+            <a class="button ghost" href="#story">開始旅程</a>
+          </div>
+        </div>
+        <a class="scroll-indicator" href="#story" aria-label="向下探索">
+          <span></span>
+          Scroll
+        </a>
+      </section>
+
+      <section id="story" class="story-section">
+        <div class="story-scene scene-sail depth-scene">
+          <div class="story-copy reveal">
+            <p class="scene-number">Scene 01</p>
+            <h2>凌晨出海</h2>
+            <p>凌晨三點。<br />東港還未甦醒。<br />漁船已駛向深海。</p>
+          </div>
+          <div class="boat depth-layer" data-depth="0.2" aria-hidden="true"></div>
+        </div>
+        <div class="story-scene scene-migration depth-scene">
+          <div class="tuna-silhouette depth-layer" data-depth="0.22" aria-hidden="true"></div>
+          <div class="story-copy right reveal">
+            <p class="scene-number">Scene 02</p>
+            <h2>黑鮪魚洄游</h2>
+            <p>每年春夏。<br />黑鮪魚穿越南方海域。<br />對東港而言，這是一年的開始。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="auction" class="auction-section section-pad">
+        <div class="section-heading reveal">
+          <p class="eyebrow">First Bluefin Auction</p>
+          <h2>第一鮪拍賣</h2>
+          <p>
+            第一鮪是季節、技術與港口聲望的公開儀式<br />每一次落槌，都讓東港的海洋記憶被重新說起。
+          </p>
+        </div>
+        <div class="auction-stage">
+          <div class="auction-record reveal">
+            <p>2025 第一鮪紀錄</p>
+            <div class="record-grid">
+              <div>
+                <span class="counter" data-target="613">0</span><small>kg</small>
+                <label>重量</label>
+              </div>
+              <div class="record-price">
+                <small>NT$</small><span class="counter" data-target="2300000">0</span>
+                <label>成交價格</label>
+              </div>
+            </div>
+          </div>
+          <div class="auction-cards reveal" aria-label="歷年第一鮪紀錄">
+            <article class="auction-card active" data-year="2025" data-weight="613kg" data-price="NT$2,300,000">
+              <span>2025</span>
+              <strong>深海歸航</strong>
+              <p>市場的燈光下，魚身銀藍，成為季節的第一個信號。</p>
+            </article>
+            <article class="auction-card" data-year="2024" data-weight="208kg" data-price="NT$1,680,000">
+              <span>2024</span>
+              <strong>拍賣聲起</strong>
+              <p>喊價、秤重、圍觀，是港口共同參與的年度時刻。</p>
+            </article>
+            <article class="auction-card" data-year="2023" data-weight="210kg" data-price="NT$1,700,000">
+              <span>2023</span>
+              <strong>港口榮光</strong>
+              <p>第一鮪連結市場、料理與觀光，也連結漁民的技藝。</p>
+            </article>
+          </div>
+          <aside class="museum-panel reveal" aria-live="polite">
+            <p class="panel-kicker">Museum Record</p>
+            <h3 id="auctionYear">2025</h3>
+            <dl>
+              <div><dt>重量</dt><dd id="auctionWeight">613kg</dd></div>
+              <div><dt>成交價</dt><dd id="auctionPrice">NT$2,300,000</dd></div>
+            </dl>
+            <p id="auctionDesc">市場的燈光下，魚身銀藍，成為季節的第一個信號。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section id="culture" class="culture-section section-pad">
+        <div class="culture-image reveal">
+          <img src="assets/harbor-temple.png" alt="東港港口與地方信仰氛圍" />
+          <button class="filter-toggle" type="button">切換舊時濾鏡</button>
+        </div>
+        <div class="culture-copy reveal">
+          <p class="eyebrow">Tradition × Modern Culture</p>
+          <h2>海洋與信仰，並不分離。</h2>
+          <p>
+            在東港，黑鮪魚不是一道孤立的料理。它與漁船返港、魚市場拍賣、東隆宮信仰、老市場人情共同構成一座港口的靈魂。
+          </p>
+          <p>
+            傳統讓日常有根，現代讓文化被重新看見。黑鮪魚文化正是在這兩者之間，持續流動。
+          </p>
+        </div>
+      </section>
+
+      <section class="fish-section section-pad">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Interactive Bluefin Anatomy</p>
+          <h2>黑鮪魚互動展示</h2>
+          <p>點擊魚體部位，理解料理特色、文化知識與市場價值。</p>
+        </div>
+        <div class="fish-lab reveal">
+          <div class="fish-wrap" aria-label="黑鮪魚部位互動圖">
+            <div class="fish-model">
+              <img src="assets/黑鮪魚剖面透明.png" alt="黑鮪魚剖面無字示意圖" />
+              <button class="fish-part hotspot head" data-part="head" type="button" aria-label="頭肉"></button>
+              <button class="fish-part hotspot jaw" data-part="jaw" type="button" aria-label="下巴肉"></button>
+              <button class="fish-part hotspot akami active" data-part="akami" type="button" aria-label="背肉赤身"></button>
+              <button class="fish-part hotspot chutoro" data-part="chutoro" type="button" aria-label="中腹"></button>
+              <button class="fish-part hotspot belly" data-part="belly" type="button" aria-label="腹肉大腹"></button>
+              <button class="fish-part hotspot tail-belly" data-part="tailBelly" type="button" aria-label="尾腹肉"></button>
+              <button class="fish-part hotspot tail" data-part="tail" type="button" aria-label="尾肉"></button>
+            </div>
+          </div>
+          <aside class="fish-info">
+            <p class="panel-kicker" id="fishPart">背肉（赤身）</p>
+            <h3 id="fishTitle">緊實鮮明的魚身主味</h3>
+            <p id="fishText">背肉肉質緊實、鐵質風味鮮明，適合生魚片，是理解黑鮪魚乾淨鮮味的核心部位。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section id="daily" class="timeline-section section-pad">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Donggang Daily Timeline</p>
+          <h2>東港的一天</h2>
+          <p>像紀錄片的時間軸，沿著港口的日常向前移動。</p>
+        </div>
+        <div class="timeline-track reveal">
+          <article><time>06:00</time><h3>漁船返港</h3><p>海面轉亮，返港的船帶回深海消息。</p></article>
+          <article><time>09:00</time><h3>魚市場拍賣</h3><p>秤重、喊價、簽單，速度與默契構成市場節奏。</p></article>
+          <article><time>12:00</time><h3>華僑市場午餐</h3><p>料理把海上的勞動，轉化成餐桌上的記憶。</p></article>
+          <article><time>15:00</time><h3>東隆宮參訪</h3><p>港口信仰讓海洋生活有了精神座標。</p></article>
+          <article><time>18:00</time><h3>港邊夕陽</h3><p>一天收束，船影與霞光在水面慢慢重疊。</p></article>
+        </div>
+      </section>
+
+      <section id="food" class="food-section section-pad">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Bluefin Cuisine Gallery</p>
+          <h2>美食探索</h2>
+          <p>黑鮪魚料理不是炫耀式的昂貴，而是漁港、季節與職人手感的延伸。</p>
+        </div>
+        <div class="masonry reveal">
+          <article class="food-card tall"><img src="assets/bluefin-cuisine.png" alt="黑鮪魚生魚片與握壽司" /><span>黑鮪魚生魚片</span></article>
+          <article class="food-card"><img src="assets/bluefin-cuisine.png" alt="黑鮪魚握壽司" /><span>握壽司</span></article>
+          <article class="food-card wide"><img src="assets/bluefin-cuisine.png" alt="炙燒黑鮪魚料理" /><span>炙燒料理</span></article>
+          <article class="food-card"><img src="assets/bluefin-cuisine.png" alt="黑鮪魚腹肉" /><span>腹肉</span></article>
+          <article class="food-card tall"><img src="assets/bluefin-cuisine.png" alt="黑鮪魚下巴料理" /><span>下巴</span></article>
+          <article class="food-card"><img src="assets/bluefin-cuisine.png" alt="黑鮪魚味噌湯" /><span>味噌湯</span></article>
+        </div>
+      </section>
+
+      <section id="journey" class="final-section depth-scene">
+        <div class="final-bg depth-layer" data-depth="0.12"></div>
+        <div class="final-content reveal">
+          <p class="giant-word">黑鮪魚。</p>
+          <h2>不只是美食。</h2>
+          <p>是東港與海共生的文化。</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#culture">探索東港</a>
+            <a class="button ghost" href="#daily">規劃旅程</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>東港黑鮪魚文化 · 屏東東港</p>
+      <div class="socials" aria-label="社群連結">
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="Facebook">FB</a>
+        <a href="#" aria-label="YouTube">YT</a>
+      </div>
+      <p>Designed for cultural storytelling.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

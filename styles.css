@@ -1,0 +1,986 @@
+:root {
+  --ocean: #061826;
+  --blue: #0f2e47;
+  --blue-soft: #173f5c;
+  --gold: #c89a3d;
+  --ivory: #f6f5f1;
+  --gray: #bfc5cc;
+  --ink: #09131d;
+  --glass: rgba(6, 24, 38, 0.58);
+  --line: rgba(246, 245, 241, 0.14);
+  --serif: "Noto Serif TC", serif;
+  --sans: "Inter", "Noto Sans TC", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 20% 5%, rgba(200, 154, 61, 0.12), transparent 26rem),
+    linear-gradient(180deg, #061826 0%, #081b2b 45%, #030b12 100%);
+  color: var(--ivory);
+  font-family: var(--sans);
+  overflow-x: hidden;
+}
+
+body.menu-open {
+  overflow: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.cursor-glow {
+  position: fixed;
+  z-index: 2;
+  width: 28rem;
+  height: 28rem;
+  pointer-events: none;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(34, 118, 160, 0.16), transparent 62%);
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+}
+
+.site-nav {
+  position: fixed;
+  inset: 1.25rem 2rem auto;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.site-nav.scrolled,
+.site-nav.menu-active {
+  background: var(--glass);
+  border-color: var(--line);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(18px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--serif);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.brand-mark {
+  width: 0.82rem;
+  height: 0.82rem;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 26px rgba(200, 154, 61, 0.75);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.8rem);
+  color: rgba(246, 245, 241, 0.82);
+  font-size: 0.88rem;
+}
+
+.nav-links a {
+  position: relative;
+  padding: 0.35rem 0;
+}
+
+.nav-links a::after {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  content: "";
+  background: var(--gold);
+  transition: width 0.25s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.nav-toggle {
+  display: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: rgba(246, 245, 241, 0.08);
+  color: var(--ivory);
+}
+
+.hero,
+.final-section {
+  position: relative;
+  min-height: 100svh;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.hero-media,
+.final-bg {
+  position: absolute;
+  inset: -5%;
+  z-index: -3;
+  background-image: linear-gradient(90deg, rgba(6, 24, 38, 0.72), rgba(6, 24, 38, 0.2)), url("assets/hero-harbor.png");
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.04);
+}
+
+.hero::after,
+.final-section::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  background:
+    linear-gradient(180deg, rgba(6, 24, 38, 0.15), #061826 98%),
+    radial-gradient(circle at 72% 38%, rgba(200, 154, 61, 0.18), transparent 22rem);
+}
+
+.ocean-film {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  opacity: 0.6;
+}
+
+.ocean-film span {
+  position: absolute;
+  left: -20%;
+  width: 140%;
+  height: 16rem;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent, rgba(246, 245, 241, 0.07), transparent);
+  animation: wave-drift 14s linear infinite;
+}
+
+.ocean-film span:nth-child(1) { bottom: 8%; }
+.ocean-film span:nth-child(2) { bottom: 18%; animation-duration: 19s; animation-delay: -7s; }
+.ocean-film span:nth-child(3) { bottom: 29%; animation-duration: 23s; animation-delay: -4s; }
+
+.hero-content,
+.final-content {
+  min-height: 100svh;
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 8rem 0 5rem;
+}
+
+.eyebrow,
+.scene-number,
+.panel-kicker {
+  margin: 0 0 1rem;
+  color: var(--gold);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+h1,
+.giant-word {
+  font-family: var(--serif);
+  font-size: clamp(3.8rem, 11vw, 9.8rem);
+  line-height: 0.98;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+h2 {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 5vw, 5.2rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+h3 {
+  font-family: var(--serif);
+  font-size: clamp(1.25rem, 2vw, 2rem);
+}
+
+.hero-subtitle,
+.section-heading p,
+.culture-copy p,
+.final-content p:not(.giant-word),
+.story-copy p:not(.scene-number),
+.fish-info p,
+.museum-panel p,
+.timeline-track p {
+  color: rgba(246, 245, 241, 0.75);
+  line-height: 1.9;
+}
+
+.hero-subtitle {
+  margin: 1.35rem 0 2rem;
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0 1.35rem;
+  border-radius: 999px;
+  font-weight: 700;
+  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+.button.primary {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.button.ghost {
+  border: 1px solid rgba(246, 245, 241, 0.28);
+  background: rgba(246, 245, 241, 0.07);
+}
+
+.scroll-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: 2rem;
+  display: grid;
+  justify-items: center;
+  gap: 0.45rem;
+  color: rgba(246, 245, 241, 0.7);
+  font-size: 0.74rem;
+  transform: translateX(-50%);
+}
+
+.scroll-indicator span {
+  width: 1px;
+  height: 3.25rem;
+  background: linear-gradient(var(--ivory), transparent);
+  animation: scroll-pulse 1.8s ease-in-out infinite;
+}
+
+.section-pad {
+  padding: clamp(5rem, 10vw, 9rem) max(1rem, calc((100vw - 1180px) / 2));
+}
+
+.section-heading {
+  width: min(760px, 100%);
+  margin-bottom: 3rem;
+}
+
+.story-section {
+  background: linear-gradient(180deg, #061826, #030b12);
+}
+
+.story-scene {
+  position: relative;
+  display: grid;
+  min-height: 105svh;
+  align-items: center;
+  padding: 7rem max(1rem, calc((100vw - 1120px) / 2));
+  overflow: hidden;
+}
+
+.scene-sail {
+  background:
+    radial-gradient(circle at 20% 60%, rgba(26, 86, 122, 0.42), transparent 28rem),
+    linear-gradient(180deg, #051522, #08111a);
+}
+
+.scene-migration {
+  background:
+    radial-gradient(circle at 68% 42%, rgba(20, 92, 135, 0.38), transparent 28rem),
+    linear-gradient(180deg, #08111a, #061826);
+}
+
+.story-copy {
+  width: min(520px, 100%);
+  position: relative;
+  z-index: 2;
+}
+
+.story-copy.right {
+  justify-self: end;
+}
+
+.boat {
+  position: absolute;
+  left: 12%;
+  bottom: 18%;
+  width: min(18rem, 38vw);
+  aspect-ratio: 3 / 2;
+  background: url("assets/漁船透明.png") center / contain no-repeat;
+  filter: saturate(0.82) brightness(0.72) contrast(1.12) drop-shadow(0 28px 42px rgba(0, 0, 0, 0.55));
+  opacity: 0.92;
+  animation: boat-sail 20s ease-in-out infinite alternate;
+}
+
+.tuna-silhouette {
+  position: absolute;
+  left: 3%;
+  top: 18%;
+  width: min(60rem, 92vw);
+  height: min(34rem, 58vw);
+  opacity: 0.72;
+  background:
+    linear-gradient(90deg, rgba(6, 24, 38, 0.42), rgba(6, 24, 38, 0.08) 45%, rgba(6, 24, 38, 0.36)),
+    url("assets/黑鮪魚洄游.png") center / contain no-repeat;
+  filter: saturate(0.92) contrast(1.05) brightness(0.82);
+  mix-blend-mode: screen;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 48%, rgba(0, 0, 0, 0.65) 66%, transparent 82%);
+  mask-image: radial-gradient(ellipse at center, #000 48%, rgba(0, 0, 0, 0.65) 66%, transparent 82%);
+  animation: tuna-swim 10s ease-in-out infinite alternate;
+}
+
+.auction-section {
+  background:
+    linear-gradient(180deg, rgba(6, 24, 38, 0.98), rgba(7, 25, 38, 0.88)),
+    url("assets/hero-harbor.png") center / cover fixed;
+}
+
+.auction-stage {
+  display: grid;
+  grid-template-columns: 1fr minmax(18rem, 25rem);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.auction-record,
+.auction-cards,
+.museum-panel,
+.fish-info,
+.timeline-track article {
+  border: 1px solid var(--line);
+  background: rgba(246, 245, 241, 0.055);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.22);
+}
+
+.auction-record {
+  grid-column: 1 / 2;
+  padding: clamp(1.5rem, 3vw, 2.4rem);
+}
+
+.auction-record > p {
+  margin: 0 0 1.5rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.record-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.record-grid > div {
+  min-width: 0;
+}
+
+.record-grid span {
+  display: inline-block;
+  font-family: var(--serif);
+  max-width: 100%;
+  font-size: clamp(2.2rem, 5.4vw, 4.8rem);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.record-grid small {
+  display: inline-block;
+  margin-left: 0.3rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.record-price {
+  white-space: nowrap;
+}
+
+.record-price span {
+  font-size: clamp(2rem, 4.15vw, 3.9rem);
+}
+
+.record-price small {
+  margin: 0 0.45rem 0 0;
+  font-size: clamp(0.9rem, 1.6vw, 1.2rem);
+  vertical-align: 0.42em;
+}
+
+.record-grid label {
+  display: block;
+  margin-top: 0.65rem;
+  color: rgba(246, 245, 241, 0.66);
+}
+
+.auction-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  grid-column: 1 / 2;
+  overflow: hidden;
+}
+
+.auction-card {
+  min-height: 15rem;
+  padding: 1.35rem;
+  background: rgba(6, 24, 38, 0.45);
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.auction-card:hover,
+.auction-card.active {
+  background: rgba(200, 154, 61, 0.13);
+  transform: translateY(-4px);
+}
+
+.auction-card span {
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.auction-card strong {
+  display: block;
+  margin: 1.2rem 0 0.8rem;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+}
+
+.auction-card p,
+.museum-panel p {
+  margin: 0;
+}
+
+.museum-panel {
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+  padding: clamp(1.5rem, 3vw, 2.4rem);
+}
+
+.museum-panel h3 {
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: var(--gold);
+}
+
+dl {
+  display: grid;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+dt {
+  color: rgba(246, 245, 241, 0.55);
+  font-size: 0.8rem;
+}
+
+dd {
+  margin: 0.25rem 0 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.culture-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+  background: linear-gradient(120deg, #061826, #0f2e47 58%, #08131d);
+}
+
+.culture-image {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  min-height: 32rem;
+}
+
+.culture-image img {
+  width: 100%;
+  height: 100%;
+  min-height: 32rem;
+  object-fit: cover;
+  transition: filter 0.5s ease, transform 0.5s ease;
+}
+
+.culture-image:hover img {
+  transform: scale(1.04);
+}
+
+.culture-image.vintage img {
+  filter: sepia(0.72) contrast(1.08) saturate(0.62);
+}
+
+.filter-toggle {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  border: 1px solid rgba(246, 245, 241, 0.28);
+  border-radius: 999px;
+  padding: 0.8rem 1rem;
+  background: rgba(6, 24, 38, 0.68);
+  color: var(--ivory);
+  backdrop-filter: blur(14px);
+  cursor: pointer;
+}
+
+.fish-section {
+  background: linear-gradient(180deg, #08131d, #061826);
+}
+
+.fish-lab {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 0.6fr);
+  gap: 1.4rem;
+  align-items: center;
+}
+
+.fish-wrap {
+  min-height: 26rem;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+}
+
+.fish-model {
+  position: relative;
+  width: min(100%, 62rem);
+  aspect-ratio: 1792 / 1024;
+  animation: fish-cruise 7s ease-in-out infinite alternate;
+  filter: drop-shadow(0 38px 60px rgba(0, 0, 0, 0.34));
+}
+
+.fish-model img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+.fish-part.hotspot {
+  position: absolute;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.25s ease;
+}
+
+.fish-part.hotspot::after {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.55rem;
+  height: 0.55rem;
+  content: "";
+  border-radius: 50%;
+  background: rgba(246, 245, 241, 0.92);
+  box-shadow: 0 0 18px rgba(246, 245, 241, 0.45);
+  transform: translate(-50%, -50%);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, background 0.25s ease;
+}
+
+.fish-part.hotspot:hover,
+.fish-part.hotspot.active {
+  outline: none;
+}
+
+.fish-part.hotspot:hover::after,
+.fish-part.hotspot.active::after {
+  background: var(--ivory);
+  box-shadow: 0 0 0 0.3rem rgba(200, 154, 61, 0.16), 0 0 24px rgba(200, 154, 61, 0.42);
+  transform: translate(-50%, -50%) scale(1.18);
+}
+
+.fish-part.hotspot:focus-visible::after {
+  box-shadow: 0 0 0 0.22rem rgba(246, 245, 241, 0.4), 0 0 0 0.48rem rgba(200, 154, 61, 0.32);
+}
+
+.fish-part.head {
+  left: 19%;
+  top: 50%;
+  width: 13%;
+  height: 23%;
+}
+
+.fish-part.jaw {
+  left: 24%;
+  top: 65%;
+  width: 11%;
+  height: 15%;
+}
+
+.fish-part.akami {
+  left: 42%;
+  top: 43%;
+  width: 27%;
+  height: 18%;
+}
+
+.fish-part.chutoro {
+  left: 59%;
+  top: 42%;
+  width: 17%;
+  height: 17%;
+}
+
+.fish-part.belly {
+  left: 49%;
+  top: 63%;
+  width: 29%;
+  height: 16%;
+}
+
+.fish-part.tail-belly {
+  left: 65%;
+  top: 65%;
+  width: 18%;
+  height: 15%;
+}
+
+.fish-part.tail {
+  left: 75%;
+  top: 48%;
+  width: 19%;
+  height: 17%;
+}
+
+.fish-info {
+  padding: clamp(1.4rem, 3vw, 2.4rem);
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.timeline-section {
+  background: linear-gradient(180deg, #061826, #102d45);
+}
+
+.timeline-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(17rem, 24rem);
+  gap: 1rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 1rem;
+}
+
+.timeline-track article {
+  min-height: 18rem;
+  padding: 1.5rem;
+  scroll-snap-align: start;
+}
+
+.timeline-track time {
+  color: var(--gold);
+  font-family: var(--serif);
+  font-size: 2.15rem;
+  font-weight: 800;
+}
+
+.timeline-track h3 {
+  margin-top: 2rem;
+}
+
+.food-section {
+  background: #061826;
+}
+
+.masonry {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 12rem;
+  gap: 1rem;
+}
+
+.food-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--blue);
+}
+
+.food-card.tall {
+  grid-row: span 2;
+}
+
+.food-card.wide {
+  grid-column: span 2;
+}
+
+.food-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease, filter 0.45s ease;
+}
+
+.food-card::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(180deg, transparent 45%, rgba(6, 24, 38, 0.84));
+}
+
+.food-card span {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 1;
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  transform: translateY(0.7rem);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.food-card:hover img {
+  transform: scale(1.08);
+  filter: saturate(1.08);
+}
+
+.food-card:hover span {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.final-bg {
+  background-image: linear-gradient(180deg, rgba(6, 24, 38, 0.28), rgba(6, 24, 38, 0.88)), url("assets/hero-harbor.png");
+  filter: brightness(0.78);
+}
+
+.giant-word {
+  margin: 0 0 1rem;
+  color: rgba(246, 245, 241, 0.96);
+  animation: final-pause 7s ease-in-out infinite;
+}
+
+.final-content h2 {
+  color: var(--gold);
+}
+
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem max(1rem, calc((100vw - 1180px) / 2));
+  background: #030b12;
+  color: rgba(246, 245, 241, 0.62);
+  font-size: 0.9rem;
+}
+
+.socials {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.socials a {
+  display: grid;
+  place-items: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ivory);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes wave-drift {
+  from { transform: translateX(-9%) rotate(-2deg); }
+  to { transform: translateX(9%) rotate(2deg); }
+}
+
+@keyframes scroll-pulse {
+  0%, 100% { transform: scaleY(0.45); opacity: 0.45; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes boat-sail {
+  from { transform: translate3d(-14vw, 0.8rem, 0) rotate(-1deg); }
+  to { transform: translate3d(58vw, -0.5rem, 0) rotate(1deg); }
+}
+
+@keyframes tuna-swim {
+  from { transform: translateX(-2rem); }
+  to { transform: translateX(4rem); }
+}
+
+@keyframes fish-cruise {
+  from { transform: translate3d(-1.4rem, 0.35rem, 0) scale(0.985); }
+  to { transform: translate3d(1.4rem, -0.35rem, 0) scale(1.015); }
+}
+
+@keyframes final-pause {
+  0%, 45% { opacity: 1; transform: translateY(0); }
+  55% { opacity: 0.45; transform: translateY(-0.4rem); }
+  72%, 100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 880px) {
+  .site-nav {
+    inset: 0.8rem 1rem auto;
+    border-radius: 1.2rem;
+  }
+
+  .nav-toggle {
+    display: grid;
+    place-items: center;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: calc(100% + 0.7rem);
+    left: 0;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: 1.2rem;
+    background: rgba(6, 24, 38, 0.94);
+    backdrop-filter: blur(18px);
+  }
+
+  .site-nav.menu-active .nav-links {
+    display: flex;
+  }
+
+  .auction-stage,
+  .culture-section,
+  .fish-lab {
+    grid-template-columns: 1fr;
+  }
+
+  .museum-panel,
+  .auction-record,
+  .auction-cards {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .auction-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .masonry {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .food-card.wide {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 720px) {
+  .record-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .cursor-glow {
+    display: none;
+  }
+
+  .brand {
+    font-size: 0.92rem;
+  }
+
+  .hero-content,
+  .final-content {
+    padding-top: 7rem;
+  }
+
+  .masonry {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 14rem;
+  }
+
+  .food-card.wide,
+  .food-card.tall {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .site-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
