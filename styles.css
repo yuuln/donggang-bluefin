@@ -331,9 +331,38 @@ h3 {
 }
 
 .scene-sail {
+  isolation: isolate;
   background:
-    radial-gradient(circle at 20% 60%, rgba(26, 86, 122, 0.42), transparent 28rem),
-    linear-gradient(180deg, #051522, #08111a);
+    radial-gradient(ellipse at 76% 58%, rgba(245, 177, 92, 0.22), transparent 18rem),
+    radial-gradient(ellipse at 34% 20%, rgba(68, 112, 158, 0.22), transparent 24rem),
+    linear-gradient(180deg, #061220 0%, #0b2236 42%, #162f42 58%, #06131e 100%);
+}
+
+.scene-sail::before {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  content: "";
+  background:
+    linear-gradient(180deg, transparent 0 48%, rgba(245, 177, 92, 0.2) 49%, transparent 56%),
+    linear-gradient(180deg, rgba(3, 11, 18, 0.22), rgba(3, 11, 18, 0.54)),
+    radial-gradient(ellipse at 72% 50%, rgba(255, 198, 119, 0.28), transparent 13rem);
+}
+
+.scene-sail::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  height: 46%;
+  content: "";
+  background:
+    radial-gradient(ellipse at 30% 38%, rgba(246, 245, 241, 0.12), transparent 20rem),
+    radial-gradient(ellipse at 72% 4%, rgba(245, 177, 92, 0.2), transparent 28rem),
+    repeating-linear-gradient(178deg, rgba(246, 245, 241, 0.07) 0 1px, transparent 1px 3.3rem),
+    repeating-linear-gradient(2deg, rgba(30, 104, 148, 0.16) 0 2px, transparent 2px 5.8rem),
+    linear-gradient(180deg, rgba(10, 39, 59, 0.05), rgba(3, 11, 18, 0.84));
 }
 
 .scene-migration {
@@ -356,6 +385,7 @@ h3 {
   position: absolute;
   left: 12%;
   bottom: 18%;
+  z-index: 1;
   width: min(18rem, 38vw);
   aspect-ratio: 3 / 2;
   background: url("assets/漁船透明.png") center / contain no-repeat;
@@ -364,21 +394,49 @@ h3 {
   animation: boat-sail 20s ease-in-out infinite alternate;
 }
 
+.boat::before {
+  position: absolute;
+  left: 6%;
+  right: 8%;
+  bottom: 13%;
+  height: 18%;
+  content: "";
+  background:
+    radial-gradient(ellipse at center, rgba(3, 11, 18, 0.72), rgba(3, 11, 18, 0.3) 46%, transparent 72%),
+    linear-gradient(90deg, transparent, rgba(246, 245, 241, 0.18), transparent);
+  transform: perspective(18rem) rotateX(64deg);
+  filter: blur(0.4rem);
+}
+
+.boat::after {
+  position: absolute;
+  left: -16%;
+  right: -12%;
+  bottom: 2%;
+  height: 28%;
+  content: "";
+  background:
+    radial-gradient(ellipse at 24% 40%, rgba(246, 245, 241, 0.16), transparent 18%),
+    radial-gradient(ellipse at 58% 52%, rgba(246, 245, 241, 0.11), transparent 24%),
+    linear-gradient(90deg, transparent 0 12%, rgba(246, 245, 241, 0.18) 28%, rgba(35, 118, 160, 0.12) 52%, transparent 78%),
+    repeating-linear-gradient(174deg, rgba(246, 245, 241, 0.12) 0 1px, transparent 1px 1.6rem);
+  transform: perspective(20rem) rotateX(66deg);
+  transform-origin: center;
+  filter: blur(0.22rem);
+  opacity: 0.84;
+}
+
 .tuna-silhouette {
   position: absolute;
   left: 3%;
   top: 18%;
   width: min(60rem, 92vw);
   height: min(34rem, 58vw);
-  opacity: 0.72;
+  opacity: 0.9;
   background:
-    linear-gradient(90deg, rgba(6, 24, 38, 0.42), rgba(6, 24, 38, 0.08) 45%, rgba(6, 24, 38, 0.36)),
+    linear-gradient(90deg, rgba(6, 24, 38, 0.18), rgba(6, 24, 38, 0) 45%, rgba(6, 24, 38, 0.18)),
     url("assets/黑鮪魚洄游.png") center / contain no-repeat;
-  filter: saturate(0.92) contrast(1.05) brightness(0.82);
-  mix-blend-mode: screen;
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 48%, rgba(0, 0, 0, 0.65) 66%, transparent 82%);
-  mask-image: radial-gradient(ellipse at center, #000 48%, rgba(0, 0, 0, 0.65) 66%, transparent 82%);
-  animation: tuna-swim 10s ease-in-out infinite alternate;
+  filter: saturate(1.04) contrast(1.08) brightness(1.08) drop-shadow(0 2.2rem 3rem rgba(0, 0, 0, 0.42));
 }
 
 .auction-section {
@@ -503,7 +561,7 @@ h3 {
 
 .museum-panel {
   grid-column: 2 / 3;
-  grid-row: 1 / 3;
+  grid-row: 1 / 4;
   padding: clamp(1.5rem, 3vw, 2.4rem);
 }
 
@@ -527,6 +585,552 @@ dd {
   margin: 0.25rem 0 0;
   font-size: 1.4rem;
   font-weight: 800;
+}
+
+.auction-entry {
+  display: grid;
+  grid-column: 1 / 2;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  background: rgba(246, 245, 241, 0.045);
+  backdrop-filter: blur(18px);
+}
+
+.auction-simulator {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(20rem, 2fr);
+  gap: 0;
+  max-height: 0;
+  margin-top: 0;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(135deg, rgba(6, 24, 38, 0.64), rgba(15, 46, 71, 0.24)),
+    rgba(246, 245, 241, 0.035);
+  backdrop-filter: blur(18px);
+  box-shadow: none;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(1.25rem);
+  visibility: hidden;
+  transition: max-height 0.7s ease, margin-top 0.35s ease, opacity 0.45s ease, transform 0.45s ease, visibility 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
+}
+
+.auction-simulator.is-open {
+  max-height: 80rem;
+  margin-top: 1rem;
+  border-color: var(--line);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.auction-simulator.is-hammered {
+  animation: hammer-shake 0.46s ease;
+}
+
+.simulator-scene {
+  position: relative;
+  min-height: clamp(30rem, 46vw, 38rem);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 48% 14%, rgba(244, 196, 104, 0.34), transparent 18rem),
+    radial-gradient(circle at 78% 4%, rgba(255, 226, 156, 0.2), transparent 14rem),
+    linear-gradient(180deg, rgba(8, 13, 16, 0.1) 0 43%, rgba(6, 13, 18, 0.92) 44% 100%),
+    linear-gradient(120deg, #10293d, #061826 58%, #030b12);
+  isolation: isolate;
+}
+
+.simulator-scene::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    repeating-linear-gradient(90deg, rgba(246, 245, 241, 0.035) 0 1px, transparent 1px 5.8rem),
+    linear-gradient(180deg, transparent 0 42%, rgba(200, 154, 61, 0.12) 43%, transparent 62%);
+  opacity: 0.82;
+}
+
+.simulator-scene::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 45%;
+  content: "";
+  background:
+    radial-gradient(ellipse at 50% 15%, rgba(246, 245, 241, 0.18), transparent 29rem),
+    linear-gradient(180deg, rgba(246, 245, 241, 0.05), rgba(6, 24, 38, 0.7)),
+    repeating-linear-gradient(174deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 4rem);
+  transform: perspective(36rem) rotateX(58deg);
+  transform-origin: bottom;
+  filter: blur(0.5px);
+}
+
+.market-lamps {
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.market-lamps span {
+  width: 5.5rem;
+  height: 11rem;
+  background: linear-gradient(180deg, rgba(255, 218, 139, 0.64), transparent);
+  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+  opacity: 0.6;
+  filter: blur(0.8rem);
+}
+
+.tuna-spotlight {
+  position: absolute;
+  left: 50%;
+  bottom: 31%;
+  z-index: 3;
+  width: min(38rem, 72%);
+  transform: translateX(-50%);
+}
+
+.tuna-info-plate {
+  position: absolute;
+  left: 50%;
+  top: clamp(1.2rem, 4vw, 2.4rem);
+  z-index: 5;
+  display: grid;
+  justify-items: center;
+  gap: 0.18rem;
+  width: min(22rem, calc(100% - 2rem));
+  padding: 0.62rem 0.9rem;
+  border: 1px solid rgba(246, 245, 241, 0.08);
+  background: rgba(3, 11, 18, 0.28);
+  color: rgba(246, 245, 241, 0.78);
+  text-align: center;
+  transform: translateX(-50%);
+  backdrop-filter: blur(16px);
+}
+
+.tuna-info-plate span {
+  color: var(--gold);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.tuna-info-plate strong {
+  color: var(--ivory);
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 2vw, 1.62rem);
+}
+
+.tuna-info-plate small {
+  color: rgba(246, 245, 241, 0.62);
+  line-height: 1.5;
+}
+
+.tuna-spotlight::before {
+  position: absolute;
+  left: 50%;
+  bottom: -18%;
+  width: 78%;
+  height: 34%;
+  content: "";
+  background: radial-gradient(ellipse, rgba(246, 245, 241, 0.28), rgba(200, 154, 61, 0.13) 42%, transparent 72%);
+  transform: translateX(-50%);
+  filter: blur(0.45rem);
+}
+
+.tuna-spotlight img {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  filter: saturate(0.96) contrast(1.08) brightness(0.9) drop-shadow(0 2rem 2.2rem rgba(0, 0, 0, 0.6));
+}
+
+.bidder-floor {
+  position: absolute;
+  left: clamp(1rem, 4vw, 3rem);
+  right: clamp(1rem, 4vw, 3rem);
+  bottom: clamp(4.7rem, 7vw, 5.6rem);
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.4rem, 1.2vw, 0.9rem);
+  align-items: end;
+}
+
+.bidder-card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.28rem;
+  min-width: 0;
+  padding: 0.1rem 0.2rem 0.35rem;
+  border: 0;
+  background: transparent;
+  color: rgba(246, 245, 241, 0.5);
+  opacity: 0.34;
+  transform: translateY(0);
+  transition: opacity 0.32s ease, transform 0.32s ease, color 0.32s ease;
+}
+
+.bidder-card::before {
+  position: absolute;
+  left: 50%;
+  top: -18%;
+  width: 76%;
+  height: 76%;
+  content: "";
+  background: radial-gradient(ellipse, rgba(255, 217, 146, 0.18), transparent 68%);
+  opacity: 0;
+  transform: translateX(-50%);
+  filter: blur(0.3rem);
+  pointer-events: none;
+  transition: opacity 0.32s ease;
+}
+
+.bidder-card::after {
+  position: absolute;
+  left: 50%;
+  bottom: 1.55rem;
+  width: 78%;
+  height: 1.4rem;
+  content: "";
+  background: radial-gradient(ellipse, rgba(200, 154, 61, 0.28), transparent 70%);
+  opacity: 0;
+  transform: translateX(-50%);
+  filter: blur(0.2rem);
+  pointer-events: none;
+  transition: opacity 0.32s ease;
+}
+
+.bidder-card img {
+  width: clamp(5.1rem, 10.5vw, 8.2rem);
+  height: clamp(5.1rem, 10.5vw, 8.2rem);
+  border: 0;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: grayscale(0.55) brightness(0.55) saturate(0.74);
+  transition: filter 0.32s ease, transform 0.32s ease;
+}
+
+.bidder-card[data-buyer="chef"] img,
+.bidder-card[data-buyer="vendor"] img {
+  width: clamp(4.6rem, 9.6vw, 7.4rem);
+  height: clamp(4.6rem, 9.6vw, 7.4rem);
+}
+
+.bidder-card span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
+  font-size: clamp(0.78rem, 1.25vw, 0.92rem);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.bidder-card.is-active,
+.bidder-card.is-winner {
+  color: var(--ivory);
+  opacity: 1;
+  transform: translateY(-0.28rem) scale(1.04);
+}
+
+.bidder-card.is-active::before,
+.bidder-card.is-active::after,
+.bidder-card.is-winner::before,
+.bidder-card.is-winner::after {
+  opacity: 1;
+}
+
+.bidder-card.is-active img,
+.bidder-card.is-winner img {
+  filter: grayscale(0) brightness(1.03) saturate(1.08);
+  transform: translateY(-0.08rem);
+}
+
+.bid-bubble {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.9rem);
+  display: none;
+  width: min(13rem, 78vw);
+  padding: 0.72rem 0.85rem;
+  border: 1px solid rgba(246, 245, 241, 0.08);
+  border-radius: 18px;
+  background: rgba(3, 11, 18, 0.72);
+  color: rgba(246, 245, 241, 0.88);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  text-align: left;
+  transform: translateX(-50%);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(16px);
+}
+
+.bid-bubble strong {
+  display: block;
+  color: var(--gold);
+  font-size: 0.9rem;
+}
+
+.bidder-card.is-active .bid-bubble {
+  display: block;
+  animation: result-fade 0.28s ease both;
+}
+
+.bidder-card:first-child .bid-bubble {
+  left: 0;
+  transform: none;
+}
+
+.bidder-card:last-child .bid-bubble {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+.simulator-panel {
+  display: grid;
+  align-content: center;
+  gap: 1.1rem;
+  padding: clamp(1.5rem, 3vw, 2.8rem);
+  border-left: 1px solid rgba(246, 245, 241, 0.1);
+  background:
+    radial-gradient(circle at 88% 8%, rgba(200, 154, 61, 0.1), transparent 10rem),
+    rgba(6, 24, 38, 0.5);
+}
+
+.simulator-panel h3 {
+  font-size: clamp(1.55rem, 2.4vw, 2.35rem);
+}
+
+.simulator-panel > p:not(.panel-kicker),
+.sold-summary {
+  margin: 0;
+  color: rgba(246, 245, 241, 0.72);
+  line-height: 1.8;
+}
+
+.bid-status {
+  min-height: 2.35rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(246, 245, 241, 0.58);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.bid-status.is-rival {
+  color: rgba(246, 245, 241, 0.68);
+}
+
+.bid-status.is-live {
+  color: var(--gold);
+}
+
+.current-bid {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1.15rem;
+  border: 1px solid rgba(200, 154, 61, 0.26);
+  background: rgba(3, 11, 18, 0.3);
+}
+
+.current-bid span {
+  color: rgba(246, 245, 241, 0.62);
+  font-size: 0.82rem;
+}
+
+.current-bid strong {
+  color: var(--gold);
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  line-height: 1;
+}
+
+.current-bid small {
+  color: rgba(246, 245, 241, 0.66);
+  line-height: 1.6;
+}
+
+.current-bid b {
+  color: var(--ivory);
+}
+
+.start-auction-button {
+  min-height: 3.05rem;
+  border: 1px solid rgba(246, 245, 241, 0.16);
+  background: linear-gradient(135deg, #c89a3d, #8d611c);
+  color: #07111a;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 14px 34px rgba(200, 154, 61, 0.22);
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
+}
+
+.start-auction-button:hover {
+  transform: translateY(-3px);
+  border-color: rgba(200, 154, 61, 0.7);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.26);
+}
+
+.start-auction-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.64;
+  transform: none;
+}
+
+.auction-progress {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid rgba(246, 245, 241, 0.1);
+  border-bottom: 1px solid rgba(246, 245, 241, 0.1);
+}
+
+.auction-progress span {
+  color: rgba(246, 245, 241, 0.55);
+  font-size: 0.82rem;
+}
+
+.auction-progress strong {
+  color: var(--ivory);
+  font-size: 1rem;
+}
+
+.sold-summary {
+  min-height: 3.2rem;
+  color: rgba(246, 245, 241, 0.82);
+}
+
+.sold-summary.is-visible {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.95rem;
+  padding: 1.15rem;
+  border: 1px solid rgba(200, 154, 61, 0.32);
+  background:
+    radial-gradient(circle at 88% 12%, rgba(200, 154, 61, 0.15), transparent 8rem),
+    rgba(3, 11, 18, 0.42);
+  box-shadow: inset 0 0 34px rgba(200, 154, 61, 0.06);
+  animation: result-fade 0.36s ease both;
+}
+
+.sold-result,
+.winner-card {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.result-kicker,
+.winner-card strong {
+  color: var(--gold);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.closed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.sold-pill {
+  display: inline-grid;
+  place-items: center;
+  width: min(6.8rem, 100%);
+  min-height: 2.3rem;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid rgba(200, 154, 61, 0.24);
+  border-radius: 999px;
+  background: rgba(3, 11, 18, 0.38);
+  color: var(--gold);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  backdrop-filter: blur(14px);
+}
+
+.sold-summary h4 {
+  margin: 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(200, 154, 61, 0.28);
+  font-family: var(--serif);
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  color: var(--ivory);
+}
+
+.sold-result {
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgba(246, 245, 241, 0.1);
+}
+
+.sold-result span {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: rgba(246, 245, 241, 0.82);
+  line-height: 1.65;
+}
+
+.winner-card {
+  grid-template-columns: 4rem minmax(0, 1fr);
+  align-items: center;
+  padding: 0.85rem;
+  border: 1px solid rgba(246, 245, 241, 0.14);
+  background: rgba(3, 11, 18, 0.34);
+}
+
+.winner-card img {
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 1px solid rgba(200, 154, 61, 0.48);
+  object-fit: contain;
+  object-position: center bottom;
+  background: rgba(246, 245, 241, 0.08);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+}
+
+.winner-card div {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.winner-card span {
+  color: var(--ivory);
+  font-family: var(--serif);
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+
+.winner-card small {
+  color: rgba(246, 245, 241, 0.58);
+}
+
+.winner-card p {
+  margin: 0;
+  color: rgba(246, 245, 241, 0.72);
+  line-height: 1.75;
+}
+
+.auction-simulator.is-sold .bid-status,
+.auction-simulator.is-sold .current-bid,
+.auction-simulator.is-sold .auction-progress {
+  display: none;
 }
 
 .culture-section {
@@ -596,7 +1200,6 @@ dd {
   position: relative;
   width: min(100%, 62rem);
   aspect-ratio: 1792 / 1024;
-  animation: fish-cruise 7s ease-in-out infinite alternate;
   filter: drop-shadow(0 38px 60px rgba(0, 0, 0, 0.34));
 }
 
@@ -702,6 +1305,35 @@ dd {
   background: transparent;
   box-shadow: none;
   backdrop-filter: none;
+}
+
+.fish-info #fishPart {
+  margin-bottom: 0.8rem;
+  color: var(--gold);
+  font-family: var(--serif);
+  font-size: clamp(1.45rem, 3vw, 2.45rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1.2;
+  text-transform: none;
+}
+
+.fish-info h3,
+.fish-info #fishText {
+  transition: opacity 0.32s ease, transform 0.32s ease;
+}
+
+.fish-info.is-changing h3,
+.fish-info.is-changing #fishText,
+.fish-info.is-changing #fishPart {
+  opacity: 0;
+  transform: translateY(0.65rem);
+}
+
+.fish-info.is-settled h3,
+.fish-info.is-settled #fishText,
+.fish-info.is-settled #fishPart {
+  animation: fish-info-rise 0.42s ease both;
 }
 
 .timeline-section {
@@ -865,14 +1497,22 @@ dd {
   to { transform: translate3d(58vw, -0.5rem, 0) rotate(1deg); }
 }
 
-@keyframes tuna-swim {
-  from { transform: translateX(-2rem); }
-  to { transform: translateX(4rem); }
+@keyframes hammer-shake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  16% { transform: translate3d(-0.28rem, 0.08rem, 0); }
+  34% { transform: translate3d(0.24rem, -0.08rem, 0); }
+  52% { transform: translate3d(-0.18rem, 0.05rem, 0); }
+  70% { transform: translate3d(0.12rem, 0, 0); }
 }
 
-@keyframes fish-cruise {
-  from { transform: translate3d(-1.4rem, 0.35rem, 0) scale(0.985); }
-  to { transform: translate3d(1.4rem, -0.35rem, 0) scale(1.015); }
+@keyframes result-fade {
+  from { opacity: 0; transform: translateY(0.6rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fish-info-rise {
+  from { opacity: 0; transform: translateY(0.7rem); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes final-pause {
@@ -923,6 +1563,7 @@ dd {
   }
 
   .auction-stage,
+  .auction-simulator,
   .culture-section,
   .fish-lab {
     grid-template-columns: 1fr;
@@ -930,6 +1571,7 @@ dd {
 
   .museum-panel,
   .auction-record,
+  .auction-entry,
   .auction-cards {
     grid-column: auto;
     grid-row: auto;
@@ -937,6 +1579,12 @@ dd {
 
   .auction-cards {
     grid-template-columns: 1fr;
+  }
+
+  .simulator-panel {
+    order: 0;
+    border-left: 0;
+    border-top: 1px solid rgba(246, 245, 241, 0.1);
   }
 
   .masonry {
@@ -952,6 +1600,61 @@ dd {
   .record-grid {
     grid-template-columns: 1fr;
   }
+
+  .simulator-scene {
+    min-height: 34rem;
+  }
+
+  .tuna-spotlight {
+    bottom: 15.5rem;
+    width: min(29rem, 82%);
+  }
+
+  .bidder-floor {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    bottom: 4.8rem;
+    gap: 0.55rem;
+  }
+
+  .bidder-card {
+    padding: 0.1rem 0.35rem 0.35rem;
+  }
+
+  .bidder-card img {
+    width: 4.8rem;
+    height: 4.8rem;
+  }
+
+  .bidder-card[data-buyer="chef"] img,
+  .bidder-card[data-buyer="vendor"] img {
+    width: 4.35rem;
+    height: 4.35rem;
+  }
+
+  .bid-bubble {
+    width: min(12rem, 86vw);
+    font-size: 0.72rem;
+  }
+
+  .auction-simulator.is-open {
+    max-height: 120rem;
+  }
+
+  .sold-summary.is-visible {
+    grid-template-columns: 1fr;
+  }
+
+  .winner-card {
+    grid-template-columns: 3.8rem minmax(0, 1fr);
+    margin-right: 0;
+    padding-bottom: 0.85rem;
+  }
+
+  .winner-card img {
+    width: 3.3rem;
+    height: 3.3rem;
+  }
+
 }
 
 @media (max-width: 560px) {

@@ -5,8 +5,17 @@ const revealEls = document.querySelectorAll(".reveal");
 const counters = document.querySelectorAll(".counter");
 const auctionCards = document.querySelectorAll(".auction-card");
 const fishParts = document.querySelectorAll(".fish-part");
+const fishInfo = document.querySelector(".fish-info");
 const cultureImage = document.querySelector(".culture-image");
 const filterToggle = document.querySelector(".filter-toggle");
+const auctionSimulator = document.querySelector(".auction-simulator");
+const currentBidEl = document.querySelector("#currentBid");
+const totalBidEl = document.querySelector("#totalBid");
+const startAuctionButton = document.querySelector("#startAuctionButton");
+const soldSummary = document.querySelector("#soldSummary");
+const bidStatus = document.querySelector("#bidStatus");
+const eventCount = document.querySelector("#eventCount");
+const bidderCards = document.querySelectorAll(".bidder-card");
 
 const fishData = {
   head: {
@@ -68,6 +77,8 @@ const animateCounter = (counter) => {
 
   requestAnimationFrame(tick);
 };
+
+const formatCurrency = (value) => `NT$${value.toLocaleString("en-US")}`;
 
 const revealObserver = new IntersectionObserver(
   (entries) => {
@@ -153,14 +164,223 @@ fishParts.forEach((part) => {
 
     fishParts.forEach((item) => item.classList.remove("active"));
     part.classList.add("active");
-    document.querySelector("#fishPart").textContent = data.part;
-    document.querySelector("#fishTitle").textContent = data.title;
-    document.querySelector("#fishText").textContent = data.text;
+
+    const updateFishInfo = () => {
+      document.querySelector("#fishPart").textContent = data.part;
+      document.querySelector("#fishTitle").textContent = data.title;
+      document.querySelector("#fishText").textContent = data.text;
+      fishInfo?.classList.remove("is-changing");
+      fishInfo?.classList.add("is-settled");
+      window.setTimeout(() => fishInfo?.classList.remove("is-settled"), 460);
+    };
+
+    if (!fishInfo) {
+      updateFishInfo();
+      return;
+    }
+
+    fishInfo.classList.remove("is-settled");
+    fishInfo.classList.add("is-changing");
+    window.setTimeout(updateFishInfo, 180);
   });
 });
 
 filterToggle?.addEventListener("click", () => {
   cultureImage.classList.toggle("vintage");
 });
+
+document.querySelectorAll("[data-fallback]").forEach((image) => {
+  image.addEventListener("error", () => {
+    if (image.dataset.fallbackApplied) return;
+    image.dataset.fallbackApplied = "true";
+    image.src = image.dataset.fallback;
+  });
+});
+
+if (
+  auctionSimulator &&
+  currentBidEl &&
+  totalBidEl &&
+  startAuctionButton &&
+  soldSummary &&
+  bidStatus &&
+  eventCount &&
+  bidderCards.length
+) {
+  const fishWeight = 613;
+  const openingUnitBid = 1800;
+  const bidSteps = [20, 30, 50, 80, 100, 120, 150];
+  const buyers = {
+    restaurant: {
+      name: "華僑市場餐廳老闆",
+      angle: "重視食材新鮮度與觀光人潮",
+      background: "第一鮪能成為店面話題，也會影響遊客對東港季節料理的期待。",
+      image: "assets/華僑市場餐廳老闆.png",
+      log: "重視食材新鮮度與觀光人潮，因此積極出價。",
+      phrases: ["看好觀光人潮，願意加價", "新鮮度能帶動店內話題"]
+    },
+    trader: {
+      name: "外縣市盤商",
+      angle: "考量轉售價格與市場需求",
+      background: "會評估外地通路能否消化高單價魚貨，並觀察後續市場行情。",
+      image: "assets/外縣市盤商.png",
+      log: "考量轉售價格與市場需求，評估仍有利潤空間。",
+      phrases: ["外地市場仍有需求", "轉售行情還有空間"]
+    },
+    chef: {
+      name: "壽司店師傅",
+      angle: "重視油脂、肉質與料理表現",
+      background: "從魚體色澤、油脂線與可料理部位判斷是否值得拉高單價。",
+      image: "assets/壽司店老闆.png",
+      log: "重視油脂、肉質與料理表現，判斷適合高端料理。",
+      phrases: ["油脂表現漂亮，值得加價", "適合高端握壽司呈現"]
+    },
+    vendor: {
+      name: "在地魚販",
+      angle: "熟悉魚體狀態與批發行情",
+      background: "熟悉東港魚市場節奏，會用魚體狀態與批發需求抓出合理價位。",
+      image: "assets/在地魚販.png",
+      log: "熟悉魚體狀態與批發行情，依現場判斷出手。",
+      phrases: ["魚體狀態穩，批發有支撐", "依現場行情繼續跟價"]
+    }
+  };
+  let currentUnitBid = openingUnitBid;
+  let auctionTimer = null;
+  let eventIndex = 0;
+  let maxEvents = 0;
+  let lastWinner = buyers.restaurant;
+  let lastBidderKey = "";
+  let isRunning = false;
+  let isSold = false;
+
+  const updateBidDisplay = () => {
+    currentBidEl.textContent = formatCurrency(currentUnitBid);
+    totalBidEl.textContent = formatCurrency(currentUnitBid * fishWeight);
+  };
+
+  const clearBidders = () => {
+    bidderCards.forEach((card) => {
+      card.classList.remove("is-active", "is-winner");
+      const bubble = card.querySelector(".bid-bubble");
+      if (bubble) bubble.innerHTML = "";
+    });
+  };
+
+  const showBidderEvent = (key, buyer) => {
+    const reason = buyer.phrases[Math.floor(Math.random() * buyer.phrases.length)];
+
+    bidderCards.forEach((card) => {
+      const isActive = card.dataset.buyer === key;
+      card.classList.toggle("is-active", isActive);
+      card.classList.remove("is-winner");
+
+      const bubble = card.querySelector(".bid-bubble");
+      if (bubble) {
+        bubble.innerHTML = isActive
+          ? `<strong>${formatCurrency(currentUnitBid)} / kg</strong><span>${reason}</span>`
+          : "";
+      }
+    });
+  };
+
+  const finishAuction = () => {
+    isRunning = false;
+    isSold = true;
+    window.clearTimeout(auctionTimer);
+    auctionSimulator.classList.add("is-sold", "is-hammered");
+    startAuctionButton.disabled = true;
+    startAuctionButton.textContent = "拍賣已結束";
+    bidderCards.forEach((card) => {
+      card.classList.toggle("is-active", false);
+      card.classList.toggle("is-winner", card.dataset.buyer === lastWinner.key);
+      const bubble = card.querySelector(".bid-bubble");
+      if (bubble) bubble.innerHTML = "";
+    });
+    bidStatus.classList.remove("is-live", "is-rival");
+    bidStatus.textContent = `落槌成交：${lastWinner.name} 以每公斤 ${formatCurrency(currentUnitBid)} 得標`;
+    soldSummary.classList.add("is-visible");
+    soldSummary.innerHTML = `
+      <div class="closed-header">
+        <span class="result-kicker">AUCTION CLOSED</span>
+        <span class="sold-pill">SOLD</span>
+      </div>
+      <h4>落槌成交</h4>
+      <div class="sold-result">
+        <span>得標者：${lastWinner.name}</span>
+        <span>每公斤成交價：${formatCurrency(currentUnitBid)} / kg</span>
+        <span>黑鮪魚重量：${fishWeight} kg</span>
+        <span>總成交價：${formatCurrency(currentUnitBid * fishWeight)}</span>
+      </div>
+      <div class="winner-card winner-${lastWinner.key}">
+        <img src="${lastWinner.image}" alt="${lastWinner.name}" />
+        <div>
+          <strong>得標者</strong>
+          <span>${lastWinner.name}</span>
+          <small>${lastWinner.angle}</small>
+          <p>${lastWinner.log}</p>
+        </div>
+      </div>
+    `;
+  };
+
+  const runBidEvent = () => {
+    if (!isRunning || isSold) return;
+
+    let buyerKeys = Object.keys(buyers);
+    if (lastBidderKey) {
+      buyerKeys = buyerKeys.filter((key) => key !== lastBidderKey);
+    }
+    const key = buyerKeys[Math.floor(Math.random() * buyerKeys.length)];
+    const buyer = { ...buyers[key], key };
+    const step = bidSteps[Math.floor(Math.random() * bidSteps.length)];
+
+    eventIndex += 1;
+    currentUnitBid += step;
+    lastWinner = buyer;
+    lastBidderKey = key;
+    updateBidDisplay();
+    showBidderEvent(key, buyer);
+    eventCount.textContent = `第 ${eventIndex} / ${maxEvents} 次出價`;
+    bidStatus.classList.add("is-live", "is-rival");
+    bidStatus.textContent = `第 ${eventIndex} 次出價：${buyer.name} 依「${buyer.angle}」加價`;
+
+    if (eventIndex >= maxEvents) {
+      auctionTimer = window.setTimeout(finishAuction, 3500);
+      return;
+    }
+
+    auctionTimer = window.setTimeout(runBidEvent, 3500 + Math.random() * 1000);
+  };
+
+  const startAuction = () => {
+    if (isRunning || isSold) return;
+
+    isRunning = true;
+    auctionSimulator.classList.add("is-open");
+    auctionSimulator.setAttribute("aria-hidden", "false");
+    maxEvents = 8 + Math.floor(Math.random() * 5);
+    eventIndex = 0;
+    lastBidderKey = "";
+    currentUnitBid = openingUnitBid;
+    auctionSimulator.classList.remove("is-sold", "is-hammered");
+    clearBidders();
+    soldSummary.innerHTML = "";
+    soldSummary.classList.remove("is-visible");
+    updateBidDisplay();
+    eventCount.textContent = `第 0 / ${maxEvents} 次出價`;
+    startAuctionButton.disabled = true;
+    startAuctionButton.textContent = "拍賣進行中";
+    bidStatus.classList.add("is-live");
+    bidStatus.classList.remove("is-rival");
+    bidStatus.textContent = `拍賣開始：黑鮪魚 ${fishWeight} kg，以每公斤 ${formatCurrency(openingUnitBid)} 起標`;
+    auctionSimulator.scrollIntoView({ behavior: "smooth", block: "start" });
+    auctionTimer = window.setTimeout(runBidEvent, 3500);
+  };
+
+  startAuctionButton.addEventListener("click", startAuction);
+
+  updateBidDisplay();
+  eventCount.textContent = "第 0 / 0 次出價";
+}
 
 updateNav();

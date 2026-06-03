@@ -84,6 +84,9 @@
           </p>
         </div>
         <div class="auction-stage">
+          <div class="auction-entry reveal">
+            <button class="start-auction-button" id="startAuctionButton" type="button">進入模擬拍賣現場</button>
+          </div>
           <div class="auction-record reveal">
             <p>2025 第一鮪紀錄</p>
             <div class="record-grid">
@@ -123,6 +126,66 @@
             </dl>
             <p id="auctionDesc">市場的燈光下，魚身銀藍，成為季節的第一個信號。</p>
           </aside>
+        </div>
+        <div class="auction-simulator" id="auctionSimulator" aria-labelledby="auctionSimulatorTitle" aria-hidden="true">
+          <div class="simulator-scene">
+            <div class="market-lamps" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="tuna-info-plate" aria-label="黑鮪魚拍賣資訊">
+              <span>第一鮪展示</span>
+              <strong>黑鮪魚 613 kg</strong>
+              <small>每公斤單價競標 · 起標 NT$1,800 / kg</small>
+            </div>
+            <div class="tuna-spotlight">
+              <img
+                src="assets/黑鮪魚洄游.png"
+                alt="拍賣現場中央的黑鮪魚"
+              />
+            </div>
+            <div class="bidder-floor" aria-label="拍賣現場買家角色">
+              <article class="bidder-card" data-buyer="restaurant">
+                <div class="bid-bubble" aria-live="polite"></div>
+                <img src="assets/華僑市場餐廳老闆.png" alt="華僑市場餐廳老闆" />
+                <span>華僑市場餐廳老闆</span>
+              </article>
+              <article class="bidder-card" data-buyer="trader">
+                <div class="bid-bubble" aria-live="polite"></div>
+                <img src="assets/外縣市盤商.png" alt="外縣市盤商" />
+                <span>外縣市盤商</span>
+              </article>
+              <article class="bidder-card" data-buyer="chef">
+                <div class="bid-bubble" aria-live="polite"></div>
+                <img src="assets/壽司店老闆.png" alt="壽司店師傅" />
+                <span>壽司店師傅</span>
+              </article>
+              <article class="bidder-card" data-buyer="vendor">
+                <div class="bid-bubble" aria-live="polite"></div>
+                <img src="assets/在地魚販.png" alt="在地魚販" />
+                <span>在地魚販</span>
+              </article>
+            </div>
+          </div>
+          <div class="simulator-panel">
+            <p class="panel-kicker">Live Auction</p>
+            <h3 id="auctionSimulatorTitle">模擬拍賣現場</h3>
+            <p>觀察買家如何依魚體、行情與料理需求出價。</p>
+            <div class="current-bid" aria-live="polite">
+              <span>目前喊價／每公斤</span>
+              <strong id="currentBid">NT$1,800</strong>
+              <small>黑鮪魚重量 613 kg · 估算總價 <b id="totalBid">NT$1,103,400</b></small>
+            </div>
+            <div class="auction-progress">
+              <span>拍賣進度</span>
+              <strong id="eventCount">第 0 / 0 次出價</strong>
+            </div>
+            <div class="bid-status" id="bidStatus" aria-live="polite">
+              點擊入口後，拍賣員將開出每公斤底價。
+            </div>
+            <div class="sold-summary" id="soldSummary" aria-live="polite"></div>
+          </div>
         </div>
       </section>
 
