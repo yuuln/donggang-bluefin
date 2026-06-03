@@ -1188,7 +1188,10 @@ dd {
 .picture-book-banner {
   position: relative;
   display: grid;
-  min-height: clamp(32rem, 62vw, 48rem);
+  width: min(100%, 58rem);
+  aspect-ratio: 1448 / 1086;
+  min-height: 30rem;
+  margin: 0 auto;
   overflow: hidden;
   background:
     linear-gradient(135deg, rgba(6, 24, 38, 0.94), rgba(13, 40, 60, 0.82)),
@@ -1218,9 +1221,9 @@ dd {
 
 .picture-book-copy {
   position: absolute;
-  right: clamp(1.2rem, 4vw, 3rem);
-  bottom: clamp(1.2rem, 4vw, 3rem);
-  width: clamp(22.5rem, 29vw, 26.25rem);
+  left: clamp(1.2rem, 3vw, 2.4rem);
+  bottom: clamp(1.2rem, 3vw, 2.4rem);
+  width: min(24rem, calc(100% - 2.4rem));
   padding: clamp(1.15rem, 2vw, 1.6rem);
   background: rgba(6, 24, 38, 0.42);
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.26);
@@ -1776,6 +1779,8 @@ dd {
   }
 
   .picture-book-banner {
+    width: 100%;
+    aspect-ratio: auto;
     min-height: 34rem;
   }
 
@@ -1786,7 +1791,8 @@ dd {
   }
 
   .picture-book-copy {
-    right: 1rem;
+    left: 1rem;
+    right: auto;
     bottom: 1rem;
     width: min(26.25rem, calc(100% - 2rem));
     padding: 1.05rem;
