@@ -1275,6 +1275,8 @@ dd {
   opacity: 1;
   transition: opacity 0.3s ease;
   user-select: none;
+  backface-visibility: hidden;
+  will-change: opacity;
 }
 
 .book-page-image.is-changing {

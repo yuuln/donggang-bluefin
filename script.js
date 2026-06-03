@@ -224,6 +224,9 @@ if (
   let lastFocusedElement = null;
   let touchStartX = 0;
   let touchStartY = 0;
+  let pageChangeToken = 0;
+  let hasWarmedPictureBook = false;
+  const preloadedPicturePages = new Map();
 
   const updatePictureBookControls = () => {
     pictureBookPageCount.textContent = `第 ${currentPicturePage + 1} / ${pictureBookPages.length} 頁`;
@@ -231,31 +234,81 @@ if (
     nextPicturePageButton.disabled = currentPicturePage === pictureBookPages.length - 1;
   };
 
-  const showPicturePage = (pageIndex) => {
+  const preloadPicturePage = (pageIndex) => {
+    if (pageIndex < 0 || pageIndex >= pictureBookPages.length) {
+      return Promise.resolve();
+    }
+
+    const page = pictureBookPages[pageIndex];
+    if (preloadedPicturePages.has(page.src)) {
+      return preloadedPicturePages.get(page.src);
+    }
+
+    const image = new Image();
+    image.src = page.src;
+
+    const loadPromise = (image.decode ? image.decode() : new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = reject;
+    })).catch(() => undefined);
+
+    preloadedPicturePages.set(page.src, loadPromise);
+    return loadPromise;
+  };
+
+  const preloadNearbyPicturePages = (pageIndex) => {
+    [pageIndex - 1, pageIndex, pageIndex + 1, pageIndex + 2].forEach((index) => {
+      preloadPicturePage(index);
+    });
+  };
+
+  const warmPictureBookPages = () => {
+    if (hasWarmedPictureBook) return;
+    hasWarmedPictureBook = true;
+    pictureBookPages.forEach((_, index) => {
+      window.setTimeout(() => preloadPicturePage(index), index * 80);
+    });
+  };
+
+  const showPicturePage = async (pageIndex) => {
     const nextPage = Math.max(0, Math.min(pictureBookPages.length - 1, pageIndex));
     if (nextPage === currentPicturePage && pictureBookImage.src.includes(pictureBookPages[nextPage].src)) {
       updatePictureBookControls();
+      preloadNearbyPicturePages(nextPage);
       return;
     }
 
-    currentPicturePage = nextPage;
+    const token = ++pageChangeToken;
+    await preloadPicturePage(nextPage);
+    if (token !== pageChangeToken) return;
+
     pictureBookImage.classList.add("is-changing");
 
     window.setTimeout(() => {
-      const page = pictureBookPages[currentPicturePage];
+      if (token !== pageChangeToken) return;
+
+      currentPicturePage = nextPage;
+      const page = pictureBookPages[nextPage];
       pictureBookImage.src = page.src;
       pictureBookImage.alt = page.alt;
       updatePictureBookControls();
-      window.requestAnimationFrame(() => pictureBookImage.classList.remove("is-changing"));
+      preloadNearbyPicturePages(nextPage);
+      window.requestAnimationFrame(() => {
+        if (token === pageChangeToken) {
+          pictureBookImage.classList.remove("is-changing");
+        }
+      });
     }, 300);
   };
 
   const openPictureBook = () => {
     lastFocusedElement = document.activeElement;
+    warmPictureBookPages();
     pictureBookModal.classList.add("is-open");
     pictureBookModal.setAttribute("aria-hidden", "false");
     document.body.classList.add("reader-open");
     showPicturePage(0);
+    preloadNearbyPicturePages(0);
     closePictureBookButton.focus();
   };
 
@@ -267,6 +320,8 @@ if (
   };
 
   openPictureBookButton.addEventListener("click", openPictureBook);
+  openPictureBookButton.addEventListener("mouseenter", warmPictureBookPages);
+  openPictureBookButton.addEventListener("focus", warmPictureBookPages);
   closePictureBookButton.addEventListener("click", closePictureBook);
   prevPicturePageButton.addEventListener("click", () => showPicturePage(currentPicturePage - 1));
   nextPicturePageButton.addEventListener("click", () => showPicturePage(currentPicturePage + 1));
