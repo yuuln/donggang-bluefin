@@ -1,10 +1,20 @@
 const nav = document.querySelector(".site-nav");
 const navToggle = document.querySelector(".nav-toggle");
 const cursorGlow = document.querySelector(".cursor-glow");
+const intro = document.querySelector("#intro");
+const enterSiteButton = document.querySelector("#enterSite");
+const flashlight = document.querySelector(".flashlight");
+const lifeTimelineSection = document.querySelector("#life-timeline");
+const lifeTimelineNodes = document.querySelectorAll(".life-node[data-video]");
+const timelinePreview = document.querySelector(".timeline-preview");
+const timelinePreviewVideo = document.querySelector("#timelinePreviewVideo");
+const timelinePreviewLabel = document.querySelector("#timelinePreviewLabel");
+const endingSection = document.querySelector("#ending");
 const revealEls = document.querySelectorAll(".reveal");
 const counters = document.querySelectorAll(".counter");
 const auctionCards = document.querySelectorAll(".auction-card");
 const fishParts = document.querySelectorAll(".fish-part");
+const fishModel = document.querySelector(".fish-model");
 const fishInfo = document.querySelector(".fish-info");
 const cultureImage = document.querySelector(".culture-image");
 const filterToggle = document.querySelector(".filter-toggle");
@@ -30,25 +40,55 @@ const fishData = {
     title: "緊實厚重的港邊滋味",
     text: "頭肉肉質較緊實，適合煮湯與燉煮。它保留黑鮪魚更日常的一面，也接近漁港餐桌的生活感。"
   },
+  fishEye: {
+    part: "魚眼",
+    title: "膠質濃厚的老饕部位",
+    text: "魚眼富含膠質，常以清蒸或燉煮呈現。它不是最華麗的部位，卻很能表現港邊料理從頭到尾都不浪費的精神。"
+  },
   jaw: {
     part: "下巴肉",
     title: "油脂豐富的炙烤香氣",
     text: "下巴肉油脂豐富，適合烤、煮湯與炙燒。厚實香氣讓它成為東港料理中很有記憶點的部位。"
+  },
+  pectoralBone: {
+    part: "琵琶骨",
+    title: "稀少又細嫩的隱藏滋味",
+    text: "琵琶骨靠近下巴與胸鰭位置，肉量不多，口感細嫩，常用煎、烤或清蒸呈現，是熟門熟路的人會留意的部位。"
   },
   akami: {
     part: "背肉（赤身）",
     title: "緊實鮮明的魚身主味",
     text: "背肉肉質緊實、鐵質風味鮮明，適合生魚片，是理解黑鮪魚乾淨鮮味的核心部位。"
   },
+  skinFat: {
+    part: "皮油",
+    title: "藏在魚皮下的油脂香氣",
+    text: "皮油位在赤身與魚皮之間，油脂豐富、帶一點筋性，適合生魚片或炙燒，口感比赤身更厚、更有層次。"
+  },
+  fishBone: {
+    part: "魚骨",
+    title: "熬湯最有深度的底味",
+    text: "魚骨適合熬湯，能煮出清甜厚實的鮮味。它讓黑鮪魚不只停留在生魚片，也回到熱湯與餐桌的日常。"
+  },
   chutoro: {
     part: "中腹",
-    title: "油脂均勻的細緻平衡",
-    text: "中腹油脂均勻、口感細緻，適合生食。它介於赤身與大腹之間，呈現黑鮪魚最耐看的平衡感。"
+    title: "油脂與鮮味的漂亮平衡",
+    text: "中腹介於赤身與大腹之間，油脂分布均勻，肉質細緻。它不像大腹那麼濃烈，卻更能吃出黑鮪魚的層次。"
   },
   belly: {
     part: "腹肉（大腹）",
     title: "油脂豐厚的季節記憶",
     text: "油脂最多、口感細密，是頂級生魚片常見部位，也是黑鮪魚市場價值最容易被討論的焦點。"
+  },
+  otoro: {
+    part: "大腹",
+    title: "油脂最豐厚的頂級部位",
+    text: "大腹油花密集、入口柔軟，是黑鮪魚最具代表性的高級部位。它的油脂感強烈，也最能呈現黑鮪魚季的豐盛感。"
+  },
+  lowerBelly: {
+    part: "下腹",
+    title: "油脂集中、口感厚實",
+    text: "下腹靠近腹部後段，油脂仍然豐富，適合生魚片或炙燒。它帶有明顯油香，口感比一般赤身更柔潤。"
   },
   tailBelly: {
     part: "尾腹肉",
@@ -56,15 +96,49 @@ const fishData = {
     text: "尾腹肉油脂豐富、風味集中，常被視為美味且實用的部位，適合多種料理方式。"
   },
   tail: {
-    part: "尾肉",
-    title: "柔嫩尾段與多元料理",
-    text: "尾肉肉質較嫩，適合煎、炒與燉煮。呼應黑鮪魚洄游的速度，也延伸出更家常的料理想像。"
+    part: "魚尾",
+    title: "適合醬燒與乾煎的尾段",
+    text: "魚尾活動量大，肉質較有彈性，適合醬燒、乾煎或燉煮。它把黑鮪魚的力量感留在最後一口。"
   }
 };
 
 const updateNav = () => {
   nav.classList.toggle("scrolled", window.scrollY > 24);
 };
+
+if (intro && enterSiteButton) {
+  document.body.classList.add("intro-active");
+
+  const moveFlashlight = (clientX, clientY) => {
+    intro.style.setProperty("--flash-x", `${clientX}px`);
+    intro.style.setProperty("--flash-y", `${clientY}px`);
+  };
+
+  intro.addEventListener("pointermove", (event) => {
+    if (!flashlight || event.pointerType === "touch") return;
+    moveFlashlight(event.clientX, event.clientY);
+  }, { passive: true });
+
+  intro.addEventListener("touchstart", (event) => {
+    const touch = event.touches[0];
+    if (!touch) return;
+    moveFlashlight(touch.clientX, touch.clientY);
+  }, { passive: true });
+
+  intro.addEventListener("touchmove", (event) => {
+    const touch = event.touches[0];
+    if (!touch) return;
+    moveFlashlight(touch.clientX, touch.clientY);
+  }, { passive: true });
+
+  enterSiteButton.addEventListener("click", () => {
+    intro.classList.add("is-hiding");
+    document.body.classList.remove("intro-active");
+    window.setTimeout(() => {
+      intro.hidden = true;
+    }, 1400);
+  });
+}
 
 const animateCounter = (counter) => {
   const target = Number(counter.dataset.target);
@@ -107,10 +181,113 @@ const revealObserver = new IntersectionObserver(
 
 revealEls.forEach((el) => revealObserver.observe(el));
 
+if (lifeTimelineSection) {
+  const lifeTimelineObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        lifeTimelineSection.classList.add("is-visible");
+        const activeNode = lifeTimelineSection.querySelector(".life-node.active") || lifeTimelineNodes[0];
+        if (activeNode) {
+          updateTimelinePreview(activeNode);
+        }
+        lifeTimelineObserver.unobserve(lifeTimelineSection);
+      });
+    },
+    { threshold: 0.28 }
+  );
+
+  lifeTimelineObserver.observe(lifeTimelineSection);
+}
+
+let activeTimelineVideo = "";
+let timelineSwitchTimer = null;
+
+const updateTimelinePreview = (node) => {
+  if (!node || !timelinePreview || !timelinePreviewVideo || !timelinePreviewLabel) return;
+
+  const nextVideo = node.dataset.video || "";
+  const nextLabel = node.dataset.label || node.querySelector("h3")?.textContent || "";
+
+  lifeTimelineNodes.forEach((item) => {
+    const isActive = item === node;
+    item.classList.toggle("active", isActive);
+    if (isActive) {
+      item.setAttribute("aria-current", "true");
+    } else {
+      item.removeAttribute("aria-current");
+    }
+  });
+  timelinePreview.classList.add("is-active", "is-switching");
+  timelinePreview.classList.remove("has-error");
+  timelinePreviewLabel.textContent = nextLabel;
+
+  window.clearTimeout(timelineSwitchTimer);
+  timelineSwitchTimer = window.setTimeout(() => {
+    timelinePreview.classList.remove("is-switching");
+  }, 360);
+
+  if (!nextVideo || nextVideo === activeTimelineVideo) {
+    timelinePreviewVideo.play().catch(() => undefined);
+    return;
+  }
+
+  activeTimelineVideo = nextVideo;
+  timelinePreviewVideo.classList.remove("has-media");
+  timelinePreviewVideo.pause();
+  timelinePreviewVideo.src = nextVideo;
+  timelinePreviewVideo.load();
+};
+
+if (timelinePreviewVideo && timelinePreview) {
+  timelinePreviewVideo.addEventListener("loadeddata", () => {
+    timelinePreview.classList.remove("has-error");
+    lifeTimelineSection?.classList.add("has-video");
+    timelinePreviewVideo.classList.add("has-media");
+    timelinePreviewVideo.play().catch(() => undefined);
+  });
+
+  timelinePreviewVideo.addEventListener("error", () => {
+    timelinePreview.classList.add("has-error");
+    lifeTimelineSection?.classList.remove("has-video");
+    timelinePreviewVideo.classList.remove("has-media");
+  });
+}
+
+lifeTimelineNodes.forEach((node) => {
+  node.addEventListener("mouseenter", () => updateTimelinePreview(node));
+  node.addEventListener("focus", () => updateTimelinePreview(node));
+  node.addEventListener("click", () => updateTimelinePreview(node));
+  node.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    updateTimelinePreview(node);
+  });
+});
+
+if (lifeTimelineNodes[0]) {
+  updateTimelinePreview(lifeTimelineNodes[0]);
+}
+
+if (endingSection) {
+  const endingObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        endingSection.classList.add("is-visible");
+        endingObserver.unobserve(endingSection);
+      });
+    },
+    { threshold: 0.35 }
+  );
+
+  endingObserver.observe(endingSection);
+}
+
 window.addEventListener("scroll", () => {
   updateNav();
 
-  document.querySelectorAll(".story-scene, .hero, .final-section").forEach((section) => {
+  document.querySelectorAll(".story-scene, .hero").forEach((section) => {
     const rect = section.getBoundingClientRect();
     const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
     const clamped = Math.max(0, Math.min(1, progress));
@@ -165,6 +342,11 @@ auctionCards.forEach((card) => {
 
 fishParts.forEach((part) => {
   part.addEventListener("click", () => {
+    if (part.dataset.dragged === "true") {
+      part.dataset.dragged = "false";
+      return;
+    }
+
     const key = part.dataset.part;
     const data = fishData[key];
     if (!data) return;
@@ -191,6 +373,97 @@ fishParts.forEach((part) => {
     window.setTimeout(updateFishInfo, 180);
   });
 });
+
+const hotspotEditMode = new URLSearchParams(window.location.search).has("editHotspot");
+
+if (hotspotEditMode && fishModel && fishParts.length) {
+  document.body.classList.add("hotspot-edit-mode");
+
+  const panel = document.createElement("aside");
+  panel.className = "hotspot-editor-panel";
+  panel.setAttribute("aria-label", "Hotspot CSS 座標清單");
+
+  const title = document.createElement("strong");
+  title.textContent = "Hotspot edit mode";
+
+  const hint = document.createElement("span");
+  hint.textContent = "拖曳魚身上的光點，複製下方 CSS 座標。";
+
+  const output = document.createElement("pre");
+
+  panel.append(title, hint, output);
+  document.body.append(panel);
+
+  const getHotspotSelector = (part) => {
+    const className = Array.from(part.classList).find((name) => !["fish-part", "hotspot", "active"].includes(name));
+    return className ? `.hotspot.${className}` : ".hotspot";
+  };
+
+  const formatPercent = (value) => {
+    const rounded = Math.round(value * 10) / 10;
+    return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+  };
+
+  const updateHotspotPanel = () => {
+    output.textContent = Array.from(fishParts).map((part) => {
+      const left = Number.parseFloat(part.style.left || getComputedStyle(part).left);
+      const top = Number.parseFloat(part.style.top || getComputedStyle(part).top);
+      const rect = fishModel.getBoundingClientRect();
+      const computedLeft = part.style.left.endsWith("%") ? Number.parseFloat(part.style.left) : (left / rect.width) * 100;
+      const computedTop = part.style.top.endsWith("%") ? Number.parseFloat(part.style.top) : (top / rect.height) * 100;
+
+      return `${getHotspotSelector(part)} { left: ${formatPercent(computedLeft)}%; top: ${formatPercent(computedTop)}%; }`;
+    }).join("\n");
+  };
+
+  const moveHotspot = (part, clientX, clientY) => {
+    const rect = fishModel.getBoundingClientRect();
+    const left = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+    const top = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100));
+
+    part.style.left = `${formatPercent(left)}%`;
+    part.style.top = `${formatPercent(top)}%`;
+    updateHotspotPanel();
+  };
+
+  fishParts.forEach((part) => {
+    part.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      part.dataset.dragStartX = String(event.clientX);
+      part.dataset.dragStartY = String(event.clientY);
+      part.setPointerCapture?.(event.pointerId);
+      part.classList.add("is-editing");
+      moveHotspot(part, event.clientX, event.clientY);
+    });
+
+    part.addEventListener("pointermove", (event) => {
+      if (!part.classList.contains("is-editing")) return;
+
+      const startX = Number(part.dataset.dragStartX || event.clientX);
+      const startY = Number(part.dataset.dragStartY || event.clientY);
+      if (Math.hypot(event.clientX - startX, event.clientY - startY) > 3) {
+        part.dataset.dragged = "true";
+      }
+
+      moveHotspot(part, event.clientX, event.clientY);
+    });
+
+    part.addEventListener("pointerup", (event) => {
+      part.releasePointerCapture?.(event.pointerId);
+      part.classList.remove("is-editing");
+      updateHotspotPanel();
+    });
+
+    part.addEventListener("pointercancel", (event) => {
+      part.releasePointerCapture?.(event.pointerId);
+      part.classList.remove("is-editing");
+      updateHotspotPanel();
+    });
+  });
+
+  window.addEventListener("resize", updateHotspotPanel);
+  updateHotspotPanel();
+}
 
 filterToggle?.addEventListener("click", () => {
   cultureImage.classList.toggle("vintage");

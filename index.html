@@ -17,6 +17,24 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div id="intro" class="intro-overlay" aria-label="東港凌晨四點開場動畫">
+      <div class="intro-sea" aria-hidden="true"></div>
+      <div class="intro-fog fog-a" aria-hidden="true"></div>
+      <div class="intro-fog fog-b" aria-hidden="true"></div>
+      <div class="intro-fog fog-c" aria-hidden="true"></div>
+      <div class="flashlight" aria-hidden="true"></div>
+      <div class="intro-boats" aria-hidden="true">
+        <span class="boat-light boat-a"></span>
+        <span class="boat-light boat-b"></span>
+        <span class="boat-light boat-c"></span>
+      </div>
+      <div class="intro-copy">
+        <p class="intro-line line-one">凌晨四點</p>
+        <p class="intro-line line-two">東港的海還沒醒</p>
+        <p class="intro-line line-three">但漁船回來了</p>
+        <button id="enterSite" class="intro-enter" type="button">跟著漁船回港</button>
+      </div>
+    </div>
     <div class="cursor-glow" aria-hidden="true"></div>
     <nav class="site-nav" aria-label="主要導覽">
       <a class="brand" href="#hero" aria-label="回到首頁">
@@ -28,9 +46,6 @@
         <a href="#culture">關於文化</a>
         <a href="#picture-book">文化繪本</a>
         <a href="#auction">第一鮪</a>
-        <a href="#daily">東港日常</a>
-        <a href="#food">美食探索</a>
-        <a href="#journey">探索東港</a>
       </div>
     </nav>
 
@@ -43,12 +58,12 @@
           <span></span>
         </div>
         <div class="hero-content depth-layer" data-depth="0.08">
-          <p class="eyebrow reveal">Pingtung Donggang Bluefin Heritage</p>
-          <h1 class="reveal">東港黑鮪魚文化</h1>
-          <p class="hero-subtitle reveal">一尾魚，承載一座港口的海洋記憶。</p>
+          <p class="eyebrow reveal">Donggang Bluefin Tuna Heritage</p>
+          <h1 class="reveal">當漁船靠岸時<br />東港的一天才正要開始</h1>
+          <p class="hero-subtitle reveal">從深海到港口，<br />一尾黑鮪魚的旅程，<br />串起漁民、拍賣、市場與港口文化。</p>
           <div class="hero-actions reveal">
-            <a class="button primary" href="#culture">探索文化</a>
-            <a class="button ghost" href="#story">開始旅程</a>
+            <a class="button primary" href="#story">走進東港</a>
+            <a class="button ghost" href="#culture">探索港口故事</a>
           </div>
         </div>
         <a class="scroll-indicator" href="#story" aria-label="向下探索">
@@ -230,12 +245,17 @@
             <div class="fish-model">
               <img src="assets/黑鮪魚剖面透明.png" alt="黑鮪魚剖面無字示意圖" />
               <button class="fish-part hotspot head" data-part="head" type="button" aria-label="頭肉"></button>
+              <button class="fish-part hotspot fish-eye" data-part="fishEye" type="button" aria-label="魚眼"></button>
               <button class="fish-part hotspot jaw" data-part="jaw" type="button" aria-label="下巴肉"></button>
+              <button class="fish-part hotspot pectoral-bone" data-part="pectoralBone" type="button" aria-label="琵琶骨"></button>
               <button class="fish-part hotspot akami active" data-part="akami" type="button" aria-label="背肉赤身"></button>
+              <button class="fish-part hotspot skin-fat" data-part="skinFat" type="button" aria-label="皮油"></button>
+              <button class="fish-part hotspot fish-bone" data-part="fishBone" type="button" aria-label="魚骨"></button>
               <button class="fish-part hotspot chutoro" data-part="chutoro" type="button" aria-label="中腹"></button>
-              <button class="fish-part hotspot belly" data-part="belly" type="button" aria-label="腹肉大腹"></button>
+              <button class="fish-part hotspot otoro" data-part="otoro" type="button" aria-label="大腹"></button>
+              <button class="fish-part hotspot lower-belly" data-part="lowerBelly" type="button" aria-label="下腹"></button>
               <button class="fish-part hotspot tail-belly" data-part="tailBelly" type="button" aria-label="尾腹肉"></button>
-              <button class="fish-part hotspot tail" data-part="tail" type="button" aria-label="尾肉"></button>
+              <button class="fish-part hotspot tail" data-part="tail" type="button" aria-label="魚尾"></button>
             </div>
           </div>
           <aside class="fish-info">
@@ -246,49 +266,83 @@
         </div>
       </section>
 
-      <section id="daily" class="timeline-section section-pad">
+      <section id="life-timeline" class="life-timeline-section section-pad">
         <div class="section-heading reveal">
-          <p class="eyebrow">Donggang Daily Timeline</p>
-          <h2>東港的一天</h2>
-          <p>像紀錄片的時間軸，沿著港口的日常向前移動。</p>
+          <p class="eyebrow">Bluefin Life Timeline</p>
+          <h2>一尾黑鮪魚的一生</h2>
+          <p>從海洋到餐桌，牠的旅程也串起了東港的生活與文化。</p>
         </div>
-        <div class="timeline-track reveal">
-          <article><time>06:00</time><h3>漁船返港</h3><p>海面轉亮，返港的船帶回深海消息。</p></article>
-          <article><time>09:00</time><h3>魚市場拍賣</h3><p>秤重、喊價、簽單，速度與默契構成市場節奏。</p></article>
-          <article><time>12:00</time><h3>華僑市場午餐</h3><p>料理把海上的勞動，轉化成餐桌上的記憶。</p></article>
-          <article><time>15:00</time><h3>東隆宮參訪</h3><p>港口信仰讓海洋生活有了精神座標。</p></article>
-          <article><time>18:00</time><h3>港邊夕陽</h3><p>一天收束，船影與霞光在水面慢慢重疊。</p></article>
+        <div class="timeline-preview is-active" aria-hidden="true">
+          <video id="timelinePreviewVideo" muted loop playsinline preload="metadata" src="assets/timeline/ocean.mp4"></video>
+          <div class="timeline-preview-fallback"></div>
+          <div class="timeline-preview-overlay"></div>
+          <p id="timelinePreviewLabel">海洋</p>
+        </div>
+        <div class="life-timeline reveal" aria-label="一尾黑鮪魚的一生時間軸">
+          <article class="life-node active" tabindex="0" role="button" aria-current="true" data-video="assets/timeline/ocean.mp4" data-label="海洋">
+            <span class="life-dot" aria-hidden="true">01</span>
+            <h3>海洋</h3>
+            <p>黑鮪魚隨黑潮洄游，從深海開始牠的旅程。</p>
+          </article>
+          <article class="life-node" tabindex="0" role="button" data-video="assets/timeline/fishing.mp4" data-label="漁船捕撈">
+            <span class="life-dot" aria-hidden="true">02</span>
+            <h3>漁船捕撈</h3>
+            <p>漁民在凌晨出海，憑經驗與技術迎接魚汛。</p>
+          </article>
+          <article class="life-node" tabindex="0" role="button" data-video="assets/timeline/harbor.mp4" data-label="進港">
+            <span class="life-dot" aria-hidden="true">03</span>
+            <h3>進港</h3>
+            <p>漁船返航，魚市場與港口開始甦醒。</p>
+          </article>
+          <article class="life-node" tabindex="0" role="button" data-video="assets/timeline/inspection.mp4" data-label="驗魚">
+            <span class="life-dot" aria-hidden="true">04</span>
+            <h3>驗魚</h3>
+            <p>透過魚眼、魚身、尾切面判斷新鮮度與油脂。</p>
+          </article>
+          <article class="life-node" tabindex="0" role="button" data-video="assets/timeline/auction.mp4" data-label="拍賣">
+            <span class="life-dot" aria-hidden="true">05</span>
+            <h3>拍賣</h3>
+            <p>喊價聲響起，第一鮪成為市場與地方的焦點。</p>
+          </article>
+          <article class="life-node" tabindex="0" role="button" data-video="assets/timeline/cutting.mp4" data-label="分切">
+            <span class="life-dot" aria-hidden="true">06</span>
+            <h3>分切</h3>
+            <p>魚體被分成不同部位，連結料理與市場價值。</p>
+          </article>
+          <article class="life-node" tabindex="0" role="button" data-video="assets/timeline/table.mp4" data-label="餐桌">
+            <span class="life-dot" aria-hidden="true">07</span>
+            <h3>餐桌</h3>
+            <p>從生魚片到熱炒，黑鮪魚進入人們的日常記憶。</p>
+          </article>
+          <article class="life-node" tabindex="0" role="button" data-video="assets/timeline/festival.mp4" data-label="文化祭典">
+            <span class="life-dot" aria-hidden="true">08</span>
+            <h3>文化祭典</h3>
+            <p>黑鮪魚不只是漁獲，也是東港被看見的文化象徵。</p>
+          </article>
         </div>
       </section>
 
-      <section id="food" class="food-section section-pad">
-        <div class="section-heading reveal">
-          <p class="eyebrow">Bluefin Cuisine Gallery</p>
-          <h2>美食探索</h2>
-          <p>黑鮪魚料理不是炫耀式的昂貴，而是漁港、季節與職人手感的延伸。</p>
-        </div>
-        <div class="masonry reveal">
-          <article class="food-card tall"><img src="assets/bluefin-cuisine.png" alt="黑鮪魚生魚片與握壽司" /><span>黑鮪魚生魚片</span></article>
-          <article class="food-card"><img src="assets/bluefin-cuisine.png" alt="黑鮪魚握壽司" /><span>握壽司</span></article>
-          <article class="food-card wide"><img src="assets/bluefin-cuisine.png" alt="炙燒黑鮪魚料理" /><span>炙燒料理</span></article>
-          <article class="food-card"><img src="assets/bluefin-cuisine.png" alt="黑鮪魚腹肉" /><span>腹肉</span></article>
-          <article class="food-card tall"><img src="assets/bluefin-cuisine.png" alt="黑鮪魚下巴料理" /><span>下巴</span></article>
-          <article class="food-card"><img src="assets/bluefin-cuisine.png" alt="黑鮪魚味噌湯" /><span>味噌湯</span></article>
-        </div>
-      </section>
-
-      <section id="journey" class="final-section depth-scene">
-        <div class="final-bg depth-layer" data-depth="0.12"></div>
-        <div class="final-content reveal">
-          <p class="giant-word">黑鮪魚。</p>
-          <h2>不只是美食。</h2>
-          <p>是東港與海共生的文化。</p>
-          <div class="hero-actions">
-            <a class="button primary" href="#culture">探索東港</a>
-            <a class="button ghost" href="#daily">規劃旅程</a>
+      <section id="ending" class="ending-section" aria-label="東港黑鮪魚文化旅程結尾">
+        <div class="ending-sea" aria-hidden="true"></div>
+        <div class="ending-fog fog-one" aria-hidden="true"></div>
+        <div class="ending-fog fog-two" aria-hidden="true"></div>
+        <span class="ending-boat-light" aria-hidden="true"></span>
+        <div class="ending-content">
+          <p class="ending-line ending-line-one">東港的一天結束了</p>
+          <p class="ending-line ending-line-two">而海</p>
+          <p class="ending-line ending-line-three">依然在等待下一艘船回家</p>
+          <p class="ending-line ending-line-four">謝謝你陪伴這趟旅程</p>
+          <div class="ending-line ending-signature">
+            <strong>東港黑鮪魚文化</strong>
+            <span>Donggang Bluefin Tuna Heritage</span>
+          </div>
+          <div class="ending-actions ending-line">
+            <a href="#hero">回到開頭</a>
+            <a href="#story">再看一次旅程</a>
           </div>
         </div>
       </section>
+
     </main>
 
     <div id="pictureBookModal" class="picture-book-modal" role="dialog" aria-modal="true" aria-labelledby="pictureBookTitle" aria-hidden="true">
@@ -308,12 +362,7 @@
 
     <footer class="site-footer">
       <p>東港黑鮪魚文化 · 屏東東港</p>
-      <div class="socials" aria-label="社群連結">
-        <a href="#" aria-label="Instagram">IG</a>
-        <a href="#" aria-label="Facebook">FB</a>
-        <a href="#" aria-label="YouTube">YT</a>
-      </div>
-      <p>Designed for cultural storytelling.</p>
+      <p>Designed for ylinnn.</p>
     </footer>
 
     <script src="script.js"></script>
