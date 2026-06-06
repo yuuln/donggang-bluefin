@@ -668,9 +668,9 @@ h3 {
   height: 18rem;
   pointer-events: none;
   content: "";
-  background: linear-gradient(90deg, transparent, rgba(216, 230, 235, 0.07), transparent);
-  filter: blur(28px);
-  opacity: 0.5;
+  background: radial-gradient(ellipse at 50% 50%, rgba(216, 230, 235, 0.055), transparent 68%);
+  filter: blur(34px);
+  opacity: 0.28;
 }
 
 .story-scene {
@@ -720,8 +720,8 @@ h3 {
 
 .scene-migration {
   background:
-    radial-gradient(circle at 68% 42%, rgba(20, 92, 135, 0.26), transparent 30rem),
-    linear-gradient(180deg, rgba(13, 43, 64, 0.38), rgba(8, 32, 52, 0.56));
+    radial-gradient(circle at 58% 46%, rgba(20, 92, 135, 0.18), transparent 34rem),
+    radial-gradient(ellipse at 28% 68%, rgba(6, 24, 38, 0.16), transparent 30rem);
 }
 
 .story-copy {
@@ -786,10 +786,18 @@ h3 {
   width: min(60rem, 92vw);
   height: min(34rem, 58vw);
   opacity: 0.9;
-  background:
-    linear-gradient(90deg, rgba(6, 24, 38, 0.18), rgba(6, 24, 38, 0) 45%, rgba(6, 24, 38, 0.18)),
-    url("assets/黑鮪魚洄游.png") center / contain no-repeat;
+  background: url("assets/黑鮪魚洄游去背.png") center / contain no-repeat;
   filter: saturate(1.04) contrast(1.08) brightness(1.08) drop-shadow(0 2.2rem 3rem rgba(0, 0, 0, 0.42));
+}
+
+.tuna-silhouette::before {
+  position: absolute;
+  inset: 12% 8%;
+  z-index: -1;
+  content: "";
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(35, 111, 145, 0.16), transparent 68%);
+  filter: blur(1.4rem);
 }
 
 .auction-section {
