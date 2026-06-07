@@ -16,6 +16,7 @@ const auctionCards = document.querySelectorAll(".auction-card");
 const fishParts = document.querySelectorAll(".fish-part");
 const fishModel = document.querySelector(".fish-model");
 const fishInfo = document.querySelector(".fish-info");
+const fishMethods = document.querySelector("#fishMethods");
 const cultureImage = document.querySelector(".culture-image");
 const filterToggle = document.querySelector(".filter-toggle");
 const auctionSimulator = document.querySelector(".auction-simulator");
@@ -37,64 +38,75 @@ const pictureBookPageCount = document.querySelector("#pictureBookPageCount");
 const fishData = {
   head: {
     part: "頭肉",
-    title: "緊實厚重的港邊滋味",
-    text: "頭肉肉質較緊實，適合煮湯與燉煮。它保留黑鮪魚更日常的一面，也接近漁港餐桌的生活感。"
+    text: "頭肉肉質較緊實，適合煮湯與燉煮。它保留黑鮪魚更日常的一面，也接近漁港餐桌的生活感。",
+    methods: ["煮湯", "燉煮"]
   },
   fishEye: {
     part: "魚眼",
-    title: "膠質濃厚的老饕部位",
-    text: "魚眼富含膠質，常以清蒸或燉煮呈現。它不是最華麗的部位，卻很能表現港邊料理從頭到尾都不浪費的精神。"
+    text: "魚眼富含膠質，常以清蒸或燉煮呈現。它不是最華麗的部位，卻很能表現港邊料理從頭到尾都不浪費的精神。",
+    methods: ["清蒸", "燉煮"]
   },
   jaw: {
     part: "下巴肉",
-    title: "油脂豐富的炙烤香氣",
-    text: "下巴肉油脂豐富，適合烤、煮湯與炙燒。厚實香氣讓它成為東港料理中很有記憶點的部位。"
+    text: "下巴肉油脂豐富，適合烤、煮湯與炙燒。厚實香氣讓它成為東港料理中很有記憶點的部位。",
+    methods: ["烤", "煮湯", "炙燒"]
   },
   pectoralBone: {
     part: "琵琶骨",
-    title: "稀少又細嫩的隱藏滋味",
-    text: "琵琶骨靠近下巴與胸鰭位置，肉量不多，口感細嫩，常用煎、烤或清蒸呈現，是熟門熟路的人會留意的部位。"
+    text: "琵琶骨靠近下巴與胸鰭位置，肉量不多，口感細嫩，常用煎、烤或清蒸呈現，是熟門熟路的人會留意的部位。",
+    methods: ["煎", "烤", "清蒸"]
   },
   akami: {
     part: "背肉（赤身）",
-    title: "緊實鮮明的魚身主味",
-    text: "背肉肉質緊實、鐵質風味鮮明，適合生魚片，是理解黑鮪魚乾淨鮮味的核心部位。"
+    text: "背肉肉質緊實、鐵質風味鮮明，適合生魚片，是理解黑鮪魚乾淨鮮味的核心部位。",
+    methods: ["生魚片"]
   },
   skinFat: {
     part: "皮油",
-    title: "藏在魚皮下的油脂香氣",
-    text: "皮油位在赤身與魚皮之間，油脂豐富、帶一點筋性，適合生魚片或炙燒，口感比赤身更厚、更有層次。"
+    text: "皮油位在赤身與魚皮之間，油脂豐富、帶一點筋性，適合生魚片或炙燒，口感比赤身更厚、更有層次。",
+    methods: ["生魚片", "炙燒"]
   },
   fishBone: {
     part: "魚骨",
-    title: "熬湯最有深度的底味",
-    text: "魚骨適合熬湯，能煮出清甜厚實的鮮味。它讓黑鮪魚不只停留在生魚片，也回到熱湯與餐桌的日常。"
+    text: "魚骨適合熬湯，能煮出清甜厚實的鮮味。它讓黑鮪魚不只停留在生魚片，也回到熱湯與餐桌的日常。",
+    methods: ["熬湯"]
   },
   chutoro: {
     part: "中腹",
-    title: "油脂與鮮味的漂亮平衡",
-    text: "中腹介於赤身與大腹之間，油脂分布均勻，肉質細緻。它不像大腹那麼濃烈，卻更能吃出黑鮪魚的層次。"
+    text: "中腹介於赤身與大腹之間，油脂分布均勻，肉質細緻。它不像大腹那麼濃烈，卻更能吃出黑鮪魚的層次。",
+    methods: ["生魚片", "炙燒"]
   },
   belly: {
     part: "腹肉（大腹）",
-    title: "油脂豐厚的季節記憶",
-    text: "油脂最多、口感細密，是頂級生魚片常見部位，也是黑鮪魚市場價值最容易被討論的焦點。"
+    text: "油脂最多、口感細密，是頂級生魚片常見部位，也是黑鮪魚市場價值最容易被討論的焦點。",
+    methods: ["生魚片"]
   },
   otoro: {
     part: "大腹",
-    title: "油脂最豐厚的頂級部位",
-    text: "大腹油花密集、入口柔軟，是黑鮪魚最具代表性的高級部位。它的油脂感強烈，也最能呈現黑鮪魚季的豐盛感。"
+    text: "大腹油花密集、入口柔軟，是黑鮪魚最具代表性的高級部位。它的油脂感強烈，也最能呈現黑鮪魚季的豐盛感。",
+    methods: ["生魚片"]
   },
   lowerBelly: {
     part: "下腹",
-    title: "油脂集中、口感厚實",
-    text: "下腹靠近腹部後段，油脂仍然豐富，適合生魚片或炙燒。它帶有明顯油香，口感比一般赤身更柔潤。"
+    text: "下腹靠近腹部後段，油脂仍然豐富，適合生魚片或炙燒。它帶有明顯油香，口感比一般赤身更柔潤。",
+    methods: ["生魚片", "炙燒"]
   },
   tail: {
     part: "魚尾",
-    title: "適合醬燒與乾煎的尾段",
-    text: "魚尾活動量大，肉質較有彈性，適合醬燒、乾煎或燉煮。它把黑鮪魚的力量感留在最後一口。"
+    text: "魚尾活動量大，肉質較有彈性，適合醬燒、乾煎或燉煮。它把黑鮪魚的力量感留在最後一口。",
+    methods: ["乾煎", "醬燒", "燉煮"]
   }
+};
+
+const renderFishMethods = (methods = []) => {
+  if (!fishMethods) return;
+
+  fishMethods.replaceChildren();
+  methods.forEach((method) => {
+    const pill = document.createElement("span");
+    pill.textContent = method;
+    fishMethods.append(pill);
+  });
 };
 
 const updateNav = () => {
@@ -176,33 +188,36 @@ const revealObserver = new IntersectionObserver(
 
 revealEls.forEach((el) => revealObserver.observe(el));
 
-if (lifeTimelineSection) {
-  const lifeTimelineObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        lifeTimelineSection.classList.add("is-visible");
-        const activeNode = lifeTimelineSection.querySelector(".life-node.active") || lifeTimelineNodes[0];
-        if (activeNode) {
-          updateTimelinePreview(activeNode);
-        }
-        lifeTimelineObserver.unobserve(lifeTimelineSection);
-      });
-    },
-    { threshold: 0.28 }
-  );
-
-  lifeTimelineObserver.observe(lifeTimelineSection);
-}
-
 let activeTimelineVideo = "";
 let timelineSwitchTimer = null;
+let timelineAutoplayTimer = null;
+let timelineResumeTimer = null;
+let activeTimelineIndex = 0;
+let isTimelineInView = false;
+let isTimelineAutoplayPaused = false;
+
+const timelineAutoplayDelay = 5000;
+const timelineResumeDelay = 10000;
+
+const playTimelinePreview = () => {
+  if (!timelinePreviewVideo) return;
+  if (!isTimelineInView) return;
+
+  timelinePreviewVideo.muted = false;
+  timelinePreviewVideo.volume = 0.72;
+  timelinePreviewVideo.play().catch(() => undefined);
+};
 
 const updateTimelinePreview = (node) => {
   if (!node || !timelinePreview || !timelinePreviewVideo || !timelinePreviewLabel) return;
 
   const nextVideo = node.dataset.video || "";
   const nextLabel = node.dataset.label || node.querySelector("h3")?.textContent || "";
+  const nodeIndex = Array.from(lifeTimelineNodes).indexOf(node);
+
+  if (nodeIndex >= 0) {
+    activeTimelineIndex = nodeIndex;
+  }
 
   lifeTimelineNodes.forEach((item) => {
     const isActive = item === node;
@@ -220,26 +235,90 @@ const updateTimelinePreview = (node) => {
   window.clearTimeout(timelineSwitchTimer);
   timelineSwitchTimer = window.setTimeout(() => {
     timelinePreview.classList.remove("is-switching");
-  }, 360);
+  }, 620);
 
   if (!nextVideo || nextVideo === activeTimelineVideo) {
-    timelinePreviewVideo.play().catch(() => undefined);
+    playTimelinePreview();
     return;
   }
 
   activeTimelineVideo = nextVideo;
   timelinePreviewVideo.classList.remove("has-media");
   timelinePreviewVideo.pause();
+  timelinePreviewVideo.muted = false;
+  timelinePreviewVideo.volume = 0.72;
   timelinePreviewVideo.src = nextVideo;
   timelinePreviewVideo.load();
 };
 
+const getTimelineNode = (index) => {
+  if (!lifeTimelineNodes.length) return null;
+  return lifeTimelineNodes[index % lifeTimelineNodes.length];
+};
+
+const stopTimelineAutoplay = () => {
+  window.clearInterval(timelineAutoplayTimer);
+  timelineAutoplayTimer = null;
+  window.clearTimeout(timelineResumeTimer);
+  timelineResumeTimer = null;
+  timelinePreviewVideo?.pause();
+};
+
+const startTimelineAutoplay = () => {
+  if (!lifeTimelineSection || !lifeTimelineNodes.length || timelineAutoplayTimer) return;
+
+  isTimelineAutoplayPaused = false;
+  const activeNode = getTimelineNode(activeTimelineIndex) || lifeTimelineNodes[0];
+  updateTimelinePreview(activeNode);
+
+  timelineAutoplayTimer = window.setInterval(() => {
+    activeTimelineIndex = (activeTimelineIndex + 1) % lifeTimelineNodes.length;
+    updateTimelinePreview(getTimelineNode(activeTimelineIndex));
+  }, timelineAutoplayDelay);
+};
+
+const resumeTimelineAutoplay = () => {
+  if (!isTimelineInView || !lifeTimelineNodes.length) return;
+
+  window.clearInterval(timelineAutoplayTimer);
+  timelineAutoplayTimer = null;
+  window.clearTimeout(timelineResumeTimer);
+  timelineResumeTimer = null;
+  isTimelineAutoplayPaused = false;
+  updateTimelinePreview(getTimelineNode(activeTimelineIndex));
+  timelineAutoplayTimer = window.setInterval(() => {
+    activeTimelineIndex = (activeTimelineIndex + 1) % lifeTimelineNodes.length;
+    updateTimelinePreview(getTimelineNode(activeTimelineIndex));
+  }, timelineAutoplayDelay);
+};
+
+const pauseTimelineAutoplay = () => {
+  if (!lifeTimelineNodes.length) return;
+
+  window.clearInterval(timelineAutoplayTimer);
+  timelineAutoplayTimer = null;
+  window.clearTimeout(timelineResumeTimer);
+  timelineResumeTimer = null;
+  isTimelineAutoplayPaused = true;
+
+  if (!isTimelineInView) return;
+
+  timelineResumeTimer = window.setTimeout(() => {
+    if (isTimelineAutoplayPaused) {
+      resumeTimelineAutoplay();
+    }
+  }, timelineResumeDelay);
+};
+
 if (timelinePreviewVideo && timelinePreview) {
+  timelinePreviewVideo.muted = false;
+  timelinePreviewVideo.volume = 0.72;
+
   timelinePreviewVideo.addEventListener("loadeddata", () => {
     timelinePreview.classList.remove("has-error");
     lifeTimelineSection?.classList.add("has-video");
     timelinePreviewVideo.classList.add("has-media");
-    timelinePreviewVideo.play().catch(() => undefined);
+    playTimelinePreview();
   });
 
   timelinePreviewVideo.addEventListener("error", () => {
@@ -249,14 +328,42 @@ if (timelinePreviewVideo && timelinePreview) {
   });
 }
 
+if (lifeTimelineSection && lifeTimelineNodes.length) {
+  const lifeTimelineObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          isTimelineInView = true;
+          isTimelineAutoplayPaused = false;
+          lifeTimelineSection.classList.add("is-visible");
+          startTimelineAutoplay();
+          return;
+        }
+
+        isTimelineInView = false;
+        isTimelineAutoplayPaused = false;
+        stopTimelineAutoplay();
+      });
+    },
+    { threshold: 0.28 }
+  );
+
+  lifeTimelineObserver.observe(lifeTimelineSection);
+}
+
 lifeTimelineNodes.forEach((node) => {
-  node.addEventListener("mouseenter", () => updateTimelinePreview(node));
-  node.addEventListener("focus", () => updateTimelinePreview(node));
-  node.addEventListener("click", () => updateTimelinePreview(node));
+  const handleTimelineUserSelect = () => {
+    pauseTimelineAutoplay();
+    updateTimelinePreview(node);
+  };
+
+  node.addEventListener("mouseenter", handleTimelineUserSelect);
+  node.addEventListener("focus", handleTimelineUserSelect);
+  node.addEventListener("click", handleTimelineUserSelect);
   node.addEventListener("keydown", (event) => {
     if (event.key !== "Enter" && event.key !== " ") return;
     event.preventDefault();
-    updateTimelinePreview(node);
+    handleTimelineUserSelect();
   });
 });
 
@@ -351,8 +458,8 @@ fishParts.forEach((part) => {
 
     const updateFishInfo = () => {
       document.querySelector("#fishPart").textContent = data.part;
-      document.querySelector("#fishTitle").textContent = data.title;
       document.querySelector("#fishText").textContent = data.text;
+      renderFishMethods(data.methods);
       fishInfo?.classList.remove("is-changing");
       fishInfo?.classList.add("is-settled");
       window.setTimeout(() => fishInfo?.classList.remove("is-settled"), 460);

@@ -75,7 +75,6 @@
       <section id="story" class="story-section">
         <div class="story-scene scene-sail depth-scene">
           <div class="story-copy reveal">
-            <p class="scene-number">Scene 01</p>
             <h2>凌晨出海</h2>
             <p>凌晨三點。<br />東港還未甦醒。<br />漁船已駛向深海。</p>
           </div>
@@ -84,7 +83,6 @@
         <div class="story-scene scene-migration depth-scene">
           <div class="tuna-silhouette depth-layer" data-depth="0.22" aria-hidden="true"></div>
           <div class="story-copy right reveal">
-            <p class="scene-number">Scene 02</p>
             <h2>黑鮪魚洄游</h2>
             <p>每年春夏。<br />黑鮪魚穿越南方海域。<br />對東港而言，這是一年的開始。</p>
           </div>
@@ -93,7 +91,6 @@
 
       <section id="auction" class="auction-section section-pad">
         <div class="section-heading reveal">
-          <p class="eyebrow">First Bluefin Auction</p>
           <h2>第一鮪拍賣</h2>
           <p>
             第一鮪是季節、技術與港口聲望的公開儀式<br />每一次落槌，都讓東港的海洋記憶被重新說起。
@@ -134,7 +131,6 @@
             </article>
           </div>
           <aside class="museum-panel reveal" aria-live="polite">
-            <p class="panel-kicker">Museum Record</p>
             <h3 id="auctionYear">2025</h3>
             <dl>
               <div><dt>重量</dt><dd id="auctionWeight">613kg</dd></div>
@@ -241,6 +237,24 @@
           <p>點擊魚體部位，理解料理特色與市場價值。</p>
         </div>
         <div class="fish-lab reveal">
+          <svg class="fish-connector" aria-hidden="true">
+            <defs>
+              <linearGradient id="fishConnectorGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="rgba(255, 217, 133, 0.08)" />
+                <stop offset="48%" stop-color="rgba(255, 217, 133, 0.76)" />
+                <stop offset="100%" stop-color="rgba(200, 154, 61, 0.92)" />
+              </linearGradient>
+              <filter id="fishConnectorGlow" x="-20%" y="-80%" width="140%" height="260%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <path id="fishConnectorPath" class="fish-connector-path" />
+            <circle id="fishConnectorDot" class="fish-connector-dot" r="4" />
+          </svg>
           <div class="fish-wrap" aria-label="黑鮪魚部位互動圖">
             <div class="fish-model">
               <img src="assets/黑鮪魚剖面去背.png" alt="黑鮪魚剖面無字示意圖" />
@@ -258,8 +272,12 @@
             </div>
           </div>
           <aside class="fish-info">
-            <p class="panel-kicker" id="fishPart">背肉（赤身）</p>
-            <h3 id="fishTitle">緊實鮮明的魚身主味</h3>
+            <div class="fish-info-title-row">
+              <h3 id="fishPart">背肉（赤身）</h3>
+              <div id="fishMethods" class="fish-method-tags" aria-label="料理方式">
+                <span>生魚片</span>
+              </div>
+            </div>
             <p id="fishText">背肉肉質緊實、鐵質風味鮮明，適合生魚片，是理解黑鮪魚乾淨鮮味的核心部位。</p>
           </aside>
         </div>
@@ -272,7 +290,7 @@
           <p>從海洋到餐桌，牠的旅程也串起了東港的生活與文化。</p>
         </div>
         <div class="timeline-preview is-active" aria-hidden="true">
-          <video id="timelinePreviewVideo" muted loop playsinline preload="metadata" src="assets/timeline/ocean.mp4"></video>
+          <video id="timelinePreviewVideo" class="timeline-preview-video" loop playsinline preload="metadata" src="assets/timeline/ocean.mp4"></video>
           <div class="timeline-preview-fallback"></div>
           <div class="timeline-preview-overlay"></div>
           <p id="timelinePreviewLabel">海洋</p>
