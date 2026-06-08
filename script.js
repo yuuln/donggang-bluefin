@@ -34,6 +34,17 @@ const prevPicturePageButton = document.querySelector("#prevPicturePage");
 const nextPicturePageButton = document.querySelector("#nextPicturePage");
 const pictureBookImage = document.querySelector("#pictureBookImage");
 const pictureBookPageCount = document.querySelector("#pictureBookPageCount");
+const snapSections = Array.from(document.querySelectorAll(".hero, .scene-sail, .scene-migration, #auction, #culture, #picture-book, .fish-section, #life-timeline, #ending"));
+const freeScrollSelectors = ".auction-section, .fish-section, .picture-book-section";
+
+if ("scrollRestoration" in window.history) {
+  window.history.scrollRestoration = "manual";
+}
+
+window.scrollTo(0, 0);
+window.addEventListener("load", () => {
+  window.scrollTo(0, 0);
+});
 
 const fishData = {
   head: {
@@ -43,17 +54,17 @@ const fishData = {
   },
   fishEye: {
     part: "魚眼",
-    text: "魚眼富含膠質，常以清蒸或燉煮呈現。它不是最華麗的部位，卻很能表現港邊料理從頭到尾都不浪費的精神。",
+    text: "魚眼富含膠質，最常拿來清蒸燉煮。它不是最華麗的部位，卻很能表現港邊料理從頭到尾都不浪費的精神。",
     methods: ["清蒸", "燉煮"]
   },
   jaw: {
     part: "下巴肉",
-    text: "下巴肉油脂豐富，適合烤、煮湯與炙燒。厚實香氣讓它成為東港料理中很有記憶點的部位。",
+    text: "下巴肉油脂豐富，厚實香氣讓它成為黑鮪魚中很有記憶點的部位。",
     methods: ["烤", "煮湯", "炙燒"]
   },
   pectoralBone: {
     part: "琵琶骨",
-    text: "琵琶骨靠近下巴與胸鰭位置，肉量不多，口感細嫩，常用煎、烤或清蒸呈現，是熟門熟路的人會留意的部位。",
+    text: "琵琶骨靠近下巴與胸鰭位置，肉量不多、每條魚僅能取得兩片，口感細嫩，是熟門熟路的人會留意的部位。",
     methods: ["煎", "烤", "清蒸"]
   },
   akami: {
@@ -63,17 +74,17 @@ const fishData = {
   },
   skinFat: {
     part: "皮油",
-    text: "皮油位在赤身與魚皮之間，油脂豐富、帶一點筋性，適合生魚片或炙燒，口感比赤身更厚、更有層次。",
+    text: "皮油位在赤身與魚皮之間，油脂豐富、帶一點筋性口，感比赤身更厚、更有層次。",
     methods: ["生魚片", "炙燒"]
   },
   fishBone: {
     part: "魚骨",
-    text: "魚骨適合熬湯，能煮出清甜厚實的鮮味。它讓黑鮪魚不只停留在生魚片，也回到熱湯與餐桌的日常。",
+    text: "魚骨適合熬湯，能煮出清甜厚實的鮮味，它讓黑鮪魚不只停留在生魚片，也回到熱湯與餐桌的日常。",
     methods: ["熬湯"]
   },
   chutoro: {
     part: "中腹",
-    text: "中腹介於赤身與大腹之間，油脂分布均勻，肉質細緻。它不像大腹那麼濃烈，卻更能吃出黑鮪魚的層次。",
+    text: "中腹介於赤身與大腹之間，油脂分布均勻，口感軟中帶綿。它不像大腹那麼濃烈，卻更能吃出黑鮪魚的層次。",
     methods: ["生魚片", "炙燒"]
   },
   belly: {
@@ -88,12 +99,12 @@ const fishData = {
   },
   lowerBelly: {
     part: "下腹",
-    text: "下腹靠近腹部後段，油脂仍然豐富，適合生魚片或炙燒。它帶有明顯油香，口感比一般赤身更柔潤。",
+    text: "下腹靠近腹部後段，油脂仍然豐富，它帶有明顯油香，口感比一般赤身更柔潤。",
     methods: ["生魚片", "炙燒"]
   },
   tail: {
     part: "魚尾",
-    text: "魚尾活動量大，肉質較有彈性，適合醬燒、乾煎或燉煮。它把黑鮪魚的力量感留在最後一口。",
+    text: "魚尾活動量大，肉質較有彈性，它把黑鮪魚的力量感留在最後一口。",
     methods: ["乾煎", "醬燒", "燉煮"]
   }
 };
@@ -139,6 +150,7 @@ if (intro && enterSiteButton) {
   }, { passive: true });
 
   enterSiteButton.addEventListener("click", () => {
+    window.scrollTo(0, 0);
     intro.classList.add("is-hiding");
     document.body.classList.remove("intro-active");
     window.setTimeout(() => {
@@ -396,6 +408,99 @@ window.addEventListener("scroll", () => {
     section.style.setProperty("--scroll", clamped.toFixed(3));
   });
 }, { passive: true });
+
+let snapWheelLocked = false;
+let snapWheelDelta = 0;
+let snapWheelResetTimer = null;
+let snapWheelUnlockTimer = null;
+
+const getSnapIndex = (section) => {
+  if (!section) return -1;
+  return snapSections.indexOf(section);
+};
+
+const getNearestSnapIndex = () => {
+  if (!snapSections.length) return -1;
+
+  return snapSections.reduce((nearestIndex, section, index) => {
+    const nearestDistance = Math.abs(snapSections[nearestIndex].getBoundingClientRect().top);
+    const distance = Math.abs(section.getBoundingClientRect().top);
+    return distance < nearestDistance ? index : nearestIndex;
+  }, 0);
+};
+
+const getCurrentFreeScrollSection = () => {
+  return Array.from(document.querySelectorAll(freeScrollSelectors)).find((section) => {
+    const rect = section.getBoundingClientRect();
+    return rect.top < window.innerHeight * 0.45 && rect.bottom > window.innerHeight * 0.55;
+  });
+};
+
+const canScrollInsideFreeSection = (section, direction) => {
+  if (!section) return false;
+
+  const rect = section.getBoundingClientRect();
+  const tolerance = 18;
+
+  if (direction > 0) {
+    return rect.bottom > window.innerHeight + tolerance;
+  }
+
+  return rect.top < -tolerance;
+};
+
+const shouldSkipSnapWheel = (event) => {
+  const eventTarget = event.target instanceof Element ? event.target : null;
+
+  if (!snapSections.length) return true;
+  if (window.matchMedia("(max-width: 768px)").matches) return true;
+  if (event.ctrlKey || event.metaKey || event.shiftKey) return true;
+  if (document.body.classList.contains("intro-active")) return true;
+  if (document.body.classList.contains("menu-open")) return true;
+  if (document.body.classList.contains("reader-open")) return true;
+  if (eventTarget?.closest(".picture-book-modal, .auction-simulator.is-open")) return true;
+
+  return false;
+};
+
+window.addEventListener("wheel", (event) => {
+  if (shouldSkipSnapWheel(event)) return;
+
+  const direction = event.deltaY > 0 ? 1 : -1;
+  const freeSection = getCurrentFreeScrollSection();
+
+  if (canScrollInsideFreeSection(freeSection, direction)) {
+    return;
+  }
+
+  event.preventDefault();
+  if (snapWheelLocked) return;
+
+  snapWheelDelta += event.deltaY;
+  window.clearTimeout(snapWheelResetTimer);
+  snapWheelResetTimer = window.setTimeout(() => {
+    snapWheelDelta = 0;
+  }, 160);
+
+  if (Math.abs(snapWheelDelta) < 58) return;
+
+  const currentIndex = freeSection ? getSnapIndex(freeSection) : getNearestSnapIndex();
+  if (currentIndex < 0) return;
+
+  const nextIndex = Math.max(0, Math.min(snapSections.length - 1, currentIndex + direction));
+  const nextSection = snapSections[nextIndex];
+
+  snapWheelDelta = 0;
+  if (!nextSection || nextIndex === currentIndex) return;
+
+  snapWheelLocked = true;
+  nextSection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  window.clearTimeout(snapWheelUnlockTimer);
+  snapWheelUnlockTimer = window.setTimeout(() => {
+    snapWheelLocked = false;
+  }, 760);
+}, { passive: false });
 
 window.addEventListener("mousemove", (event) => {
   const { clientX, clientY } = event;

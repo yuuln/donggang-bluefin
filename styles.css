@@ -22,6 +22,8 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 0;
+  scroll-snap-type: y proximity;
 }
 
 body {
@@ -45,7 +47,8 @@ body {
 
 main {
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  scroll-snap-type: y proximity;
   background:
     radial-gradient(circle at 80% 7%, rgba(200, 154, 61, 0.12), transparent 24rem),
     radial-gradient(circle at 18% 34%, rgba(51, 127, 160, 0.16), transparent 34rem),
@@ -59,6 +62,37 @@ main {
       #1d2e38 76%,
       #061826 100%
     );
+}
+
+main > section {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
+.story-section,
+.auction-section,
+.fish-section,
+.picture-book-section {
+  min-height: auto;
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+}
+
+.hero,
+.story-scene,
+.culture-section,
+#life-timeline,
+#ending {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.auction-simulator,
+.picture-book-modal {
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
 }
 
 body.menu-open {
@@ -804,9 +838,9 @@ h3 {
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(circle at 76% 14%, rgba(200, 154, 61, 0.14), transparent 26rem),
-    radial-gradient(circle at 18% 70%, rgba(35, 111, 145, 0.14), transparent 30rem),
-    linear-gradient(180deg, rgba(8, 32, 52, 0.76), rgba(20, 47, 62, 0.8));
+    radial-gradient(circle at 76% 12%, rgba(200, 154, 61, 0.13), transparent 28rem),
+    radial-gradient(circle at 20% 72%, rgba(35, 111, 145, 0.14), transparent 32rem),
+    linear-gradient(180deg, rgba(8, 32, 52, 0.8), rgba(20, 47, 62, 0.76));
 }
 
 .auction-section::before {
@@ -815,9 +849,9 @@ h3 {
   pointer-events: none;
   content: "";
   background:
-    linear-gradient(180deg, rgba(6, 24, 38, 0.42), transparent 18%, transparent 74%, rgba(29, 46, 56, 0.34)),
-    repeating-linear-gradient(90deg, rgba(246, 245, 241, 0.026) 0 1px, transparent 1px 5.4rem);
-  opacity: 0.68;
+    linear-gradient(180deg, rgba(6, 24, 38, 0.38), transparent 18%, transparent 74%, rgba(29, 46, 56, 0.32)),
+    repeating-linear-gradient(90deg, rgba(246, 245, 241, 0.014) 0 1px, transparent 1px 5.4rem);
+  opacity: 0.62;
 }
 
 .auction-section::after {
@@ -839,50 +873,75 @@ h3 {
 
 .auction-stage {
   display: grid;
-  grid-template-columns: 1fr minmax(18rem, 25rem);
-  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) minmax(19rem, 25rem);
+  gap: 1.1rem;
   align-items: stretch;
 }
 
 .auction-record,
 .auction-cards,
-.museum-panel,
-.fish-info,
-.timeline-track article {
-  border: 1px solid var(--line);
-  background: rgba(246, 245, 241, 0.055);
+.museum-panel {
+  border: 1px solid rgba(246, 245, 241, 0.12);
+  background:
+    linear-gradient(145deg, rgba(6, 24, 38, 0.62), rgba(13, 43, 64, 0.38)),
+    rgba(246, 245, 241, 0.04);
   backdrop-filter: blur(18px);
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(246, 245, 241, 0.06),
+    0 28px 80px rgba(0, 0, 0, 0.22);
 }
 
 .auction-record {
   grid-column: 1 / 2;
-  padding: clamp(1.5rem, 3vw, 2.4rem);
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.45rem, 3vw, 2.35rem);
+}
+
+.auction-record::after {
+  position: absolute;
+  inset: auto 1.2rem 1rem;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, rgba(200, 154, 61, 0), rgba(200, 154, 61, 0.42), rgba(200, 154, 61, 0));
+  opacity: 0.7;
 }
 
 .auction-record > p {
-  margin: 0 0 1.5rem;
-  color: var(--gold);
-  font-weight: 700;
+  width: fit-content;
+  margin: 0 0 1.35rem;
+  padding: 0.28rem 0.72rem;
+  border: 1px solid rgba(200, 154, 61, 0.28);
+  border-radius: 999px;
+  background: rgba(200, 154, 61, 0.08);
+  color: rgba(255, 217, 133, 0.92);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
 }
 
 .record-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
+  gap: clamp(0.85rem, 2vw, 1.25rem);
 }
 
 .record-grid > div {
   min-width: 0;
+  padding: 0.95rem 0.95rem 1.05rem;
+  border: 1px solid rgba(246, 245, 241, 0.08);
+  background: rgba(3, 11, 18, 0.18);
 }
 
 .record-grid span {
   display: inline-block;
   font-family: var(--serif);
   max-width: 100%;
-  font-size: clamp(2.2rem, 5.4vw, 4.8rem);
+  color: rgba(246, 245, 241, 0.96);
+  font-size: clamp(2.15rem, 5vw, 4.45rem);
   line-height: 1;
   white-space: nowrap;
+  text-shadow: 0 0.6rem 2.2rem rgba(0, 0, 0, 0.36);
 }
 
 .record-grid small {
@@ -909,41 +968,73 @@ h3 {
 .record-grid label {
   display: block;
   margin-top: 0.65rem;
-  color: rgba(246, 245, 241, 0.66);
+  color: rgba(246, 245, 241, 0.58);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
 }
 
 .auction-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
+  gap: 0.75rem;
   grid-column: 1 / 2;
-  overflow: hidden;
+  padding: 0.75rem;
 }
 
 .auction-card {
-  min-height: 15rem;
-  padding: 1.35rem;
-  background: rgba(6, 24, 38, 0.45);
+  position: relative;
+  min-height: 13.5rem;
+  padding: 1.18rem;
+  border: 1px solid rgba(246, 245, 241, 0.08);
+  background:
+    radial-gradient(circle at 82% 14%, rgba(200, 154, 61, 0.08), transparent 8rem),
+    rgba(6, 24, 38, 0.38);
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.25s ease;
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.auction-card::after {
+  position: absolute;
+  left: 1.18rem;
+  right: 1.18rem;
+  bottom: 1rem;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, rgba(200, 154, 61, 0.58), transparent);
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
 .auction-card:hover,
 .auction-card.active {
-  background: rgba(200, 154, 61, 0.13);
+  border-color: rgba(200, 154, 61, 0.34);
+  background:
+    radial-gradient(circle at 82% 14%, rgba(200, 154, 61, 0.14), transparent 8rem),
+    rgba(6, 24, 38, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(200, 154, 61, 0.08), 0 18px 48px rgba(0, 0, 0, 0.22);
   transform: translateY(-4px);
 }
 
+.auction-card:hover::after,
+.auction-card.active::after {
+  opacity: 1;
+}
+
 .auction-card span {
-  color: var(--gold);
+  color: rgba(255, 217, 133, 0.92);
+  font-size: 0.8rem;
   font-weight: 800;
+  letter-spacing: 0.08em;
 }
 
 .auction-card strong {
   display: block;
-  margin: 1.2rem 0 0.8rem;
+  margin: 1rem 0 0.7rem;
+  color: rgba(246, 245, 241, 0.96);
   font-family: var(--serif);
-  font-size: 1.35rem;
+  font-size: clamp(1.18rem, 1.8vw, 1.45rem);
+  line-height: 1.25;
 }
 
 .auction-card p,
@@ -951,15 +1042,41 @@ h3 {
   margin: 0;
 }
 
+.auction-card p {
+  color: rgba(246, 245, 241, 0.68);
+  font-size: 0.9rem;
+  line-height: 1.72;
+}
+
 .museum-panel {
   grid-column: 2 / 3;
   grid-row: 1 / 4;
-  padding: clamp(1.5rem, 3vw, 2.4rem);
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.6rem, 3vw, 2.55rem);
+}
+
+.museum-panel::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    radial-gradient(circle at 72% 16%, rgba(200, 154, 61, 0.14), transparent 12rem),
+    linear-gradient(180deg, rgba(246, 245, 241, 0.04), transparent 32%);
+}
+
+.museum-panel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .museum-panel h3 {
-  font-size: clamp(3rem, 8vw, 6rem);
-  color: var(--gold);
+  margin: 0;
+  color: rgba(255, 217, 133, 0.96);
+  font-size: clamp(3.4rem, 8vw, 6.6rem);
+  line-height: 0.95;
+  text-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.34);
 }
 
 dl {
@@ -969,22 +1086,27 @@ dl {
 }
 
 dt {
-  color: rgba(246, 245, 241, 0.55);
-  font-size: 0.8rem;
+  color: rgba(246, 245, 241, 0.52);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
 }
 
 dd {
   margin: 0.25rem 0 0;
-  font-size: 1.4rem;
+  color: rgba(246, 245, 241, 0.92);
+  font-size: 1.32rem;
   font-weight: 800;
 }
 
 .auction-entry {
   display: grid;
   grid-column: 1 / 2;
-  padding: 1rem;
-  border: 1px solid var(--line);
-  background: rgba(246, 245, 241, 0.045);
+  padding: 0.85rem;
+  border: 1px solid rgba(246, 245, 241, 0.1);
+  background:
+    linear-gradient(90deg, rgba(200, 154, 61, 0.08), rgba(246, 245, 241, 0.035)),
+    rgba(3, 11, 18, 0.22);
   backdrop-filter: blur(18px);
 }
 
@@ -2309,6 +2431,7 @@ dd {
   gap: clamp(0.8rem, 1.5vw, 1.25rem);
   align-items: start;
   overflow-x: auto;
+  margin-top: clamp(9rem, 18vh, 13rem);
   padding: 3rem 0 0.5rem;
   scrollbar-width: thin;
 }
@@ -2838,6 +2961,25 @@ dd {
   }
 }
 
+@media (max-width: 768px) {
+  html,
+  body,
+  main {
+    scroll-snap-type: none;
+  }
+
+  main > section,
+  .story-scene,
+  .site-footer {
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
+  }
+
+  .life-timeline {
+    margin-top: 4rem;
+  }
+}
+
 @media (max-width: 880px) {
   .site-nav {
     inset: 0.8rem 1rem auto;
@@ -3046,6 +3188,7 @@ dd {
   .life-timeline {
     grid-template-columns: 1fr;
     gap: 0;
+    margin-top: 4rem;
     overflow-x: visible;
     padding-top: 1rem;
   }
