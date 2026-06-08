@@ -35,7 +35,7 @@ const nextPicturePageButton = document.querySelector("#nextPicturePage");
 const pictureBookImage = document.querySelector("#pictureBookImage");
 const pictureBookPageCount = document.querySelector("#pictureBookPageCount");
 const pictureBookSection = document.querySelector("#picture-book");
-const pageSnapSections = Array.from(document.querySelectorAll(".hero, .scene-sail, .scene-migration, #auction, #culture, #picture-book, .fish-section, #life-timeline, #ending"));
+const pageSnapSections = Array.from(document.querySelectorAll(".hero, .scene-sail, .scene-migration, #auction, .auction-simulator, #culture, #picture-book, .fish-section, #life-timeline, #ending"));
 const freePageScrollSelector = ".auction-section";
 
 if ("scrollRestoration" in window.history) {
@@ -417,14 +417,25 @@ let pageSnapUnlockTimer = null;
 
 const getPageSnapIndex = (section) => {
   if (!section) return -1;
-  return pageSnapSections.indexOf(section);
+  return getVisiblePageSnapSections().indexOf(section);
+};
+
+const getVisiblePageSnapSections = () => {
+  return pageSnapSections.filter((section) => {
+    if (section.classList.contains("auction-simulator")) {
+      return section.classList.contains("is-open");
+    }
+
+    return true;
+  });
 };
 
 const getNearestPageSnapIndex = () => {
-  if (!pageSnapSections.length) return -1;
+  const visiblePageSnapSections = getVisiblePageSnapSections();
+  if (!visiblePageSnapSections.length) return -1;
 
-  return pageSnapSections.reduce((nearestIndex, section, index) => {
-    const nearestDistance = Math.abs(pageSnapSections[nearestIndex].getBoundingClientRect().top);
+  return visiblePageSnapSections.reduce((nearestIndex, section, index) => {
+    const nearestDistance = Math.abs(visiblePageSnapSections[nearestIndex].getBoundingClientRect().top);
     const distance = Math.abs(section.getBoundingClientRect().top);
     return distance < nearestDistance ? index : nearestIndex;
   }, 0);
@@ -441,6 +452,18 @@ const getCurrentFreePageSection = () => {
 const canScrollInsideFreePageSection = (section, direction) => {
   if (!section) return false;
 
+  if (auctionSimulator?.classList.contains("is-open")) {
+    const simulatorRect = auctionSimulator.getBoundingClientRect();
+    const shouldSnapToSimulator =
+      direction > 0
+        ? simulatorRect.top > 24 && simulatorRect.top < window.innerHeight * 0.86
+        : simulatorRect.top < -24 && simulatorRect.bottom > window.innerHeight * 0.2;
+
+    if (shouldSnapToSimulator) {
+      return false;
+    }
+  }
+
   const rect = section.getBoundingClientRect();
   const tolerance = 18;
   return direction > 0 ? rect.bottom > window.innerHeight + tolerance : rect.top < -tolerance;
@@ -449,13 +472,13 @@ const canScrollInsideFreePageSection = (section, direction) => {
 const shouldSkipPageSnap = (event) => {
   const eventTarget = event.target instanceof Element ? event.target : null;
 
-  if (!pageSnapSections.length) return true;
+  if (!getVisiblePageSnapSections().length) return true;
   if (window.matchMedia("(max-width: 768px)").matches) return true;
   if (event.ctrlKey || event.metaKey || event.shiftKey) return true;
   if (document.body.classList.contains("intro-active")) return true;
   if (document.body.classList.contains("menu-open")) return true;
   if (document.body.classList.contains("reader-open")) return true;
-  if (eventTarget?.closest(".picture-book-modal, .auction-simulator.is-open")) return true;
+  if (eventTarget?.closest(".picture-book-modal")) return true;
 
   return false;
 };
@@ -484,8 +507,9 @@ window.addEventListener("wheel", (event) => {
   const currentIndex = freeSection ? getPageSnapIndex(freeSection) : getNearestPageSnapIndex();
   if (currentIndex < 0) return;
 
-  const nextIndex = Math.max(0, Math.min(pageSnapSections.length - 1, currentIndex + direction));
-  const nextSection = pageSnapSections[nextIndex];
+  const visiblePageSnapSections = getVisiblePageSnapSections();
+  const nextIndex = Math.max(0, Math.min(visiblePageSnapSections.length - 1, currentIndex + direction));
+  const nextSection = visiblePageSnapSections[nextIndex];
 
   pageSnapDelta = 0;
   if (!nextSection || nextIndex === currentIndex) return;

@@ -1139,6 +1139,8 @@ dd {
   max-height: 80rem;
   margin-top: 1rem;
   border-color: var(--line);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
   opacity: 1;
   pointer-events: auto;
