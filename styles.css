@@ -83,7 +83,9 @@ main > section {
 #picture-book,
 .fish-section,
 #life-timeline,
-#ending {
+#kuroshio-sound,
+#ending,
+#behind-the-scene {
   min-height: 100vh;
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -1834,6 +1836,214 @@ dd {
   line-height: 1.75;
 }
 
+.sound-section {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(174, 55, 49, 0.12), transparent 20rem),
+    radial-gradient(circle at 78% 66%, rgba(42, 114, 145, 0.16), transparent 28rem),
+    linear-gradient(180deg, rgba(13, 43, 64, 0.78), rgba(20, 47, 62, 0.76));
+}
+
+.sound-section::before,
+.sound-section::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+}
+
+.sound-section::before {
+  background:
+    repeating-linear-gradient(168deg, transparent 0 3.2rem, rgba(246, 245, 241, 0.024) 3.28rem 3.34rem, transparent 3.42rem 6.4rem),
+    radial-gradient(ellipse at 50% 88%, rgba(200, 154, 61, 0.1), transparent 26rem);
+  opacity: 0.62;
+  animation: deep-water-drift 26s linear infinite;
+}
+
+.sound-section::after {
+  background:
+    radial-gradient(ellipse at 12% 72%, rgba(246, 245, 241, 0.04), transparent 16rem),
+    linear-gradient(90deg, rgba(6, 24, 38, 0.42), transparent 44%, rgba(174, 55, 49, 0.06));
+  opacity: 0.8;
+}
+
+.sound-section .section-heading,
+.sound-grid {
+  position: relative;
+  z-index: 1;
+}
+
+.sound-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.9rem, 2vw, 1.35rem);
+}
+
+.sound-card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  min-height: 14rem;
+  padding: clamp(1.25rem, 2.4vw, 1.75rem);
+  border: 1px solid rgba(246, 245, 241, 0.12);
+  background:
+    radial-gradient(circle at 80% 16%, rgba(174, 55, 49, 0.13), transparent 10rem),
+    linear-gradient(145deg, rgba(6, 24, 38, 0.66), rgba(29, 46, 56, 0.4));
+  box-shadow: inset 0 1px 0 rgba(246, 245, 241, 0.06), 0 28px 70px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(18px);
+  isolation: isolate;
+  overflow: hidden;
+  transition: border-color 0.28s ease, box-shadow 0.28s ease, transform 0.28s ease;
+  cursor: pointer;
+}
+
+.sound-card::before {
+  position: absolute;
+  inset: auto -20% 12%;
+  height: 7rem;
+  z-index: -1;
+  content: "";
+  background: repeating-radial-gradient(ellipse at 50% 100%, rgba(200, 154, 61, 0.12) 0 1px, transparent 2px 0.9rem);
+  opacity: 0.32;
+  transform: rotate(-6deg);
+  animation: sound-current 12s ease-in-out infinite alternate;
+}
+
+.sound-card.is-selected,
+.sound-card.is-playing,
+.sound-card:hover {
+  border-color: rgba(200, 154, 61, 0.36);
+  box-shadow: inset 0 0 0 1px rgba(200, 154, 61, 0.1), 0 30px 80px rgba(0, 0, 0, 0.24), 0 0 2.6rem rgba(174, 55, 49, 0.1);
+  transform: translateY(-0.22rem);
+}
+
+.sound-index {
+  width: fit-content;
+  margin-bottom: 1.2rem;
+  padding: 0.25rem 0.62rem;
+  border: 1px solid rgba(200, 154, 61, 0.3);
+  border-radius: 999px;
+  color: rgba(255, 217, 133, 0.88);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.sound-card h3 {
+  margin: 0;
+  color: rgba(246, 245, 241, 0.96);
+  font-family: var(--serif);
+  font-size: clamp(1.35rem, 2vw, 1.85rem);
+}
+
+.sound-card p {
+  margin: 0.8rem 0 1.6rem;
+  color: rgba(246, 245, 241, 0.68);
+  line-height: 1.75;
+}
+
+.sound-player {
+  display: grid;
+  gap: 0.8rem;
+  width: min(100%, 58rem);
+  margin: clamp(1rem, 2vw, 1.4rem) auto 0;
+  padding: clamp(1rem, 2vw, 1.35rem);
+  border: 1px solid rgba(200, 154, 61, 0.22);
+  background:
+    radial-gradient(circle at 88% 10%, rgba(174, 55, 49, 0.12), transparent 10rem),
+    rgba(6, 24, 38, 0.52);
+  box-shadow: inset 0 1px 0 rgba(246, 245, 241, 0.06), 0 24px 70px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(18px);
+}
+
+.sound-now {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sound-now span {
+  color: rgba(246, 245, 241, 0.5);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.sound-now strong {
+  color: rgba(255, 217, 133, 0.94);
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+}
+
+.sound-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.sound-toggle {
+  min-width: 6.2rem;
+  min-height: 2.65rem;
+  padding: 0 1rem;
+}
+
+.sound-toggle,
+.sound-skip {
+  border: 1px solid rgba(200, 154, 61, 0.34);
+  border-radius: 999px;
+  background: rgba(6, 24, 38, 0.48);
+  color: rgba(255, 217, 133, 0.94);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: background 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease;
+}
+
+.sound-skip {
+  min-width: 3.6rem;
+  min-height: 2.35rem;
+  padding: 0 0.72rem;
+  color: rgba(246, 245, 241, 0.78);
+  font-size: 0.76rem;
+}
+
+.sound-toggle:hover,
+.sound-skip:hover,
+.sound-card.is-playing .sound-toggle {
+  background: rgba(174, 55, 49, 0.2);
+  box-shadow: 0 0 1.6rem rgba(200, 154, 61, 0.18);
+  transform: translateY(-0.08rem);
+}
+
+.sound-progress {
+  width: 100%;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
+.sound-progress::-webkit-slider-runnable-track {
+  height: 0.28rem;
+  border-radius: 999px;
+  background: rgba(246, 245, 241, 0.18);
+}
+
+.sound-progress::-webkit-slider-thumb {
+  margin-top: -0.32rem;
+}
+
+.sound-time {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(246, 245, 241, 0.56);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
 .picture-book-modal {
   position: fixed;
   inset: 0;
@@ -2037,7 +2247,7 @@ dd {
 .fish-connector {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 4;
   width: 100%;
   height: 100%;
   pointer-events: none;
@@ -2255,7 +2465,7 @@ dd {
 
 .fish-info {
   position: relative;
-  z-index: 3;
+  z-index: 5;
   padding: clamp(1.4rem, 3vw, 2.4rem);
   border: 0;
   background: transparent;
@@ -2620,13 +2830,13 @@ dd {
   place-items: center;
   min-height: 100svh;
   overflow: hidden;
-  padding: 6rem max(1rem, calc((100vw - 1180px) / 2));
+  padding: clamp(5rem, 9vh, 7rem) max(1rem, calc((100vw - 1180px) / 2));
   isolation: isolate;
   background:
-    radial-gradient(circle at 50% 80%, rgba(31, 91, 122, 0.18), transparent 28rem),
-    radial-gradient(circle at 20% 18%, rgba(200, 154, 61, 0.1), transparent 26rem),
-    radial-gradient(circle at 78% 26%, rgba(255, 217, 133, 0.08), transparent 22rem),
-    linear-gradient(180deg, rgba(29, 46, 56, 0.78) 0%, #061826 58%, #020914 100%);
+    radial-gradient(circle at 52% 82%, rgba(31, 91, 122, 0.15), transparent 30rem),
+    radial-gradient(circle at 22% 18%, rgba(200, 154, 61, 0.07), transparent 24rem),
+    radial-gradient(circle at 78% 24%, rgba(246, 245, 241, 0.04), transparent 22rem),
+    linear-gradient(180deg, rgba(10, 30, 46, 0.92) 0%, #061826 54%, #010711 100%);
 }
 
 .ending-section::after {
@@ -2635,8 +2845,10 @@ dd {
   z-index: -1;
   content: "";
   background:
-    linear-gradient(180deg, rgba(6, 24, 38, 0.04), rgba(1, 5, 11, 0.88)),
-    radial-gradient(circle at 50% 54%, transparent 0 12rem, rgba(0, 0, 0, 0.2) 32rem);
+    linear-gradient(180deg, rgba(6, 24, 38, 0.05), rgba(1, 5, 11, 0.88)),
+    repeating-linear-gradient(174deg, transparent 0 4rem, rgba(246, 245, 241, 0.025) 4.08rem 4.14rem, transparent 4.24rem 8rem),
+    radial-gradient(circle at 50% 54%, transparent 0 12rem, rgba(0, 0, 0, 0.23) 32rem);
+  animation: deep-water-drift 36s linear infinite;
 }
 
 .ending-sea {
@@ -2717,7 +2929,8 @@ dd {
   z-index: 1;
   display: grid;
   justify-items: center;
-  width: min(46rem, 100%);
+  width: min(44rem, 100%);
+  gap: clamp(1rem, 2.2vh, 1.55rem);
   text-align: center;
 }
 
@@ -2735,83 +2948,157 @@ dd {
 .ending-line-one {
   color: rgba(246, 245, 241, 0.76);
   font-family: var(--serif);
-  font-size: clamp(1.25rem, 2.6vw, 2rem);
+  font-size: clamp(1.1rem, 2.2vw, 1.75rem);
+  line-height: 1.85;
   animation-delay: 0.25s;
 }
 
 .ending-line-two {
-  margin-top: 1.15rem;
-  color: var(--gold);
+  color: rgba(246, 245, 241, 0.7);
   font-family: var(--serif);
-  font-size: clamp(2.4rem, 6vw, 4.8rem);
-  font-weight: 800;
-  line-height: 1;
-  animation-delay: 1.15s;
+  font-size: clamp(1.05rem, 2vw, 1.55rem);
+  line-height: 1.85;
+  animation-delay: 1.3s;
 }
 
 .ending-line-three {
-  margin-top: 1rem;
+  color: rgba(246, 245, 241, 0.78);
+  font-family: var(--serif);
+  font-size: clamp(1.08rem, 2.1vw, 1.65rem);
+  line-height: 1.85;
+  animation-delay: 2.35s;
+}
+
+.ending-title {
+  margin: clamp(0.8rem, 2.5vh, 1.6rem) 0 0;
+  color: var(--gold);
+  font-family: var(--serif);
+  font-size: clamp(2.25rem, 7vw, 5.4rem);
+  font-weight: 800;
+  line-height: 1.08;
+  text-shadow: 0 0 2.4rem rgba(200, 154, 61, 0.16);
+  animation-delay: 3.55s;
+}
+
+.ending-subtitle {
+  color: rgba(246, 245, 241, 0.72);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 700;
+  line-height: 1.9;
+  letter-spacing: 0.04em;
+  animation-delay: 4.7s;
+}
+
+.behind-section {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(1.4rem, 4vw, 3rem);
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(200, 154, 61, 0.12), transparent 24rem),
+    radial-gradient(circle at 82% 72%, rgba(47, 122, 151, 0.18), transparent 30rem),
+    linear-gradient(180deg, rgba(6, 24, 38, 0.92), rgba(13, 43, 64, 0.78));
+}
+
+.behind-section::before,
+.behind-section::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+}
+
+.behind-section::before {
+  background:
+    repeating-linear-gradient(176deg, transparent 0 3.4rem, rgba(246, 245, 241, 0.025) 3.48rem 3.54rem, transparent 3.62rem 6.8rem),
+    radial-gradient(ellipse at 48% 88%, rgba(200, 154, 61, 0.08), transparent 28rem);
+  opacity: 0.7;
+  animation: deep-water-drift 28s linear infinite;
+}
+
+.behind-section::after {
+  background:
+    linear-gradient(90deg, rgba(6, 24, 38, 0.55), transparent 48%, rgba(200, 154, 61, 0.05)),
+    radial-gradient(ellipse at 78% 18%, rgba(246, 245, 241, 0.05), transparent 18rem);
+}
+
+.behind-entry,
+.behind-grid {
+  position: relative;
+  z-index: 1;
+}
+
+.behind-entry {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.15rem, 2vw, 1.55rem);
+  border: 1px solid rgba(246, 245, 241, 0.1);
+  background:
+    radial-gradient(circle at 88% 12%, rgba(200, 154, 61, 0.1), transparent 12rem),
+    rgba(6, 24, 38, 0.3);
+  box-shadow: inset 0 1px 0 rgba(246, 245, 241, 0.06), 0 28px 76px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px);
+}
+
+.behind-entry h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(2.6rem, 7vw, 6rem);
+  line-height: 1;
+}
+
+.behind-subtitle {
+  color: rgba(255, 217, 133, 0.9);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-weight: 800;
+}
+
+.behind-entry p:not(.eyebrow):not(.behind-subtitle) {
+  max-width: 44rem;
+  margin: 0;
+  color: rgba(246, 245, 241, 0.72);
+  line-height: 1.9;
+}
+
+.behind-entry .button {
+  justify-self: start;
+  margin-top: 0.45rem;
+}
+
+.behind-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.8rem, 1.6vw, 1.1rem);
+}
+
+.behind-grid article {
+  min-height: 12rem;
+  padding: clamp(1.1rem, 2vw, 1.45rem);
+  border: 1px solid rgba(246, 245, 241, 0.12);
+  background:
+    radial-gradient(circle at 86% 16%, rgba(200, 154, 61, 0.1), transparent 8rem),
+    rgba(6, 24, 38, 0.48);
+  box-shadow: inset 0 1px 0 rgba(246, 245, 241, 0.06), 0 24px 64px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(18px);
+}
+
+.behind-grid span {
+  display: inline-block;
+  margin-bottom: 1.4rem;
+  color: rgba(255, 217, 133, 0.85);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.behind-grid h3 {
+  margin: 0;
   color: rgba(246, 245, 241, 0.92);
   font-family: var(--serif);
-  font-size: clamp(1.65rem, 4.4vw, 3.6rem);
-  font-weight: 800;
-  line-height: 1.24;
-  animation-delay: 2.05s;
-}
-
-.ending-line-four {
-  margin-top: 2.4rem;
-  color: rgba(246, 245, 241, 0.64);
-  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
-  letter-spacing: 0.08em;
-  animation-delay: 3.15s;
-}
-
-.ending-signature {
-  display: grid;
-  gap: 0.45rem;
-  margin-top: 2.25rem;
-  animation-delay: 4.1s;
-}
-
-.ending-signature strong {
-  color: rgba(246, 245, 241, 0.9);
-  font-family: var(--serif);
-  font-size: clamp(1.25rem, 2.2vw, 1.8rem);
-}
-
-.ending-signature span {
-  color: rgba(200, 154, 61, 0.72);
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.ending-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 2.5rem;
-  animation-delay: 4.85s;
-}
-
-.ending-actions a {
-  min-width: 9rem;
-  padding: 0.72rem 1.05rem;
-  border: 1px solid rgba(246, 245, 241, 0.18);
-  border-radius: 999px;
-  background: rgba(246, 245, 241, 0.035);
-  color: rgba(246, 245, 241, 0.74);
-  font-size: 0.88rem;
-  transition: border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
-}
-
-.ending-actions a:hover {
-  border-color: rgba(200, 154, 61, 0.58);
-  color: var(--gold);
-  transform: translateY(-0.12rem);
+  font-size: clamp(1.2rem, 2vw, 1.65rem);
 }
 
 .site-footer {
@@ -2977,6 +3264,27 @@ dd {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fish-connector-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes fish-connector-dot-rise {
+  from {
+    opacity: 0;
+    transform: scale(0.45);
+  }
+
+  to {
+    opacity: 0.86;
+    transform: scale(1);
+  }
+}
+
+@keyframes sound-current {
+  from { transform: translateX(-1.2rem) rotate(-6deg); }
+  to { transform: translateX(1.2rem) rotate(-4deg); }
+}
+
 @keyframes deep-water-drift {
   from { background-position: 0 0, 0 0, center, center; }
   to { background-position: 5rem 2rem, -4rem 1rem, center, center; }
@@ -3020,6 +3328,18 @@ dd {
     max-height: none;
   }
 
+  .sound-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sound-card {
+    min-height: 15rem;
+  }
+
+  .sound-now {
+    display: grid;
+  }
+
   .life-timeline {
     margin-top: 4rem;
   }
@@ -3029,6 +3349,14 @@ dd {
   .site-nav {
     inset: 0.8rem 1rem auto;
     border-radius: 1.2rem;
+  }
+
+  .behind-section {
+    grid-template-columns: 1fr;
+  }
+
+  .behind-grid {
+    grid-template-columns: 1fr;
   }
 
   .nav-toggle {
@@ -3291,19 +3619,12 @@ dd {
     margin-top: 1rem;
   }
 
-  .ending-line-four,
-  .ending-signature,
-  .ending-actions {
-    margin-top: 1.8rem;
+  .ending-title {
+    margin-top: 1.4rem;
   }
 
-  .ending-actions {
-    width: 100%;
-    gap: 0.75rem;
-  }
-
-  .ending-actions a {
-    min-width: min(12rem, 100%);
+  .ending-subtitle {
+    font-size: 0.96rem;
   }
 
   .site-footer {

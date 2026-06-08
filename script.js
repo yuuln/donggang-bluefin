@@ -4,6 +4,7 @@ const navToggle = document.querySelector(".nav-toggle");
 const cursorGlow = document.querySelector(".cursor-glow");
 const intro = document.querySelector("#intro");
 const enterSiteButton = document.querySelector("#enterSite");
+const mainMusic = document.querySelector("#mainMusic");
 const flashlight = document.querySelector(".flashlight");
 const sailScene = document.querySelector(".scene-sail");
 const lifeTimelineSection = document.querySelector("#life-timeline");
@@ -16,9 +17,13 @@ const revealEls = document.querySelectorAll(".reveal");
 const counters = document.querySelectorAll(".counter");
 const auctionCards = document.querySelectorAll(".auction-card");
 const fishParts = document.querySelectorAll(".fish-part");
+const fishLab = document.querySelector(".fish-lab");
 const fishModel = document.querySelector(".fish-model");
 const fishInfo = document.querySelector(".fish-info");
 const fishMethods = document.querySelector("#fishMethods");
+const fishConnector = document.querySelector(".fish-connector");
+const fishConnectorPath = document.querySelector("#fishConnectorPath");
+const fishConnectorDot = document.querySelector("#fishConnectorDot");
 const cultureImage = document.querySelector(".culture-image");
 const filterToggle = document.querySelector(".filter-toggle");
 const auctionSimulator = document.querySelector(".auction-simulator");
@@ -37,8 +42,16 @@ const nextPicturePageButton = document.querySelector("#nextPicturePage");
 const pictureBookImage = document.querySelector("#pictureBookImage");
 const pictureBookPageCount = document.querySelector("#pictureBookPageCount");
 const pictureBookSection = document.querySelector("#picture-book");
-const pageSnapSections = Array.from(document.querySelectorAll(".hero, .scene-sail, .scene-migration, #auction, .auction-simulator, #culture, #picture-book, .fish-section, #life-timeline, #ending"));
+const pageSnapSections = Array.from(document.querySelectorAll(".hero, .scene-sail, .scene-migration, #auction, .auction-simulator, #culture, #picture-book, .fish-section, #life-timeline, #kuroshio-sound, #ending, #behind-the-scene"));
 const freePageScrollSelector = ".auction-section";
+const soundCards = document.querySelectorAll("[data-sound-card]");
+const kuroshioPlayer = document.querySelector("#kuroshioPlayer");
+const soundToggle = document.querySelector("#soundToggle");
+const soundProgress = document.querySelector("#soundProgress");
+const soundCurrentTime = document.querySelector("#soundCurrentTime");
+const soundDuration = document.querySelector("#soundDuration");
+const soundNowTitle = document.querySelector("#soundNowTitle");
+const soundSkipButtons = document.querySelectorAll(".sound-player .sound-skip");
 
 if ("scrollRestoration" in window.history) {
   window.history.scrollRestoration = "manual";
@@ -123,6 +136,54 @@ const renderFishMethods = (methods = []) => {
   });
 };
 
+const updateFishConnector = (activePart = document.querySelector(".fish-part.hotspot.active")) => {
+  if (!fishLab || !fishInfo || !fishConnector || !fishConnectorPath || !fishConnectorDot || !activePart) return;
+
+  const labRect = fishLab.getBoundingClientRect();
+  const partRect = activePart.getBoundingClientRect();
+  const infoRect = fishInfo.getBoundingClientRect();
+
+  if (!labRect.width || !labRect.height) return;
+
+  const startX = partRect.left + partRect.width / 2 - labRect.left;
+  const startY = partRect.top + partRect.height / 2 - labRect.top;
+  const infoIsRight = infoRect.left > partRect.left;
+  const endX = infoIsRight
+    ? infoRect.left - labRect.left + 8
+    : infoRect.left + infoRect.width / 2 - labRect.left;
+  const endY = infoIsRight
+    ? infoRect.top + infoRect.height * 0.34 - labRect.top
+    : infoRect.top - labRect.top + 10;
+  const distanceX = Math.max(80, Math.abs(endX - startX));
+  const controlOffset = Math.min(240, distanceX * 0.45);
+  const controlOneX = startX + (infoIsRight ? controlOffset : controlOffset * 0.28);
+  const controlOneY = startY;
+  const controlTwoX = endX - (infoIsRight ? controlOffset : controlOffset * 0.28);
+  const controlTwoY = endY;
+
+  fishConnector.setAttribute("viewBox", `0 0 ${labRect.width} ${labRect.height}`);
+  fishConnectorPath.setAttribute(
+    "d",
+    `M ${startX.toFixed(1)} ${startY.toFixed(1)} C ${controlOneX.toFixed(1)} ${controlOneY.toFixed(1)}, ${controlTwoX.toFixed(1)} ${controlTwoY.toFixed(1)}, ${endX.toFixed(1)} ${endY.toFixed(1)}`
+  );
+  fishConnectorDot.setAttribute("cx", endX.toFixed(1));
+  fishConnectorDot.setAttribute("cy", endY.toFixed(1));
+
+  const pathLength = fishConnectorPath.getTotalLength();
+  fishConnectorPath.style.strokeDasharray = pathLength;
+  fishConnectorPath.style.strokeDashoffset = pathLength;
+  fishConnectorPath.style.animation = "none";
+  fishConnectorPath.getBoundingClientRect();
+  fishConnectorPath.style.animation = "";
+
+  fishConnector.classList.add("is-active");
+  fishInfo.classList.add("has-connector");
+};
+
+const scheduleFishConnectorUpdate = () => {
+  window.setTimeout(() => updateFishConnector(), 0);
+};
+
 const updateNav = () => {
   nav.classList.toggle("scrolled", window.scrollY > 24);
   if (!sailScene) return;
@@ -131,8 +192,88 @@ const updateNav = () => {
   nav.classList.toggle("nav-hidden", sailTop <= 12 && !nav.classList.contains("is-peeking"));
 };
 
+const mainMusicVolume = 0.42;
+const mainMusicDuckedVolume = 0.16;
+let isMainMusicDucked = false;
+let mainMusicFadeTimer = null;
+
+const setMainMusicVolume = (volume) => {
+  if (!mainMusic) return;
+  mainMusic.volume = Math.max(0, Math.min(1, volume));
+};
+
+const getMainMusicTargetVolume = () => {
+  return isMainMusicDucked ? mainMusicDuckedVolume : mainMusicVolume;
+};
+
+const fadeMainMusicVolume = (targetVolume, duration = 950) => {
+  if (!mainMusic) return;
+
+  window.clearInterval(mainMusicFadeTimer);
+  const startVolume = mainMusic.volume;
+  const volumeDelta = targetVolume - startVolume;
+  const steps = 28;
+  let step = 0;
+
+  if (Math.abs(volumeDelta) < 0.01) {
+    setMainMusicVolume(targetVolume);
+    return;
+  }
+
+  mainMusicFadeTimer = window.setInterval(() => {
+    step += 1;
+    const progress = Math.min(1, step / steps);
+    const easedProgress = 1 - Math.pow(1 - progress, 3);
+    setMainMusicVolume(startVolume + volumeDelta * easedProgress);
+
+    if (progress >= 1) {
+      window.clearInterval(mainMusicFadeTimer);
+      mainMusicFadeTimer = null;
+      setMainMusicVolume(targetVolume);
+    }
+  }, duration / steps);
+};
+
+const syncMainMusicVolume = (options = {}) => {
+  const targetVolume = getMainMusicTargetVolume();
+
+  if (options.fade) {
+    fadeMainMusicVolume(targetVolume);
+    return;
+  }
+
+  window.clearInterval(mainMusicFadeTimer);
+  setMainMusicVolume(targetVolume);
+};
+
+const playMainMusic = () => {
+  if (!mainMusic) return;
+
+  syncMainMusicVolume();
+  mainMusic.play().catch(() => undefined);
+};
+
+const startIntroMusic = () => {
+  playMainMusic();
+  document.removeEventListener("pointerdown", startIntroMusic);
+  document.removeEventListener("touchstart", startIntroMusic);
+  document.removeEventListener("keydown", startIntroMusic);
+};
+
+const formatSoundTime = (seconds = 0) => {
+  if (!Number.isFinite(seconds)) return "0:00";
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60).toString().padStart(2, "0");
+  return `${minutes}:${remainingSeconds}`;
+};
+
 if (intro && enterSiteButton) {
   document.body.classList.add("intro-active");
+  window.addEventListener("load", playMainMusic, { once: true });
+  document.addEventListener("pointerdown", startIntroMusic);
+  document.addEventListener("touchstart", startIntroMusic);
+  document.addEventListener("keydown", startIntroMusic);
 
   const moveFlashlight = (clientX, clientY) => {
     intro.style.setProperty("--flash-x", `${clientX}px`);
@@ -158,11 +299,139 @@ if (intro && enterSiteButton) {
 
   enterSiteButton.addEventListener("click", () => {
     window.scrollTo(0, 0);
+    playMainMusic();
     intro.classList.add("is-hiding");
     document.body.classList.remove("intro-active");
     window.setTimeout(() => {
       intro.hidden = true;
     }, 1400);
+  });
+}
+
+const selectSoundCard = (card, options = {}) => {
+  if (!card || !kuroshioPlayer) return;
+
+  const source = card.dataset.src;
+  const title = card.querySelector("h3")?.textContent || "音樂";
+
+  soundCards.forEach((item) => {
+    const isSelected = item === card;
+    item.classList.toggle("is-selected", isSelected);
+    item.classList.toggle("is-playing", isSelected && !kuroshioPlayer.paused && kuroshioPlayer.src.includes(encodeURI(source || "")));
+    item.setAttribute("aria-pressed", String(isSelected));
+  });
+
+  if (soundNowTitle) {
+    soundNowTitle.textContent = title;
+  }
+
+  if (source && !kuroshioPlayer.src.endsWith(encodeURI(source))) {
+    kuroshioPlayer.src = source;
+    kuroshioPlayer.load();
+  }
+
+  if (soundToggle) {
+    soundToggle.setAttribute("aria-label", `播放${title}`);
+  }
+
+  if (options.play) {
+    mainMusic?.pause();
+    kuroshioPlayer.play().catch(() => undefined);
+  }
+};
+
+const updateKuroshioProgress = () => {
+  if (!kuroshioPlayer) return;
+
+  const duration = kuroshioPlayer.duration || 0;
+  const percent = duration ? (kuroshioPlayer.currentTime / duration) * 100 : 0;
+
+  if (soundProgress) {
+    soundProgress.value = String(percent);
+  }
+
+  if (soundCurrentTime) {
+    soundCurrentTime.textContent = formatSoundTime(kuroshioPlayer.currentTime);
+  }
+
+  if (soundDuration) {
+    soundDuration.textContent = formatSoundTime(duration);
+  }
+};
+
+const setKuroshioPlayingState = () => {
+  const selectedCard = document.querySelector("[data-sound-card].is-selected");
+  selectedCard?.classList.add("is-playing");
+  if (soundToggle) {
+    soundToggle.textContent = "暫停";
+    soundToggle.setAttribute("aria-label", `暫停${soundNowTitle?.textContent || "音樂"}`);
+  }
+};
+
+const setKuroshioPausedState = () => {
+  soundCards.forEach((card) => card.classList.remove("is-playing"));
+  if (soundToggle) {
+    soundToggle.textContent = "播放";
+    soundToggle.setAttribute("aria-label", `播放${soundNowTitle?.textContent || "音樂"}`);
+  }
+};
+
+if (kuroshioPlayer && soundCards.length) {
+  kuroshioPlayer.volume = 0.72;
+  selectSoundCard(soundCards[0]);
+
+  soundCards.forEach((card) => {
+    const activateCard = () => selectSoundCard(card, { play: true });
+
+    card.addEventListener("click", activateCard);
+    card.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      activateCard();
+    });
+  });
+
+  soundToggle?.addEventListener("click", () => {
+    if (!kuroshioPlayer.paused) {
+      kuroshioPlayer.pause();
+      setKuroshioPausedState();
+      playMainMusic();
+      return;
+    }
+
+    mainMusic?.pause();
+    kuroshioPlayer.play().catch(() => undefined);
+  });
+
+  soundSkipButtons.forEach((skipButton) => {
+    skipButton.addEventListener("click", () => {
+      const offset = Number(skipButton.dataset.skip || 0);
+      const duration = kuroshioPlayer.duration || 0;
+      const nextTime = kuroshioPlayer.currentTime + offset;
+      kuroshioPlayer.currentTime = duration ? Math.max(0, Math.min(duration, nextTime)) : Math.max(0, nextTime);
+      updateKuroshioProgress();
+    });
+  });
+
+  soundProgress?.addEventListener("input", () => {
+    const duration = kuroshioPlayer.duration || 0;
+    kuroshioPlayer.currentTime = duration * (Number(soundProgress.value) / 100);
+    updateKuroshioProgress();
+  });
+
+  kuroshioPlayer.addEventListener("loadedmetadata", updateKuroshioProgress);
+  kuroshioPlayer.addEventListener("timeupdate", updateKuroshioProgress);
+  kuroshioPlayer.addEventListener("play", setKuroshioPlayingState);
+  kuroshioPlayer.addEventListener("pause", () => {
+    if (!kuroshioPlayer.ended) {
+      setKuroshioPausedState();
+    }
+    updateKuroshioProgress();
+  });
+  kuroshioPlayer.addEventListener("ended", () => {
+    setKuroshioPausedState();
+    updateKuroshioProgress();
+    playMainMusic();
   });
 }
 
@@ -223,15 +492,14 @@ const playTimelinePreview = () => {
   if (!isTimelineInView) return;
 
   timelinePreviewVideo.muted = false;
-  timelinePreviewVideo.volume = 0.72;
+  timelinePreviewVideo.volume = 0.9;
   timelinePreviewVideo.play().catch(() => undefined);
 };
 
 const updateTimelinePreview = (node) => {
-  if (!node || !timelinePreview || !timelinePreviewVideo || !timelinePreviewLabel) return;
+  if (!node || !timelinePreview || !timelinePreviewVideo) return;
 
   const nextVideo = node.dataset.video || "";
-  const nextLabel = node.dataset.label || node.querySelector("h3")?.textContent || "";
   const nodeIndex = Array.from(lifeTimelineNodes).indexOf(node);
 
   if (nodeIndex >= 0) {
@@ -249,7 +517,9 @@ const updateTimelinePreview = (node) => {
   });
   timelinePreview.classList.add("is-active", "is-switching");
   timelinePreview.classList.remove("has-error");
-  timelinePreviewLabel.textContent = nextLabel;
+  if (timelinePreviewLabel) {
+    timelinePreviewLabel.textContent = node.dataset.label || node.querySelector("h3")?.textContent || "";
+  }
 
   window.clearTimeout(timelineSwitchTimer);
   timelineSwitchTimer = window.setTimeout(() => {
@@ -265,7 +535,7 @@ const updateTimelinePreview = (node) => {
   timelinePreviewVideo.classList.remove("has-media");
   timelinePreviewVideo.pause();
   timelinePreviewVideo.muted = false;
-  timelinePreviewVideo.volume = 0.72;
+  timelinePreviewVideo.volume = 0.9;
   timelinePreviewVideo.src = nextVideo;
   timelinePreviewVideo.load();
 };
@@ -331,7 +601,7 @@ const pauseTimelineAutoplay = () => {
 
 if (timelinePreviewVideo && timelinePreview) {
   timelinePreviewVideo.muted = false;
-  timelinePreviewVideo.volume = 0.72;
+  timelinePreviewVideo.volume = 0.9;
 
   timelinePreviewVideo.addEventListener("loadeddata", () => {
     timelinePreview.classList.remove("has-error");
@@ -353,6 +623,8 @@ if (lifeTimelineSection && lifeTimelineNodes.length) {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           isTimelineInView = true;
+          isMainMusicDucked = true;
+          syncMainMusicVolume({ fade: true });
           isTimelineAutoplayPaused = false;
           lifeTimelineSection.classList.add("is-visible");
           startTimelineAutoplay();
@@ -360,6 +632,8 @@ if (lifeTimelineSection && lifeTimelineNodes.length) {
         }
 
         isTimelineInView = false;
+        isMainMusicDucked = false;
+        syncMainMusicVolume({ fade: true });
         isTimelineAutoplayPaused = false;
         stopTimelineAutoplay();
       });
@@ -617,6 +891,7 @@ fishParts.forEach((part) => {
 
     fishParts.forEach((item) => item.classList.remove("active"));
     part.classList.add("active");
+    updateFishConnector(part);
 
     const updateFishInfo = () => {
       document.querySelector("#fishPart").textContent = data.part;
@@ -635,8 +910,15 @@ fishParts.forEach((part) => {
     fishInfo.classList.remove("is-settled");
     fishInfo.classList.add("is-changing");
     window.setTimeout(updateFishInfo, 180);
+    window.setTimeout(() => updateFishConnector(part), 220);
   });
 });
+
+if (fishParts.length) {
+  scheduleFishConnectorUpdate();
+  window.addEventListener("resize", scheduleFishConnectorUpdate, { passive: true });
+  window.addEventListener("scroll", scheduleFishConnectorUpdate, { passive: true });
+}
 
 const hotspotEditMode = new URLSearchParams(window.location.search).has("editHotspot");
 

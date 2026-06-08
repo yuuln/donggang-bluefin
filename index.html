@@ -36,6 +36,7 @@
       </div>
     </div>
     <div class="cursor-glow" aria-hidden="true"></div>
+    <audio id="mainMusic" src="音樂/主音樂.mp3" loop preload="auto"></audio>
     <div class="nav-hover-zone" aria-hidden="true"></div>
     <nav class="site-nav" aria-label="主要導覽">
       <a class="brand" href="#hero" aria-label="回到首頁">
@@ -294,7 +295,6 @@
           <video id="timelinePreviewVideo" class="timeline-preview-video" loop playsinline preload="metadata" src="assets/timeline/ocean.mp4"></video>
           <div class="timeline-preview-fallback"></div>
           <div class="timeline-preview-overlay"></div>
-          <p id="timelinePreviewLabel">海洋</p>
         </div>
         <div class="life-timeline reveal" aria-label="一尾黑鮪魚的一生時間軸">
           <article class="life-node active" tabindex="0" role="button" aria-current="true" data-video="assets/timeline/ocean.mp4" data-label="海洋">
@@ -340,24 +340,89 @@
         </div>
       </section>
 
+      <section id="kuroshio-sound" class="sound-section section-pad">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Kuroshio Soundscape</p>
+          <h2>黑潮之聲</h2>
+          <p>用三段音樂，聽見東港從海上到餐桌的旅程</p>
+        </div>
+        <div class="sound-grid reveal" aria-label="黑潮之聲音樂播放清單">
+          <article class="sound-card is-selected" data-sound-card data-src="音樂/Harbor Lanterns.mp3" tabindex="0" role="button" aria-pressed="true">
+            <span class="sound-index">01</span>
+            <h3>海未醒時</h3>
+            <p>凌晨、黑潮、漁船出海前的深藍聲景。</p>
+          </article>
+          <article class="sound-card" data-sound-card data-src="音樂/Pacific Drift.mp3" tabindex="0" role="button" aria-pressed="false">
+            <span class="sound-index">02</span>
+            <h3>回港之路</h3>
+            <p>漁船返航、海面光線、黑鮪魚回到港口。</p>
+          </article>
+          <article class="sound-card" data-sound-card data-src="音樂/Untitled.mp3" tabindex="0" role="button" aria-pressed="false">
+            <span class="sound-index">03</span>
+            <h3>港邊入席</h3>
+            <p>魚市場、辦桌、生魚片、黑鮪魚季的地方生活。</p>
+          </article>
+        </div>
+        <div class="sound-player reveal" aria-label="黑潮之聲播放器">
+          <audio id="kuroshioPlayer" preload="metadata" src="音樂/Harbor Lanterns.mp3"></audio>
+          <div class="sound-now">
+            <span>Now Playing</span>
+            <strong id="soundNowTitle">海未醒時</strong>
+          </div>
+          <div class="sound-controls">
+            <button class="sound-skip" type="button" data-skip="-5" aria-label="倒退 5 秒">-5s</button>
+            <button id="soundToggle" class="sound-toggle" type="button" aria-label="播放海未醒時">播放</button>
+            <button class="sound-skip" type="button" data-skip="5" aria-label="前進 5 秒">+5s</button>
+          </div>
+          <input id="soundProgress" class="sound-progress" type="range" min="0" max="100" value="0" step="0.1" aria-label="黑潮之聲播放進度" />
+          <div class="sound-time"><span id="soundCurrentTime">0:00</span><span id="soundDuration">0:00</span></div>
+        </div>
+      </section>
+
       <section id="ending" class="ending-section" aria-label="東港黑鮪魚文化旅程結尾">
         <div class="ending-sea" aria-hidden="true"></div>
         <div class="ending-fog fog-one" aria-hidden="true"></div>
         <div class="ending-fog fog-two" aria-hidden="true"></div>
         <span class="ending-boat-light" aria-hidden="true"></span>
         <div class="ending-content">
-          <p class="ending-line ending-line-one">東港的一天結束了</p>
-          <p class="ending-line ending-line-two">而海</p>
-          <p class="ending-line ending-line-three">依然在等待下一艘船回家</p>
-          <p class="ending-line ending-line-four">謝謝你陪伴這趟旅程</p>
-          <div class="ending-line ending-signature">
-            <strong>東港黑鮪魚文化</strong>
-            <span>Donggang Bluefin Tuna Heritage</span>
-          </div>
-          <div class="ending-actions ending-line">
-            <a href="#hero">回到開頭</a>
-            <a href="#story">再看一次旅程</a>
-          </div>
+          <p class="ending-line ending-line-one">一尾黑鮪魚的旅程，<br />從海洋開始。</p>
+          <p class="ending-line ending-line-two">經過黑潮、<br />漁船、<br />港口與餐桌。</p>
+          <p class="ending-line ending-line-three">而東港的故事，<br />至今仍持續著。</p>
+          <h2 class="ending-line ending-title">故事沒有結束。</h2>
+          <p class="ending-line ending-subtitle">每一次漁船返港，<br />都是另一段旅程的開始。</p>
+        </div>
+      </section>
+
+      <section id="behind-the-scene" class="behind-section section-pad" aria-label="幕後特展">
+        <div class="behind-entry reveal">
+          <p class="eyebrow">Behind The Scene</p>
+          <h2>幕後特展</h2>
+          <p class="behind-subtitle">這段旅程是如何被創造的？</p>
+          <p>
+            從文化研究、視覺設計、聲音體驗，
+            到 AI 協作創作，
+            邀請你走進幕後，
+            看看這個作品誕生的過程。
+          </p>
+          <a class="button primary" href="#">探索設計理念</a>
+        </div>
+        <div class="behind-grid reveal" aria-label="Design Concept 展示框架">
+          <article>
+            <span>01</span>
+            <h3>設計理念</h3>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>視覺風格手冊</h3>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>AI 創作流程</h3>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Prompt 展示館</h3>
+          </article>
         </div>
       </section>
 
