@@ -71,8 +71,7 @@ main > section {
 }
 
 .story-section,
-.auction-section,
-.fish-section {
+.auction-section {
   min-height: auto;
   scroll-snap-align: none;
   scroll-snap-stop: normal;
@@ -82,6 +81,7 @@ main > section {
 .story-scene,
 .culture-section,
 #picture-book,
+.fish-section,
 #life-timeline,
 #ending {
   min-height: 100vh;
@@ -953,21 +953,20 @@ h3 {
 
 .record-price {
   min-width: 0;
-  overflow: hidden;
   white-space: nowrap;
 }
 
 .record-price span {
-  max-width: calc(100% - 2.8rem);
-  overflow: hidden;
-  text-overflow: clip;
-  font-size: clamp(1.55rem, 3.2vw, 3.2rem);
+  max-width: none;
+  overflow: visible;
+  font-size: clamp(1.35rem, 2.65vw, 2.75rem);
+  letter-spacing: -0.02em;
   vertical-align: baseline;
 }
 
 .record-price small {
-  margin: 0 0.45rem 0 0;
-  font-size: clamp(0.75rem, 1.25vw, 1rem);
+  margin: 0 0.32rem 0 0;
+  font-size: clamp(0.68rem, 1.05vw, 0.9rem);
   vertical-align: 0.42em;
 }
 
