@@ -72,8 +72,7 @@ main > section {
 
 .story-section,
 .auction-section,
-.fish-section,
-.picture-book-section {
+.fish-section {
   min-height: auto;
   scroll-snap-align: none;
   scroll-snap-stop: normal;
@@ -82,6 +81,7 @@ main > section {
 .hero,
 .story-scene,
 .culture-section,
+#picture-book,
 #life-timeline,
 #ending {
   min-height: 100vh;
@@ -952,16 +952,22 @@ h3 {
 }
 
 .record-price {
+  min-width: 0;
+  overflow: hidden;
   white-space: nowrap;
 }
 
 .record-price span {
-  font-size: clamp(2rem, 4.15vw, 3.9rem);
+  max-width: calc(100% - 2.8rem);
+  overflow: hidden;
+  text-overflow: clip;
+  font-size: clamp(1.55rem, 3.2vw, 3.2rem);
+  vertical-align: baseline;
 }
 
 .record-price small {
   margin: 0 0.45rem 0 0;
-  font-size: clamp(0.9rem, 1.6vw, 1.2rem);
+  font-size: clamp(0.75rem, 1.25vw, 1rem);
   vertical-align: 0.42em;
 }
 
@@ -1716,7 +1722,12 @@ dd {
 
 .picture-book-section {
   position: relative;
+  display: grid;
+  align-items: center;
+  min-height: 100vh;
   overflow: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   background:
     radial-gradient(circle at 22% 18%, rgba(200, 154, 61, 0.1), transparent 22rem),
     linear-gradient(180deg, rgba(29, 46, 56, 0.72), rgba(13, 43, 64, 0.68));
@@ -1741,9 +1752,10 @@ dd {
 .picture-book-banner {
   position: relative;
   display: grid;
-  width: min(100%, 58rem);
+  width: min(100%, 56rem);
   aspect-ratio: 1448 / 1086;
-  min-height: 30rem;
+  min-height: 0;
+  max-height: min(78vh, 42rem);
   margin: 0 auto;
   overflow: hidden;
   background:
@@ -2973,6 +2985,14 @@ dd {
   .site-footer {
     scroll-snap-align: none;
     scroll-snap-stop: normal;
+  }
+
+  .picture-book-section {
+    min-height: auto;
+  }
+
+  .picture-book-banner {
+    max-height: none;
   }
 
   .life-timeline {

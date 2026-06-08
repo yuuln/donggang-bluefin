@@ -34,8 +34,7 @@ const prevPicturePageButton = document.querySelector("#prevPicturePage");
 const nextPicturePageButton = document.querySelector("#nextPicturePage");
 const pictureBookImage = document.querySelector("#pictureBookImage");
 const pictureBookPageCount = document.querySelector("#pictureBookPageCount");
-const snapSections = Array.from(document.querySelectorAll(".hero, .scene-sail, .scene-migration, #auction, #culture, #picture-book, .fish-section, #life-timeline, #ending"));
-const freeScrollSelectors = ".auction-section, .fish-section, .picture-book-section";
+const pictureBookSection = document.querySelector("#picture-book");
 
 if ("scrollRestoration" in window.history) {
   window.history.scrollRestoration = "manual";
@@ -409,50 +408,15 @@ window.addEventListener("scroll", () => {
   });
 }, { passive: true });
 
-let snapWheelLocked = false;
-let snapWheelDelta = 0;
-let snapWheelResetTimer = null;
-let snapWheelUnlockTimer = null;
+let pictureBookSnapLocked = false;
+let pictureBookSnapDelta = 0;
+let pictureBookSnapResetTimer = null;
+let pictureBookSnapUnlockTimer = null;
 
-const getSnapIndex = (section) => {
-  if (!section) return -1;
-  return snapSections.indexOf(section);
-};
-
-const getNearestSnapIndex = () => {
-  if (!snapSections.length) return -1;
-
-  return snapSections.reduce((nearestIndex, section, index) => {
-    const nearestDistance = Math.abs(snapSections[nearestIndex].getBoundingClientRect().top);
-    const distance = Math.abs(section.getBoundingClientRect().top);
-    return distance < nearestDistance ? index : nearestIndex;
-  }, 0);
-};
-
-const getCurrentFreeScrollSection = () => {
-  return Array.from(document.querySelectorAll(freeScrollSelectors)).find((section) => {
-    const rect = section.getBoundingClientRect();
-    return rect.top < window.innerHeight * 0.45 && rect.bottom > window.innerHeight * 0.55;
-  });
-};
-
-const canScrollInsideFreeSection = (section, direction) => {
-  if (!section) return false;
-
-  const rect = section.getBoundingClientRect();
-  const tolerance = 18;
-
-  if (direction > 0) {
-    return rect.bottom > window.innerHeight + tolerance;
-  }
-
-  return rect.top < -tolerance;
-};
-
-const shouldSkipSnapWheel = (event) => {
+const shouldSkipPictureBookSnap = (event) => {
   const eventTarget = event.target instanceof Element ? event.target : null;
 
-  if (!snapSections.length) return true;
+  if (!pictureBookSection) return true;
   if (window.matchMedia("(max-width: 768px)").matches) return true;
   if (event.ctrlKey || event.metaKey || event.shiftKey) return true;
   if (document.body.classList.contains("intro-active")) return true;
@@ -464,42 +428,34 @@ const shouldSkipSnapWheel = (event) => {
 };
 
 window.addEventListener("wheel", (event) => {
-  if (shouldSkipSnapWheel(event)) return;
+  if (shouldSkipPictureBookSnap(event)) return;
 
   const direction = event.deltaY > 0 ? 1 : -1;
-  const freeSection = getCurrentFreeScrollSection();
+  const rect = pictureBookSection.getBoundingClientRect();
+  const isApproachingFromAbove = direction > 0 && rect.top > 24 && rect.top < window.innerHeight * 0.72;
+  const isApproachingFromBelow = direction < 0 && rect.top < -24 && rect.bottom > window.innerHeight * 0.28;
 
-  if (canScrollInsideFreeSection(freeSection, direction)) {
-    return;
-  }
+  if (!isApproachingFromAbove && !isApproachingFromBelow) return;
 
   event.preventDefault();
-  if (snapWheelLocked) return;
+  if (pictureBookSnapLocked) return;
 
-  snapWheelDelta += event.deltaY;
-  window.clearTimeout(snapWheelResetTimer);
-  snapWheelResetTimer = window.setTimeout(() => {
-    snapWheelDelta = 0;
+  pictureBookSnapDelta += event.deltaY;
+  window.clearTimeout(pictureBookSnapResetTimer);
+  pictureBookSnapResetTimer = window.setTimeout(() => {
+    pictureBookSnapDelta = 0;
   }, 160);
 
-  if (Math.abs(snapWheelDelta) < 58) return;
+  if (Math.abs(pictureBookSnapDelta) < 48) return;
 
-  const currentIndex = freeSection ? getSnapIndex(freeSection) : getNearestSnapIndex();
-  if (currentIndex < 0) return;
+  pictureBookSnapDelta = 0;
+  pictureBookSnapLocked = true;
+  pictureBookSection.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  const nextIndex = Math.max(0, Math.min(snapSections.length - 1, currentIndex + direction));
-  const nextSection = snapSections[nextIndex];
-
-  snapWheelDelta = 0;
-  if (!nextSection || nextIndex === currentIndex) return;
-
-  snapWheelLocked = true;
-  nextSection.scrollIntoView({ behavior: "smooth", block: "start" });
-
-  window.clearTimeout(snapWheelUnlockTimer);
-  snapWheelUnlockTimer = window.setTimeout(() => {
-    snapWheelLocked = false;
-  }, 760);
+  window.clearTimeout(pictureBookSnapUnlockTimer);
+  pictureBookSnapUnlockTimer = window.setTimeout(() => {
+    pictureBookSnapLocked = false;
+  }, 700);
 }, { passive: false });
 
 window.addEventListener("mousemove", (event) => {
