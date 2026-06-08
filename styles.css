@@ -134,6 +134,14 @@ img {
   mix-blend-mode: screen;
 }
 
+.nav-hover-zone {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 19;
+  height: 5.5rem;
+  pointer-events: auto;
+}
+
 #intro {
   --flash-x: 50%;
   --flash-y: 50%;
@@ -406,7 +414,10 @@ img {
   padding: 0.8rem 1rem;
   border: 1px solid transparent;
   border-radius: 999px;
-  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, opacity 0.28s ease, transform 0.28s ease, visibility 0.28s ease;
 }
 
 .site-nav.scrolled,
@@ -417,6 +428,13 @@ img {
   backdrop-filter: blur(18px);
 }
 
+.site-nav.nav-hidden:not(:hover):not(:focus-within):not(.menu-active) {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-0.85rem);
+  visibility: hidden;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -424,6 +442,11 @@ img {
   font-family: var(--serif);
   font-weight: 700;
   letter-spacing: 0;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+  visibility: visible;
+  transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s ease;
 }
 
 .brand-mark {
@@ -1137,6 +1160,7 @@ dd {
 
 .auction-simulator.is-open {
   max-height: 80rem;
+  min-height: 100vh;
   margin-top: 1rem;
   border-color: var(--line);
   scroll-snap-align: start;

@@ -1,9 +1,11 @@
 const nav = document.querySelector(".site-nav");
+const navHoverZone = document.querySelector(".nav-hover-zone");
 const navToggle = document.querySelector(".nav-toggle");
 const cursorGlow = document.querySelector(".cursor-glow");
 const intro = document.querySelector("#intro");
 const enterSiteButton = document.querySelector("#enterSite");
 const flashlight = document.querySelector(".flashlight");
+const sailScene = document.querySelector(".scene-sail");
 const lifeTimelineSection = document.querySelector("#life-timeline");
 const lifeTimelineNodes = document.querySelectorAll(".life-node[data-video]");
 const timelinePreview = document.querySelector(".timeline-preview");
@@ -123,6 +125,10 @@ const renderFishMethods = (methods = []) => {
 
 const updateNav = () => {
   nav.classList.toggle("scrolled", window.scrollY > 24);
+  if (!sailScene) return;
+
+  const sailTop = sailScene.getBoundingClientRect().top;
+  nav.classList.toggle("nav-hidden", sailTop <= 12 && !nav.classList.contains("is-peeking"));
 };
 
 if (intro && enterSiteButton) {
@@ -445,6 +451,15 @@ const getCurrentFreePageSection = () => {
   const section = document.querySelector(freePageScrollSelector);
   if (!section) return null;
 
+  if (auctionSimulator?.classList.contains("is-open")) {
+    const simulatorRect = auctionSimulator.getBoundingClientRect();
+    const simulatorInViewCenter = simulatorRect.top < window.innerHeight * 0.55 && simulatorRect.bottom > window.innerHeight * 0.45;
+
+    if (simulatorInViewCenter) {
+      return null;
+    }
+  }
+
   const rect = section.getBoundingClientRect();
   return rect.top < window.innerHeight * 0.45 && rect.bottom > window.innerHeight * 0.55 ? section : null;
 };
@@ -456,7 +471,7 @@ const canScrollInsideFreePageSection = (section, direction) => {
     const simulatorRect = auctionSimulator.getBoundingClientRect();
     const shouldSnapToSimulator =
       direction > 0
-        ? simulatorRect.top > 24 && simulatorRect.top < window.innerHeight * 0.86
+        ? simulatorRect.top > 24
         : simulatorRect.top < -24 && simulatorRect.bottom > window.innerHeight * 0.2;
 
     if (shouldSnapToSimulator) {
@@ -547,6 +562,7 @@ window.addEventListener("mousemove", (event) => {
 
 navToggle?.addEventListener("click", () => {
   nav.classList.toggle("menu-active");
+  nav.classList.remove("nav-hidden");
   document.body.classList.toggle("menu-open");
 });
 
@@ -555,6 +571,26 @@ document.querySelectorAll(".nav-links a").forEach((link) => {
     nav.classList.remove("menu-active");
     document.body.classList.remove("menu-open");
   });
+});
+
+navHoverZone?.addEventListener("mouseenter", () => {
+  nav.classList.add("is-peeking");
+  nav.classList.remove("nav-hidden");
+});
+
+navHoverZone?.addEventListener("mouseleave", () => {
+  nav.classList.remove("is-peeking");
+  updateNav();
+});
+
+nav?.addEventListener("mouseenter", () => {
+  nav.classList.add("is-peeking");
+  nav.classList.remove("nav-hidden");
+});
+
+nav?.addEventListener("mouseleave", () => {
+  nav.classList.remove("is-peeking");
+  updateNav();
 });
 
 auctionCards.forEach((card) => {
@@ -1040,7 +1076,6 @@ if (
     bidStatus.classList.add("is-live");
     bidStatus.classList.remove("is-rival");
     bidStatus.textContent = `拍賣開始：黑鮪魚 ${fishWeight} kg，以每公斤 ${formatCurrency(openingUnitBid)} 起標`;
-    auctionSimulator.scrollIntoView({ behavior: "smooth", block: "start" });
     auctionTimer = window.setTimeout(runBidEvent, 3500);
   };
 
