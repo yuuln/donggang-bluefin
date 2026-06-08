@@ -193,7 +193,7 @@ const updateNav = () => {
 };
 
 const mainMusicVolume = 0.42;
-const mainMusicDuckedVolume = 0.16;
+const mainMusicDuckedVolume = 0.24;
 let isMainMusicDucked = false;
 let mainMusicFadeTimer = null;
 
@@ -253,6 +253,11 @@ const playMainMusic = () => {
   mainMusic.play().catch(() => undefined);
 };
 
+const tryPlayMainMusic = () => {
+  if (!mainMusic || document.hidden) return;
+  playMainMusic();
+};
+
 const startIntroMusic = () => {
   playMainMusic();
   document.removeEventListener("pointerdown", startIntroMusic);
@@ -270,7 +275,9 @@ const formatSoundTime = (seconds = 0) => {
 
 if (intro && enterSiteButton) {
   document.body.classList.add("intro-active");
-  window.addEventListener("load", playMainMusic, { once: true });
+  tryPlayMainMusic();
+  window.addEventListener("load", tryPlayMainMusic, { once: true });
+  document.addEventListener("visibilitychange", tryPlayMainMusic);
   document.addEventListener("pointerdown", startIntroMusic);
   document.addEventListener("touchstart", startIntroMusic);
   document.addEventListener("keydown", startIntroMusic);
