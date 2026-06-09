@@ -143,25 +143,25 @@ const firstTunaRecords = [
   {
     year: 2026,
     boat: "富漁慶2號",
-    story: "琉球籍漁船「富漁慶2號」於4月5日上午9點多，在台灣西南方海域捕獲2026年第一尾黑鮪魚。\n\n船長洪福家現年67歲，是歷屆第一鮪紀錄中年紀最大的船長。\n\n原本出海尋找旗魚，卻意外與這尾公黑鮪相遇，船長興奮得整晚睡不著，也為今年黑鮪魚季揭開序幕。",
+    story: "琉球籍漁船「富漁慶2號」於4月5日上午9點多，在台灣西南方海域捕獲2026年第一尾黑鮪魚。\n\n船長洪福家現年67歲，是歷屆第一鮪紀錄中年紀最大的船長。\n\n原預計要抓旗魚，沒想到竟捕獲黑鮪魚，回想捕撈過程真的緊張又刺激，與黑鮪魚搏鬥30分鐘，還差點掉鉤，在大家合力之下將魚拉上船，真的高興到睡不著。",
     image: "assets/2026.webp"
   },
   {
     year: 2025,
     boat: "茂豐祥號",
-    story: "東港籍漁船「茂豐祥號」捕獲2025年第一鮪。\n\n船長陳睿豪現年32歲，是歷屆最年輕的第一鮪船長。\n\n巧合的是，捕獲當天正好是他的生日。這尾黑鮪魚不只是今年第一鮪，也象徵年輕世代接下父業，延續東港漁港的討海精神。",
+    story: "東港籍漁船「茂豐祥號」於4月6日上午捕獲2025年第一鮪。\n\n船長陳睿豪現年32歲，是歷屆最年輕的第一鮪船長。\n\n巧合的是，捕獲當天正好是他的生日。這尾黑鮪魚不只是今年第一鮪，也象徵年輕世代接下父業，延續東港漁港的討海精神。",
     image: "assets/2025.jpg"
   },
   {
     year: 2024,
     boat: "安穩發8號",
-    story: "琉球籍漁船「安穩發8號」於台灣東南方海域捕獲第一鮪。\n\n船長莊光陽討海超過30年，首次獲得第一鮪資格。\n\n多年等待終於實現，船長形容這份幸運就像中了樂透。",
+    story: "琉球籍漁船「安穩發8號」於4月16日在台灣東南方海域捕獲第一鮪。\n\n船長莊光陽討海超過30年，首次獲得第一鮪資格。\n\n多年等待終於實現，船長形容這份幸運就像中了樂透。",
     image: "assets/2024.jpg"
   },
   {
     year: 2023,
     boat: "新發財1號",
-    story: "琉球籍漁船「新發財1號」捕獲2023年第一鮪。\n\n船長洪明全已有近50年討海經驗。\n\n原本進行普通鮪與旗魚捕撈，卻意外迎來第一鮪。這尾黑鮪魚後續拍賣創下當時歷史高價，成為東港漁港的重要紀錄之一。",
+    story: "琉球籍漁船「新發財1號」於3月31日捕獲2023年第一鮪。\n\n船長洪明全已有近50年討海經驗。\n\n原本進行普通鮪與旗魚捕撈，卻意外迎來第一鮪。這尾黑鮪魚後續拍賣創下當時歷史高價，成為東港漁港的重要紀錄之一。",
     image: "assets/2023.jpg"
   }
 ];
@@ -180,7 +180,7 @@ const renderFirstTunaStoryPanel = () => {
 
 船長洪福家現年67歲，是歷屆第一鮪紀錄中年紀最大的船長。
 
-原本出海尋找旗魚，卻意外與這尾公黑鮪相遇，船長興奮得整晚睡不著，也為今年黑鮪魚季揭開序幕。</p>
+原預計要抓旗魚，沒想到竟捕獲黑鮪魚，回想捕撈過程真的緊張又刺激，與黑鮪魚搏鬥30分鐘，還差點掉鉤，在大家合力之下將魚拉上船，真的高興到睡不著。</p>
   `;
 };
 
@@ -918,6 +918,21 @@ let pageSnapLocked = false;
 let pageSnapDelta = 0;
 let pageSnapResetTimer = null;
 let pageSnapUnlockTimer = null;
+let pageSnapLockStartedAt = 0;
+let lastWheelDirection = 0;
+let pageSnapWheelDelta = 0;
+let pageSnapDeltaDirection = 0;
+const enableCustomPageSnap = true;
+const enablePageSnapSettle = false;
+
+const schedulePageSnapUnlock = () => {
+  window.clearTimeout(pageSnapUnlockTimer);
+  pageSnapUnlockTimer = window.setTimeout(() => {
+    pageSnapLocked = false;
+    pageSnapDelta = 0;
+    pageSnapDeltaDirection = 0;
+  }, 560);
+};
 
 const getPageSnapIndex = (section) => {
   if (!section) return -1;
@@ -1011,12 +1026,7 @@ const isNavigatingBetweenSnapSections = (direction) => {
 };
 
 const shouldLetNativeScrollLead = (target, direction) => {
-  if (isInsideScrollableElement(target, direction)) return true;
-
-  const freeSection = getCurrentFreePageSection();
-  if (!freeSection) return false;
-
-  return canScrollInsideFreePageSection(freeSection, direction);
+  return false;
 };
 
 const canScrollInsideFreePageSection = (section, direction) => {
@@ -1042,24 +1052,45 @@ const shouldSkipPageSnap = (event) => {
 };
 
 window.addEventListener("wheel", (event) => {
+  if (event.deltaY === 0) return;
+
+  const normalizedDelta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1);
+  lastWheelDirection = normalizedDelta > 0 ? 1 : -1;
+  pageSnapWheelDelta += normalizedDelta;
+
+  if (!enableCustomPageSnap) {
+    window.clearTimeout(pageSnapSettleTimer);
+    pageSnapSettleTimer = window.setTimeout(settleToNearestPageSnapSection, 150);
+    return;
+  }
+
   if (shouldSkipPageSnap(event)) return;
 
-  const direction = event.deltaY > 0 ? 1 : -1;
+  const direction = normalizedDelta > 0 ? 1 : -1;
 
   if (shouldLetNativeScrollLead(event.target, direction)) {
     return;
   }
 
   event.preventDefault();
-  if (pageSnapLocked) return;
+  if (pageSnapLocked) {
+    return;
+  }
 
-  pageSnapDelta += event.deltaY;
+  if (pageSnapDeltaDirection && pageSnapDeltaDirection !== direction) {
+    pageSnapDelta = 0;
+  }
+
+  pageSnapDeltaDirection = direction;
+  pageSnapDelta += normalizedDelta;
   window.clearTimeout(pageSnapResetTimer);
   pageSnapResetTimer = window.setTimeout(() => {
     pageSnapDelta = 0;
-  }, 160);
+    pageSnapDeltaDirection = 0;
+  }, 220);
 
-  if (Math.abs(pageSnapDelta) < 58) return;
+  const snapThreshold = event.deltaMode === 0 ? 118 : 64;
+  if (Math.abs(pageSnapDelta) < snapThreshold) return;
 
   const currentIndex = getNearestPageSnapIndex();
   if (currentIndex < 0) return;
@@ -1069,16 +1100,74 @@ window.addEventListener("wheel", (event) => {
   const nextSection = visiblePageSnapSections[nextIndex];
 
   pageSnapDelta = 0;
+  pageSnapDeltaDirection = 0;
   if (!nextSection || nextIndex === currentIndex) return;
 
   pageSnapLocked = true;
+  pageSnapLockStartedAt = performance.now();
   nextSection.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  window.clearTimeout(pageSnapUnlockTimer);
-  pageSnapUnlockTimer = window.setTimeout(() => {
-    pageSnapLocked = false;
-  }, 760);
+  schedulePageSnapUnlock();
 }, { passive: false });
+
+let pageSnapSettleTimer = null;
+let isPageSnapSettling = false;
+
+const shouldSkipPageSnapSettle = () => {
+  if (!getVisiblePageSnapSections().length) return true;
+  if (window.matchMedia("(pointer: coarse)").matches) return true;
+  if (document.body.classList.contains("intro-active")) return true;
+  if (document.body.classList.contains("menu-open")) return true;
+  if (document.body.classList.contains("reader-open")) return true;
+  if (getCurrentFreePageSection()) return true;
+
+  return false;
+};
+
+const settleToNearestPageSnapSection = () => {
+  if (shouldSkipPageSnapSettle()) {
+    pageSnapWheelDelta = 0;
+    return;
+  }
+
+  const currentIndex = getNearestPageSnapIndex();
+  if (currentIndex < 0) return;
+
+  const section = getVisiblePageSnapSections()[currentIndex];
+  if (!section) return;
+
+  const rect = section.getBoundingClientRect();
+  const distance = Math.abs(rect.top);
+  const visiblePageSnapSections = getVisiblePageSnapSections();
+  const strongWheelGesture = Math.abs(pageSnapWheelDelta) > 90;
+  let targetSection = section;
+
+  if (lastWheelDirection > 0 && strongWheelGesture) {
+    targetSection = visiblePageSnapSections[Math.min(visiblePageSnapSections.length - 1, currentIndex + 1)] || section;
+  }
+
+  if (lastWheelDirection < 0 && strongWheelGesture) {
+    targetSection = visiblePageSnapSections[Math.max(0, currentIndex - 1)] || section;
+  }
+
+  if (!strongWheelGesture && distance < 8) return;
+
+  isPageSnapSettling = true;
+  pageSnapWheelDelta = 0;
+  targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  window.setTimeout(() => {
+    isPageSnapSettling = false;
+  }, 620);
+};
+
+window.addEventListener("scroll", () => {
+  if (!enablePageSnapSettle) return;
+  if (isPageSnapSettling || shouldSkipPageSnapSettle()) return;
+
+  window.clearTimeout(pageSnapSettleTimer);
+  pageSnapSettleTimer = window.setTimeout(settleToNearestPageSnapSection, 120);
+}, { passive: true });
 
 window.addEventListener("mousemove", (event) => {
   const { clientX, clientY } = event;
