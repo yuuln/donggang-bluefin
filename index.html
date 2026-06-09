@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;900&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=first-tuna-story-card" />
   </head>
   <body>
     <div id="intro" class="intro-overlay" aria-label="東港凌晨四點開場動畫">
@@ -101,58 +101,51 @@
       <section id="auction" class="auction-section section-pad">
         <div class="section-heading reveal">
           <h2>第一鮪拍賣</h2>
-          <p>
-            每年第一尾黑鮪魚回到東港，拍賣場的燈光、喊價與掌聲，讓漁港的一天正式展開。
-          </p>
+          <div class="auction-entry">
+            <button class="start-auction-button" id="startAuctionButton" type="button">體驗拍賣現場</button>
+          </div>
         </div>
         <div class="auction-stage">
-          <div class="auction-entry reveal">
-            <button class="start-auction-button" id="startAuctionButton" type="button">開始模擬喊價</button>
-          </div>
-          <div
-            class="auction-record reveal"
-            tabindex="0"
-            data-year="2026"
-            data-weight="190kg"
-            data-price="NT$2,014,000"
-            data-desc="2026 第一鮪重 190 公斤，以 NT$2,014,000 成交，延續東港第一鮪的年度記憶。"
-          >
-            <p>2026 第一鮪紀錄</p>
-            <div class="record-grid">
-              <div>
-                <span class="counter" data-target="190">0</span><small>kg</small>
-                <label>重量</label>
-              </div>
-              <div class="record-price">
-                <small>NT$</small><span class="counter" data-target="2014000">0</span>
-                <label>成交價格</label>
-              </div>
-            </div>
-          </div>
           <div class="auction-cards reveal" aria-label="歷年第一鮪紀錄">
-            <article class="auction-card" data-year="2025" data-weight="613kg" data-price="NT$2,300,000">
+            <article class="auction-card active" tabindex="0" data-year="2026" data-weight="190kg" data-price="NT$2,014,000">
+              <span>2026</span>
+              <div class="auction-card-stats">
+                <div><small>重量</small><b>190kg</b></div>
+                <div><small>成交價格</small><b>NT$2,014,000</b></div>
+              </div>
+            </article>
+            <article class="auction-card" tabindex="0" data-year="2025" data-weight="224.6kg" data-price="NT$2,307,200">
               <span>2025</span>
-              <strong>深海歸航</strong>
-              <p>銀藍魚身被推上拍賣台，點亮今年第一個魚汛信號。</p>
+              <div class="auction-card-stats">
+                <div><small>重量</small><b>224.6kg</b></div>
+                <div><small>成交價格</small><b>NT$2,307,200</b></div>
+              </div>
             </article>
-            <article class="auction-card" data-year="2024" data-weight="208kg" data-price="NT$1,680,000">
+            <article class="auction-card" tabindex="0" data-year="2024" data-weight="250kg" data-price="NT$1,680,000">
               <span>2024</span>
-              <strong>拍賣聲起</strong>
-              <p>秤重、驗魚、喊價交錯，市場在清晨快速升溫。</p>
+              <div class="auction-card-stats">
+                <div><small>重量</small><b>250kg</b></div>
+                <div><small>成交價格</small><b>NT$1,680,000</b></div>
+              </div>
             </article>
-            <article class="auction-card" data-year="2023" data-weight="210kg" data-price="NT$1,700,000">
+            <article class="auction-card" tabindex="0" data-year="2023" data-weight="186kg" data-price="NT$1,897,200">
               <span>2023</span>
-              <strong>港口榮光</strong>
-              <p>第一鮪連結漁民、買家與餐桌，也成為東港的年度記憶。</p>
+              <div class="auction-card-stats">
+                <div><small>重量</small><b>186kg</b></div>
+                <div><small>成交價格</small><b>NT$1,897,200</b></div>
+              </div>
             </article>
           </div>
-          <aside class="museum-panel reveal" aria-live="polite">
-            <h3 id="auctionYear">2026</h3>
-            <dl>
-              <div><dt>重量</dt><dd id="auctionWeight">190kg</dd></div>
-              <div><dt>成交價</dt><dd id="auctionPrice">NT$2,014,000</dd></div>
-            </dl>
-            <p id="auctionDesc">銀藍魚身被推上拍賣台，點亮今年第一個魚汛信號。</p>
+          <aside class="museum-panel first-tuna-panel first-tuna-story-panel reveal" aria-live="polite">
+            <figure class="first-tuna-photo">
+              <img id="firstTunaImage" src="assets/2026.webp" alt="2026 第一鮪照片" />
+              <div id="firstTunaImagePlaceholder" class="first-tuna-image-placeholder" hidden>2026 第一鮪影像資料整理中</div>
+            </figure>
+            <p id="auctionDesc">琉球籍漁船「富漁慶2號」於4月5日上午9點多，在台灣西南方海域捕獲2026年第一尾黑鮪魚。
+
+船長洪福家現年67歲，是歷屆第一鮪紀錄中年紀最大的船長。
+
+原本出海尋找旗魚，卻意外與這尾公黑鮪相遇，船長興奮得整晚睡不著，也為今年黑鮪魚季揭開序幕。</p>
           </aside>
         </div>
         <div class="auction-simulator" id="auctionSimulator" aria-labelledby="auctionSimulatorTitle" aria-hidden="true">
@@ -504,7 +497,7 @@
               <article>
                 <span>第一站｜啟航</span>
                 <h5>讓一尾黑鮪魚開口說話</h5>
-                <p>一個問題成為整個專題的起點：「如果黑鮪魚能夠說話，它會如何介紹自己的一生？」我希望讓參觀者不是閱讀介紹，而是親自走過黑鮪魚從海洋到餐桌的旅程。</p>
+                <p>一個問題成為整個專案的起點：「如果黑鮪魚能夠說話，它會如何介紹自己的一生？」我希望讓參觀者不是閱讀介紹，而是親自走過黑鮪魚從海洋到餐桌的旅程。</p>
               </article>
               <article>
                 <span>第二站｜文化研究</span>
@@ -640,6 +633,6 @@
       <p>Designed for ylinnn.</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=first-tuna-story-card"></script>
   </body>
 </html>

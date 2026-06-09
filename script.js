@@ -139,6 +139,53 @@ const fishData = {
   }
 };
 
+const firstTunaRecords = [
+  {
+    year: 2026,
+    boat: "富漁慶2號",
+    story: "琉球籍漁船「富漁慶2號」於4月5日上午9點多，在台灣西南方海域捕獲2026年第一尾黑鮪魚。\n\n船長洪福家現年67歲，是歷屆第一鮪紀錄中年紀最大的船長。\n\n原本出海尋找旗魚，卻意外與這尾公黑鮪相遇，船長興奮得整晚睡不著，也為今年黑鮪魚季揭開序幕。",
+    image: "assets/2026.webp"
+  },
+  {
+    year: 2025,
+    boat: "茂豐祥號",
+    story: "東港籍漁船「茂豐祥號」捕獲2025年第一鮪。\n\n船長陳睿豪現年32歲，是歷屆最年輕的第一鮪船長。\n\n巧合的是，捕獲當天正好是他的生日。這尾黑鮪魚不只是今年第一鮪，也象徵年輕世代接下父業，延續東港漁港的討海精神。",
+    image: "assets/2025.jpg"
+  },
+  {
+    year: 2024,
+    boat: "安穩發8號",
+    story: "琉球籍漁船「安穩發8號」於台灣東南方海域捕獲第一鮪。\n\n船長莊光陽討海超過30年，首次獲得第一鮪資格。\n\n多年等待終於實現，船長形容這份幸運就像中了樂透。",
+    image: "assets/2024.jpg"
+  },
+  {
+    year: 2023,
+    boat: "新發財1號",
+    story: "琉球籍漁船「新發財1號」捕獲2023年第一鮪。\n\n船長洪明全已有近50年討海經驗。\n\n原本進行普通鮪與旗魚捕撈，卻意外迎來第一鮪。這尾黑鮪魚後續拍賣創下當時歷史高價，成為東港漁港的重要紀錄之一。",
+    image: "assets/2023.jpg"
+  }
+];
+
+const renderFirstTunaStoryPanel = () => {
+  const panel = document.querySelector(".first-tuna-panel");
+  if (!panel) return;
+
+  panel.classList.add("first-tuna-story-panel");
+  panel.innerHTML = `
+    <figure class="first-tuna-photo">
+      <img id="firstTunaImage" src="assets/2026.webp" alt="2026 第一鮪照片" />
+      <div id="firstTunaImagePlaceholder" class="first-tuna-image-placeholder" hidden>2026 第一鮪影像資料整理中</div>
+    </figure>
+    <p id="auctionDesc">琉球籍漁船「富漁慶2號」於4月5日上午9點多，在台灣西南方海域捕獲2026年第一尾黑鮪魚。
+
+船長洪福家現年67歲，是歷屆第一鮪紀錄中年紀最大的船長。
+
+原本出海尋找旗魚，卻意外與這尾公黑鮪相遇，船長興奮得整晚睡不著，也為今年黑鮪魚季揭開序幕。</p>
+  `;
+};
+
+renderFirstTunaStoryPanel();
+
 const renderFishMethods = (methods = []) => {
   if (!fishMethods) return;
 
@@ -984,7 +1031,7 @@ const shouldSkipPageSnap = (event) => {
   const eventTarget = event.target instanceof Element ? event.target : null;
 
   if (!getVisiblePageSnapSections().length) return true;
-  if (window.matchMedia("(max-width: 768px)").matches) return true;
+  if (window.matchMedia("(pointer: coarse)").matches) return true;
   if (event.ctrlKey || event.metaKey || event.shiftKey) return true;
   if (document.body.classList.contains("intro-active")) return true;
   if (document.body.classList.contains("menu-open")) return true;
@@ -1091,19 +1138,58 @@ nav?.addEventListener("mouseleave", () => {
 const updateAuctionPanel = (source) => {
   if (!source) return;
 
+  const record = firstTunaRecords.find((item) => String(item.year) === String(source.dataset.year));
+  if (!record) return;
+
   auctionCards.forEach((item) => item.classList.remove("active"));
   if (source.classList.contains("auction-card")) {
     source.classList.add("active");
   }
+  auctionRecord?.classList.toggle("is-active-record", source === auctionRecord);
 
-  document.querySelector("#auctionYear").textContent = source.dataset.year;
-  document.querySelector("#auctionWeight").textContent = source.dataset.weight;
-  document.querySelector("#auctionPrice").textContent = source.dataset.price;
-  document.querySelector("#auctionDesc").textContent = source.dataset.desc || source.querySelector("p")?.textContent || "";
+  const image = document.querySelector("#firstTunaImage");
+  const imagePlaceholder = document.querySelector("#firstTunaImagePlaceholder");
+  if (image) {
+    image.classList.add("is-switching");
+    image.onload = () => {
+      image.hidden = false;
+      image.classList.remove("is-switching");
+      if (imagePlaceholder) {
+        imagePlaceholder.hidden = true;
+      }
+    };
+    image.onerror = () => {
+      image.hidden = true;
+      image.classList.remove("is-switching");
+      if (imagePlaceholder) {
+        imagePlaceholder.textContent = `${record.year} 第一鮪影像資料整理中`;
+        imagePlaceholder.hidden = false;
+      }
+    };
+    window.setTimeout(() => {
+      if (image.getAttribute("src") === record.image && !image.hidden) {
+        image.classList.remove("is-switching");
+        if (imagePlaceholder) {
+          imagePlaceholder.hidden = true;
+        }
+        return;
+      }
+      image.src = record.image;
+      image.alt = `${record.year} 第一鮪照片`;
+    }, 120);
+  }
+
+  document.querySelector("#auctionDesc").textContent = record.story;
 };
 
 auctionRecord?.addEventListener("mouseenter", () => updateAuctionPanel(auctionRecord));
 auctionRecord?.addEventListener("focusin", () => updateAuctionPanel(auctionRecord));
+auctionRecord?.addEventListener("click", () => updateAuctionPanel(auctionRecord));
+auctionRecord?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+  updateAuctionPanel(auctionRecord);
+});
 
 auctionCards.forEach((card) => {
   const handleAuctionCardSelect = () => {
@@ -1112,6 +1198,12 @@ auctionCards.forEach((card) => {
 
   card.addEventListener("mouseenter", handleAuctionCardSelect);
   card.addEventListener("focusin", handleAuctionCardSelect);
+  card.addEventListener("click", handleAuctionCardSelect);
+  card.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    handleAuctionCardSelect();
+  });
 });
 
 fishParts.forEach((part) => {
