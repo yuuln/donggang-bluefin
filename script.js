@@ -978,6 +978,7 @@ let pageSnapLocked = false;
 let pageSnapDelta = 0;
 let pageSnapResetTimer = null;
 let pageSnapUnlockTimer = null;
+let pageSnapIgnoreUntil = 0;
 let pageSnapLockStartedAt = 0;
 let lastWheelDirection = 0;
 let pageSnapWheelDelta = 0;
@@ -1114,6 +1115,13 @@ const shouldSkipPageSnap = (event) => {
 window.addEventListener("wheel", (event) => {
   if (event.deltaY === 0) return;
 
+  const now = performance.now();
+
+  if (now < pageSnapIgnoreUntil) {
+    event.preventDefault();
+    return;
+  }
+
   const normalizedDelta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1);
   lastWheelDirection = normalizedDelta > 0 ? 1 : -1;
   pageSnapWheelDelta += normalizedDelta;
@@ -1165,6 +1173,12 @@ window.addEventListener("wheel", (event) => {
 
   pageSnapLocked = true;
   pageSnapLockStartedAt = performance.now();
+
+  pageSnapDelta = 0;
+  pageSnapWheelDelta = 0;
+  pageSnapDeltaDirection = 0;
+  pageSnapIgnoreUntil = performance.now() + 950;
+
   nextSection.scrollIntoView({ behavior: "smooth", block: "start" });
 
   schedulePageSnapUnlock();
