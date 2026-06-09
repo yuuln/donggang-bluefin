@@ -17,6 +17,7 @@ const endingSection = document.querySelector("#ending");
 const revealEls = document.querySelectorAll(".reveal");
 const counters = document.querySelectorAll(".counter");
 const auctionCards = document.querySelectorAll(".auction-card");
+const auctionRecord = document.querySelector(".auction-record");
 const fishParts = document.querySelectorAll(".fish-part");
 const fishLab = document.querySelector(".fish-lab");
 const fishModel = document.querySelector(".fish-model");
@@ -43,8 +44,8 @@ const nextPicturePageButton = document.querySelector("#nextPicturePage");
 const pictureBookImage = document.querySelector("#pictureBookImage");
 const pictureBookPageCount = document.querySelector("#pictureBookPageCount");
 const pictureBookSection = document.querySelector("#picture-book");
-const pageSnapSections = Array.from(document.querySelectorAll(".hero, .scene-sail, .scene-migration, #auction, #culture, #picture-book, .fish-section, #life-timeline, #kuroshio-sound, #ending, #behind-the-scene"));
-const freePageScrollSelector = ".auction-section, .auction-simulator.is-open, .fish-section, .behind-section.is-panel-open";
+const pageSnapSections = Array.from(document.querySelectorAll(".hero, .scene-sail, .scene-migration, #auction, .auction-simulator, #culture, #picture-book, .fish-section, #life-timeline, #kuroshio-sound, #ending, #behind-the-scene"));
+const freePageScrollSelector = ".fish-section, .behind-section.is-panel-open";
 const soundCards = document.querySelectorAll("[data-sound-card]");
 const kuroshioPlayer = document.querySelector("#kuroshioPlayer");
 const soundToggle = document.querySelector("#soundToggle");
@@ -877,7 +878,13 @@ const getPageSnapIndex = (section) => {
 };
 
 const getVisiblePageSnapSections = () => {
-  return pageSnapSections;
+  return pageSnapSections.filter((section) => {
+    if (section.classList.contains("auction-simulator")) {
+      return section.classList.contains("is-open");
+    }
+
+    return true;
+  });
 };
 
 const getNearestPageSnapIndex = () => {
@@ -894,6 +901,15 @@ const getNearestPageSnapIndex = () => {
 const getCurrentFreePageSection = () => {
   const sections = Array.from(document.querySelectorAll(freePageScrollSelector));
 
+  if (auctionSimulator?.classList.contains("is-open")) {
+    const simulatorRect = auctionSimulator.getBoundingClientRect();
+    const simulatorInViewCenter = simulatorRect.top < window.innerHeight * 0.55 && simulatorRect.bottom > window.innerHeight * 0.45;
+
+    if (simulatorInViewCenter) {
+      return null;
+    }
+  }
+
   return sections.find((section) => {
     const rect = section.getBoundingClientRect();
     return rect.top < window.innerHeight * 0.45 && rect.bottom > window.innerHeight * 0.55;
@@ -903,7 +919,7 @@ const getCurrentFreePageSection = () => {
 const isInsideScrollableElement = (target, direction) => {
   if (!(target instanceof Element)) return false;
 
-  const scrollable = target.closest(".picture-book-modal, .behind-panel, .creative-route-map, .auction-simulator, .fish-lab, .life-timeline, .sound-grid");
+  const scrollable = target.closest(".picture-book-modal, .behind-panel, .creative-route-map, .fish-lab, .life-timeline, .sound-grid");
   if (!scrollable) return false;
 
   const canScrollY = scrollable.scrollHeight > scrollable.clientHeight + 2;
@@ -1072,15 +1088,30 @@ nav?.addEventListener("mouseleave", () => {
   updateNav();
 });
 
+const updateAuctionPanel = (source) => {
+  if (!source) return;
+
+  auctionCards.forEach((item) => item.classList.remove("active"));
+  if (source.classList.contains("auction-card")) {
+    source.classList.add("active");
+  }
+
+  document.querySelector("#auctionYear").textContent = source.dataset.year;
+  document.querySelector("#auctionWeight").textContent = source.dataset.weight;
+  document.querySelector("#auctionPrice").textContent = source.dataset.price;
+  document.querySelector("#auctionDesc").textContent = source.dataset.desc || source.querySelector("p")?.textContent || "";
+};
+
+auctionRecord?.addEventListener("mouseenter", () => updateAuctionPanel(auctionRecord));
+auctionRecord?.addEventListener("focusin", () => updateAuctionPanel(auctionRecord));
+
 auctionCards.forEach((card) => {
-  card.addEventListener("mouseenter", () => {
-    auctionCards.forEach((item) => item.classList.remove("active"));
-    card.classList.add("active");
-    document.querySelector("#auctionYear").textContent = card.dataset.year;
-    document.querySelector("#auctionWeight").textContent = card.dataset.weight;
-    document.querySelector("#auctionPrice").textContent = card.dataset.price;
-    document.querySelector("#auctionDesc").textContent = card.querySelector("p").textContent;
-  });
+  const handleAuctionCardSelect = () => {
+    updateAuctionPanel(card);
+  };
+
+  card.addEventListener("mouseenter", handleAuctionCardSelect);
+  card.addEventListener("focusin", handleAuctionCardSelect);
 });
 
 fishParts.forEach((part) => {
@@ -1397,7 +1428,7 @@ if (
   eventCount &&
   bidderCards.length
 ) {
-  const fishWeight = 613;
+  const fishWeight = 190;
   const openingUnitBid = 1800;
   const bidSteps = [20, 30, 50, 80, 100, 120, 150];
   const buyers = {
@@ -1547,7 +1578,17 @@ if (
 
     isRunning = true;
     auctionSimulator.classList.add("is-open");
+    auctionSimulator.classList.remove("is-ready");
     auctionSimulator.setAttribute("aria-hidden", "false");
+    const scrollToSimulator = () => {
+      auctionSimulator.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    window.requestAnimationFrame(scrollToSimulator);
+    window.setTimeout(scrollToSimulator, 260);
+    window.setTimeout(() => {
+      auctionSimulator.classList.add("is-ready");
+    }, 520);
     maxEvents = 8 + Math.floor(Math.random() * 5);
     eventIndex = 0;
     lastBidderKey = "";

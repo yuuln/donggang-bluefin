@@ -90,7 +90,6 @@ main > section {
 }
 
 .story-section,
-.auction-section,
 .fish-section {
   min-height: auto;
   scroll-snap-align: none;
@@ -99,6 +98,7 @@ main > section {
 
 .hero,
 .story-scene,
+.auction-section,
 .culture-section,
 #picture-book,
 #life-timeline,
@@ -971,6 +971,8 @@ h3 {
 .auction-section {
   position: relative;
   overflow: hidden;
+  padding-top: clamp(4.8rem, 6.5vw, 6.4rem);
+  padding-bottom: clamp(4.8rem, 6.5vw, 6.4rem);
   background:
     radial-gradient(circle at 76% 12%, rgba(200, 154, 61, 0.13), transparent 28rem),
     radial-gradient(circle at 20% 72%, rgba(35, 111, 145, 0.14), transparent 32rem),
@@ -1008,7 +1010,7 @@ h3 {
 .auction-stage {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
-  gap: 1.1rem;
+  gap: clamp(0.8rem, 1.4vw, 1rem);
   align-items: stretch;
 }
 
@@ -1029,7 +1031,7 @@ h3 {
   grid-column: 1 / 2;
   position: relative;
   overflow: hidden;
-  padding: var(--card-pad);
+  padding: clamp(1rem, 2vw, 1.55rem);
 }
 
 .auction-record::after {
@@ -1043,7 +1045,7 @@ h3 {
 
 .auction-record > p {
   width: fit-content;
-  margin: 0 0 1.35rem;
+  margin: 0 0 1rem;
   padding: 0.28rem 0.72rem;
   border: 1px solid rgba(200, 154, 61, 0.28);
   border-radius: 999px;
@@ -1063,7 +1065,7 @@ h3 {
 
 .record-grid > div {
   min-width: 0;
-  padding: 0.95rem 0.95rem 1.05rem;
+  padding: 0.72rem 0.8rem 0.82rem;
   border: 1px solid rgba(246, 245, 241, 0.08);
   background: rgba(3, 11, 18, 0.18);
 }
@@ -1073,7 +1075,7 @@ h3 {
   font-family: var(--font-sans);
   max-width: 100%;
   color: rgba(246, 245, 241, 0.96);
-  font-size: clamp(2.15rem, 5vw, 4.45rem);
+  font-size: clamp(1.9rem, 4vw, 3.7rem);
   line-height: 1;
   white-space: nowrap;
   text-shadow: 0 0.6rem 2.2rem rgba(0, 0, 0, 0.36);
@@ -1119,13 +1121,13 @@ h3 {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
   gap: var(--card-gap);
   grid-column: 1 / 2;
-  padding: 0.75rem;
+  padding: 0.55rem;
 }
 
 .auction-card {
   position: relative;
-  min-height: 13.5rem;
-  padding: var(--card-pad);
+  min-height: 10.6rem;
+  padding: clamp(1rem, 1.8vw, 1.35rem);
   border: 1px solid rgba(246, 245, 241, 0.08);
   background:
     radial-gradient(circle at 82% 14%, rgba(200, 154, 61, 0.08), transparent 8rem),
@@ -1171,7 +1173,7 @@ h3 {
 
 .auction-card strong {
   display: block;
-  margin: 1rem 0 0.7rem;
+  margin: 0.75rem 0 0.5rem;
   color: rgba(246, 245, 241, 0.96);
   font-family: var(--font-serif);
   font-size: var(--text-lg);
@@ -1187,7 +1189,7 @@ h3 {
 .auction-card p {
   color: rgba(246, 245, 241, 0.68);
   font-size: var(--text-sm);
-  line-height: 1.85;
+  line-height: 1.65;
 }
 
 .museum-panel {
@@ -1195,7 +1197,7 @@ h3 {
   grid-row: 1 / 4;
   position: relative;
   overflow: hidden;
-  padding: clamp(1.6rem, 3vw, 2.55rem);
+  padding: clamp(1.2rem, 2.4vw, 2rem);
 }
 
 .museum-panel::before {
@@ -1216,15 +1218,15 @@ h3 {
 .museum-panel h3 {
   margin: 0;
   color: rgba(255, 217, 133, 0.96);
-  font-size: clamp(3.4rem, 8vw, 6.6rem);
+  font-size: clamp(2.8rem, 6.2vw, 5.4rem);
   line-height: 0.95;
   text-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.34);
 }
 
 dl {
   display: grid;
-  gap: 1rem;
-  margin: 2rem 0;
+  gap: 0.78rem;
+  margin: 1.35rem 0;
 }
 
 dt {
@@ -1237,14 +1239,14 @@ dt {
 dd {
   margin: 0.25rem 0 0;
   color: rgba(246, 245, 241, 0.92);
-  font-size: 1.32rem;
+  font-size: clamp(1rem, 1.5vw, 1.18rem);
   font-weight: 800;
 }
 
 .auction-entry {
   display: grid;
   grid-column: 1 / 2;
-  padding: 0.85rem;
+  padding: 0.65rem;
   border: 1px solid rgba(246, 245, 241, 0.1);
   background:
     linear-gradient(90deg, rgba(200, 154, 61, 0.08), rgba(246, 245, 241, 0.035)),
@@ -1275,15 +1277,25 @@ dd {
 .auction-simulator.is-open {
   max-height: 180rem;
   min-height: 100svh;
-  margin-top: 1rem;
+  margin-top: clamp(5rem, 14vh, 9rem);
   border-color: var(--line);
-  scroll-snap-align: none;
-  scroll-snap-stop: normal;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
   visibility: visible;
+}
+
+.auction-simulator.is-open:not(.is-ready) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.auction-simulator.is-open.is-ready {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .auction-simulator.is-hammered {
@@ -4199,6 +4211,7 @@ dd {
 
   main > section,
   .story-scene,
+  .auction-section,
   .site-footer {
     scroll-snap-align: none;
     scroll-snap-stop: normal;
@@ -4472,6 +4485,7 @@ dd {
 
   .auction-simulator.is-open {
     max-height: 220rem;
+    margin-top: 3rem;
   }
 
   .sold-summary.is-visible {

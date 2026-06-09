@@ -109,21 +109,28 @@
           <div class="auction-entry reveal">
             <button class="start-auction-button" id="startAuctionButton" type="button">開始模擬喊價</button>
           </div>
-          <div class="auction-record reveal">
-            <p>2025 第一鮪紀錄</p>
+          <div
+            class="auction-record reveal"
+            tabindex="0"
+            data-year="2026"
+            data-weight="190kg"
+            data-price="NT$2,014,000"
+            data-desc="2026 第一鮪重 190 公斤，以 NT$2,014,000 成交，延續東港第一鮪的年度記憶。"
+          >
+            <p>2026 第一鮪紀錄</p>
             <div class="record-grid">
               <div>
-                <span class="counter" data-target="613">0</span><small>kg</small>
+                <span class="counter" data-target="190">0</span><small>kg</small>
                 <label>重量</label>
               </div>
               <div class="record-price">
-                <small>NT$</small><span class="counter" data-target="2300000">0</span>
+                <small>NT$</small><span class="counter" data-target="2014000">0</span>
                 <label>成交價格</label>
               </div>
             </div>
           </div>
           <div class="auction-cards reveal" aria-label="歷年第一鮪紀錄">
-            <article class="auction-card active" data-year="2025" data-weight="613kg" data-price="NT$2,300,000">
+            <article class="auction-card" data-year="2025" data-weight="613kg" data-price="NT$2,300,000">
               <span>2025</span>
               <strong>深海歸航</strong>
               <p>銀藍魚身被推上拍賣台，點亮今年第一個魚汛信號。</p>
@@ -140,10 +147,10 @@
             </article>
           </div>
           <aside class="museum-panel reveal" aria-live="polite">
-            <h3 id="auctionYear">2025</h3>
+            <h3 id="auctionYear">2026</h3>
             <dl>
-              <div><dt>重量</dt><dd id="auctionWeight">613kg</dd></div>
-              <div><dt>成交價</dt><dd id="auctionPrice">NT$2,300,000</dd></div>
+              <div><dt>重量</dt><dd id="auctionWeight">190kg</dd></div>
+              <div><dt>成交價</dt><dd id="auctionPrice">NT$2,014,000</dd></div>
             </dl>
             <p id="auctionDesc">銀藍魚身被推上拍賣台，點亮今年第一個魚汛信號。</p>
           </aside>
@@ -157,7 +164,7 @@
             </div>
             <div class="tuna-info-plate" aria-label="黑鮪魚拍賣資訊">
               <span>第一鮪展示</span>
-              <strong>黑鮪魚 613 kg</strong>
+              <strong>黑鮪魚 190 kg</strong>
               <small>每公斤起標 NT$1,800 · 觀察買家出價節奏</small>
             </div>
             <div class="tuna-spotlight">
@@ -196,7 +203,7 @@
             <div class="current-bid" aria-live="polite">
               <span>目前喊價／每公斤</span>
               <strong id="currentBid">NT$1,800</strong>
-              <small>黑鮪魚重量 613 kg · 估算總價 <b id="totalBid">NT$1,103,400</b></small>
+              <small>黑鮪魚重量 190 kg · 估算總價 <b id="totalBid">NT$342,000</b></small>
             </div>
             <div class="auction-progress">
               <span>拍賣進度</span>
