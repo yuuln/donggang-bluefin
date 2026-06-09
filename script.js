@@ -59,6 +59,7 @@ const behindPanel = document.querySelector("#behindPanel");
 const behindPanelCloseButtons = document.querySelectorAll(".behind-panel-close");
 const behindCardTriggers = document.querySelectorAll("[data-behind-panel]");
 const behindPanelItems = document.querySelectorAll("[data-behind-content]");
+const behindDraggablePanels = document.querySelectorAll(".behind-panel-item.behind-draggable");
 const promptToggles = document.querySelectorAll(".prompt-toggle");
 let behindPanelCloseTimer = null;
 const kuroshioPlayerVolume = 0.72;
@@ -357,7 +358,11 @@ const openBehindPanel = (panelName, trigger) => {
     cardTrigger.closest("article")?.classList.toggle("is-active", isActive);
   });
   behindPanelItems.forEach((item) => {
-    item.classList.toggle("is-active", item.dataset.behindContent === panelName);
+    const isActive = item.dataset.behindContent === panelName;
+    item.classList.toggle("is-active", isActive);
+    if (isActive) {
+      item.scrollTop = 0;
+    }
   });
 
   window.requestAnimationFrame(() => {
@@ -397,6 +402,61 @@ behindCardTriggers.forEach((trigger) => {
 behindPanelCloseButtons.forEach((button) => {
   button.addEventListener("click", closeBehindPanel);
 });
+
+const initDragScroll = (scrollable) => {
+  let isDragging = false;
+  let didDrag = false;
+  let startX = 0;
+  let startY = 0;
+  let startScrollLeft = 0;
+  let startScrollTop = 0;
+
+  const interactiveSelector = "a, button, input, textarea, select, video, audio, summary, [role='button'], [contenteditable='true']";
+
+  scrollable.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0 || event.target.closest(interactiveSelector)) return;
+    if (scrollable.scrollHeight <= scrollable.clientHeight + 2 && scrollable.scrollWidth <= scrollable.clientWidth + 2) return;
+
+    isDragging = true;
+    didDrag = false;
+    startX = event.clientX;
+    startY = event.clientY;
+    startScrollLeft = scrollable.scrollLeft;
+    startScrollTop = scrollable.scrollTop;
+    scrollable.setPointerCapture?.(event.pointerId);
+  });
+
+  scrollable.addEventListener("pointermove", (event) => {
+    if (!isDragging) return;
+
+    const deltaX = event.clientX - startX;
+    const deltaY = event.clientY - startY;
+    if (!didDrag && Math.hypot(deltaX, deltaY) < 4) return;
+
+    didDrag = true;
+    event.preventDefault();
+    scrollable.classList.add("is-dragging");
+    scrollable.scrollLeft = startScrollLeft - deltaX;
+    scrollable.scrollTop = startScrollTop - deltaY;
+  });
+
+  const endDrag = (event) => {
+    if (!isDragging) return;
+
+    isDragging = false;
+    scrollable.classList.remove("is-dragging");
+    scrollable.releasePointerCapture?.(event.pointerId);
+  };
+
+  scrollable.addEventListener("pointerup", endDrag);
+  scrollable.addEventListener("pointercancel", endDrag);
+  scrollable.addEventListener("lostpointercapture", () => {
+    isDragging = false;
+    scrollable.classList.remove("is-dragging");
+  });
+};
+
+behindDraggablePanels.forEach(initDragScroll);
 
 promptToggles.forEach((toggle) => {
   toggle.addEventListener("click", () => {
@@ -981,7 +1041,7 @@ const getCurrentFreePageSection = () => {
 const isInsideScrollableElement = (target, direction) => {
   if (!(target instanceof Element)) return false;
 
-  const scrollable = target.closest(".picture-book-modal, .behind-panel, .creative-route-map, .fish-lab, .life-timeline, .sound-grid");
+  const scrollable = target.closest(".picture-book-modal, .behind-panel-item, .behind-panel, .creative-route-map, .fish-lab, .life-timeline, .sound-grid");
   if (!scrollable) return false;
 
   const canScrollY = scrollable.scrollHeight > scrollable.clientHeight + 2;
@@ -1026,7 +1086,7 @@ const isNavigatingBetweenSnapSections = (direction) => {
 };
 
 const shouldLetNativeScrollLead = (target, direction) => {
-  return false;
+  return isInsideScrollableElement(target, direction);
 };
 
 const canScrollInsideFreePageSection = (section, direction) => {

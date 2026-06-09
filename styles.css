@@ -3802,6 +3802,48 @@ h3 {
   padding-top: clamp(2rem, 4vw, 3rem);
 }
 
+.behind-panel-item.behind-draggable.is-active {
+  max-height: calc(100svh - clamp(6rem, 10vw, 8rem));
+  padding-right: clamp(0.35rem, 1vw, 0.75rem);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: rgba(200, 154, 61, 0.52) rgba(246, 245, 241, 0.08);
+  scrollbar-width: thin;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.behind-panel-item.behind-draggable.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.behind-panel-item.behind-draggable .behind-breadcrumb {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  width: fit-content;
+  padding: 0.35rem 0.7rem 0.35rem 0;
+  border-radius: 0 999px 999px 0;
+  background: linear-gradient(90deg, rgba(6, 24, 38, 0.92), rgba(6, 24, 38, 0.62), transparent);
+  backdrop-filter: blur(10px);
+}
+
+.behind-panel-item.behind-draggable::-webkit-scrollbar {
+  width: 0.52rem;
+}
+
+.behind-panel-item.behind-draggable::-webkit-scrollbar-track {
+  background: rgba(246, 245, 241, 0.07);
+  border-radius: 999px;
+}
+
+.behind-panel-item.behind-draggable::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(200, 154, 61, 0.48);
+}
+
 #behind-the-scene .behind-panel-item h3 {
   margin: 0;
   margin-top: 1.2rem;
