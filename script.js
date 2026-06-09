@@ -4,6 +4,7 @@ const navToggle = document.querySelector(".nav-toggle");
 const cursorGlow = document.querySelector(".cursor-glow");
 const intro = document.querySelector("#intro");
 const enterSiteButton = document.querySelector("#enterSite");
+const introSoundButton = document.querySelector("#introSoundButton");
 const mainMusic = document.querySelector("#mainMusic");
 const flashlight = document.querySelector(".flashlight");
 const sailScene = document.querySelector(".scene-sail");
@@ -42,8 +43,8 @@ const nextPicturePageButton = document.querySelector("#nextPicturePage");
 const pictureBookImage = document.querySelector("#pictureBookImage");
 const pictureBookPageCount = document.querySelector("#pictureBookPageCount");
 const pictureBookSection = document.querySelector("#picture-book");
-const pageSnapSections = Array.from(document.querySelectorAll(".hero, .scene-sail, .scene-migration, #auction, .auction-simulator, #culture, #picture-book, .fish-section, #life-timeline, #kuroshio-sound, #ending, #behind-the-scene"));
-const freePageScrollSelector = ".auction-section";
+const pageSnapSections = Array.from(document.querySelectorAll(".hero, .scene-sail, .scene-migration, #auction, #culture, #picture-book, .fish-section, #life-timeline, #kuroshio-sound, #ending, #behind-the-scene"));
+const freePageScrollSelector = ".auction-section, .auction-simulator.is-open, .fish-section, .behind-section.is-panel-open";
 const soundCards = document.querySelectorAll("[data-sound-card]");
 const kuroshioPlayer = document.querySelector("#kuroshioPlayer");
 const soundToggle = document.querySelector("#soundToggle");
@@ -52,6 +53,18 @@ const soundCurrentTime = document.querySelector("#soundCurrentTime");
 const soundDuration = document.querySelector("#soundDuration");
 const soundNowTitle = document.querySelector("#soundNowTitle");
 const soundSkipButtons = document.querySelectorAll(".sound-player .sound-skip");
+const behindSection = document.querySelector("#behind-the-scene");
+const behindPanel = document.querySelector("#behindPanel");
+const behindPanelCloseButtons = document.querySelectorAll(".behind-panel-close");
+const behindCardTriggers = document.querySelectorAll("[data-behind-panel]");
+const behindPanelItems = document.querySelectorAll("[data-behind-content]");
+const promptToggles = document.querySelectorAll(".prompt-toggle");
+let behindPanelCloseTimer = null;
+const kuroshioPlayerVolume = 0.72;
+const kuroshioSeekVolume = 0.18;
+let isSeekingKuroshio = false;
+let pendingKuroshioSeekTime = null;
+let kuroshioVolumeFadeTimer = null;
 
 if ("scrollRestoration" in window.history) {
   window.history.scrollRestoration = "manual";
@@ -249,8 +262,17 @@ const syncMainMusicVolume = (options = {}) => {
 const playMainMusic = () => {
   if (!mainMusic) return;
 
+  mainMusic.muted = false;
   syncMainMusicVolume();
-  mainMusic.play().catch(() => undefined);
+  mainMusic.play()
+    .then(() => {
+      introSoundButton?.classList.add("is-on");
+      if (introSoundButton) {
+        introSoundButton.textContent = "聲音已開啟";
+        introSoundButton.setAttribute("aria-label", "主音樂已開啟");
+      }
+    })
+    .catch(() => undefined);
 };
 
 const tryPlayMainMusic = () => {
@@ -261,7 +283,10 @@ const tryPlayMainMusic = () => {
 const startIntroMusic = () => {
   playMainMusic();
   document.removeEventListener("pointerdown", startIntroMusic);
+  document.removeEventListener("mousedown", startIntroMusic);
+  document.removeEventListener("click", startIntroMusic);
   document.removeEventListener("touchstart", startIntroMusic);
+  document.removeEventListener("touchend", startIntroMusic);
   document.removeEventListener("keydown", startIntroMusic);
 };
 
@@ -273,13 +298,80 @@ const formatSoundTime = (seconds = 0) => {
   return `${minutes}:${remainingSeconds}`;
 };
 
+const openBehindPanel = (panelName, trigger) => {
+  if (!behindSection || !behindPanel || !panelName) return;
+
+  window.clearTimeout(behindPanelCloseTimer);
+  behindPanel.hidden = false;
+  behindCardTriggers.forEach((cardTrigger) => {
+    const isActive = cardTrigger === trigger;
+    cardTrigger.setAttribute("aria-expanded", isActive ? "true" : "false");
+    cardTrigger.closest("article")?.classList.toggle("is-active", isActive);
+  });
+  behindPanelItems.forEach((item) => {
+    item.classList.toggle("is-active", item.dataset.behindContent === panelName);
+  });
+
+  window.requestAnimationFrame(() => {
+    behindSection.classList.add("is-panel-open");
+    behindPanel.classList.add("is-open");
+    behindSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  window.setTimeout(() => {
+    behindPanel.querySelector(".behind-panel-item.is-active .behind-panel-close")?.focus({ preventScroll: true });
+  }, 260);
+};
+
+const closeBehindPanel = () => {
+  if (!behindSection || !behindPanel) return;
+
+  const activeTrigger = Array.from(behindCardTriggers).find((trigger) => trigger.getAttribute("aria-expanded") === "true");
+  behindSection.classList.remove("is-panel-open");
+  behindPanel.classList.remove("is-open");
+  behindCardTriggers.forEach((trigger) => {
+    trigger.setAttribute("aria-expanded", "false");
+    trigger.closest("article")?.classList.remove("is-active");
+  });
+  behindPanelCloseTimer = window.setTimeout(() => {
+    behindPanel.hidden = true;
+    behindPanelItems.forEach((item) => item.classList.remove("is-active"));
+    activeTrigger?.focus({ preventScroll: true });
+  }, 420);
+};
+
+behindCardTriggers.forEach((trigger) => {
+  trigger.addEventListener("click", () => {
+    openBehindPanel(trigger.dataset.behindPanel, trigger);
+  });
+});
+
+behindPanelCloseButtons.forEach((button) => {
+  button.addEventListener("click", closeBehindPanel);
+});
+
+promptToggles.forEach((toggle) => {
+  toggle.addEventListener("click", () => {
+    const prompt = toggle.nextElementSibling;
+    if (!prompt) return;
+
+    const isExpanded = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", isExpanded ? "false" : "true");
+    toggle.textContent = isExpanded ? "查看 Prompt" : "收合 Prompt";
+    prompt.hidden = isExpanded;
+  });
+});
+
 if (intro && enterSiteButton) {
   document.body.classList.add("intro-active");
   tryPlayMainMusic();
   window.addEventListener("load", tryPlayMainMusic, { once: true });
   document.addEventListener("visibilitychange", tryPlayMainMusic);
   document.addEventListener("pointerdown", startIntroMusic);
+  document.addEventListener("mousedown", startIntroMusic);
+  document.addEventListener("click", startIntroMusic);
   document.addEventListener("touchstart", startIntroMusic);
+  document.addEventListener("touchend", startIntroMusic);
   document.addEventListener("keydown", startIntroMusic);
 
   const moveFlashlight = (clientX, clientY) => {
@@ -303,6 +395,11 @@ if (intro && enterSiteButton) {
     if (!touch) return;
     moveFlashlight(touch.clientX, touch.clientY);
   }, { passive: true });
+
+  introSoundButton?.addEventListener("click", (event) => {
+    event.stopPropagation();
+    playMainMusic();
+  });
 
   enterSiteButton.addEventListener("click", () => {
     window.scrollTo(0, 0);
@@ -349,6 +446,7 @@ const selectSoundCard = (card, options = {}) => {
 
 const updateKuroshioProgress = () => {
   if (!kuroshioPlayer) return;
+  if (isSeekingKuroshio) return;
 
   const duration = kuroshioPlayer.duration || 0;
   const percent = duration ? (kuroshioPlayer.currentTime / duration) * 100 : 0;
@@ -364,6 +462,64 @@ const updateKuroshioProgress = () => {
   if (soundDuration) {
     soundDuration.textContent = formatSoundTime(duration);
   }
+};
+
+const fadeKuroshioVolume = (targetVolume, duration = 220) => {
+  if (!kuroshioPlayer) return;
+
+  window.clearInterval(kuroshioVolumeFadeTimer);
+  const startVolume = kuroshioPlayer.volume;
+  const startedAt = performance.now();
+
+  kuroshioVolumeFadeTimer = window.setInterval(() => {
+    const progress = Math.min(1, (performance.now() - startedAt) / duration);
+    kuroshioPlayer.volume = startVolume + (targetVolume - startVolume) * progress;
+
+    if (progress >= 1) {
+      window.clearInterval(kuroshioVolumeFadeTimer);
+    }
+  }, 24);
+};
+
+const updateKuroshioSeekPreview = () => {
+  if (!kuroshioPlayer || !soundProgress) return;
+
+  const duration = kuroshioPlayer.duration || 0;
+  const percent = Number(soundProgress.value) / 100;
+  pendingKuroshioSeekTime = duration ? duration * percent : 0;
+
+  if (soundCurrentTime) {
+    soundCurrentTime.textContent = formatSoundTime(pendingKuroshioSeekTime);
+  }
+
+  if (soundDuration) {
+    soundDuration.textContent = formatSoundTime(duration);
+  }
+};
+
+const startKuroshioSeek = () => {
+  if (!kuroshioPlayer) return;
+
+  isSeekingKuroshio = true;
+  updateKuroshioSeekPreview();
+
+  if (!kuroshioPlayer.paused) {
+    fadeKuroshioVolume(kuroshioSeekVolume, 160);
+  }
+};
+
+const commitKuroshioSeek = () => {
+  if (!kuroshioPlayer || !isSeekingKuroshio) return;
+
+  const duration = kuroshioPlayer.duration || 0;
+  const fallbackTime = soundProgress ? duration * (Number(soundProgress.value) / 100) : kuroshioPlayer.currentTime;
+  const nextTime = pendingKuroshioSeekTime ?? fallbackTime;
+
+  kuroshioPlayer.currentTime = duration ? Math.max(0, Math.min(duration, nextTime)) : Math.max(0, nextTime);
+  isSeekingKuroshio = false;
+  pendingKuroshioSeekTime = null;
+  updateKuroshioProgress();
+  fadeKuroshioVolume(kuroshioPlayerVolume, 260);
 };
 
 const setKuroshioPlayingState = () => {
@@ -384,7 +540,7 @@ const setKuroshioPausedState = () => {
 };
 
 if (kuroshioPlayer && soundCards.length) {
-  kuroshioPlayer.volume = 0.72;
+  kuroshioPlayer.volume = kuroshioPlayerVolume;
   selectSoundCard(soundCards[0]);
 
   soundCards.forEach((card) => {
@@ -420,11 +576,24 @@ if (kuroshioPlayer && soundCards.length) {
     });
   });
 
-  soundProgress?.addEventListener("input", () => {
-    const duration = kuroshioPlayer.duration || 0;
-    kuroshioPlayer.currentTime = duration * (Number(soundProgress.value) / 100);
-    updateKuroshioProgress();
-  });
+  if (soundProgress) {
+    soundProgress.addEventListener("pointerdown", startKuroshioSeek);
+    soundProgress.addEventListener("touchstart", startKuroshioSeek, { passive: true });
+    soundProgress.addEventListener("input", () => {
+      if (!isSeekingKuroshio) {
+        isSeekingKuroshio = true;
+      }
+      updateKuroshioSeekPreview();
+    });
+    soundProgress.addEventListener("change", commitKuroshioSeek);
+    soundProgress.addEventListener("pointerup", commitKuroshioSeek);
+    soundProgress.addEventListener("pointercancel", commitKuroshioSeek);
+    soundProgress.addEventListener("touchend", commitKuroshioSeek);
+    soundProgress.addEventListener("keyup", (event) => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End", "PageUp", "PageDown"].includes(event.key)) return;
+      commitKuroshioSeek();
+    });
+  }
 
   kuroshioPlayer.addEventListener("loadedmetadata", updateKuroshioProgress);
   kuroshioPlayer.addEventListener("timeupdate", updateKuroshioProgress);
@@ -708,13 +877,7 @@ const getPageSnapIndex = (section) => {
 };
 
 const getVisiblePageSnapSections = () => {
-  return pageSnapSections.filter((section) => {
-    if (section.classList.contains("auction-simulator")) {
-      return section.classList.contains("is-open");
-    }
-
-    return true;
-  });
+  return pageSnapSections;
 };
 
 const getNearestPageSnapIndex = () => {
@@ -729,36 +892,72 @@ const getNearestPageSnapIndex = () => {
 };
 
 const getCurrentFreePageSection = () => {
-  const section = document.querySelector(freePageScrollSelector);
-  if (!section) return null;
+  const sections = Array.from(document.querySelectorAll(freePageScrollSelector));
 
-  if (auctionSimulator?.classList.contains("is-open")) {
-    const simulatorRect = auctionSimulator.getBoundingClientRect();
-    const simulatorInViewCenter = simulatorRect.top < window.innerHeight * 0.55 && simulatorRect.bottom > window.innerHeight * 0.45;
+  return sections.find((section) => {
+    const rect = section.getBoundingClientRect();
+    return rect.top < window.innerHeight * 0.45 && rect.bottom > window.innerHeight * 0.55;
+  }) || null;
+};
 
-    if (simulatorInViewCenter) {
-      return null;
-    }
+const isInsideScrollableElement = (target, direction) => {
+  if (!(target instanceof Element)) return false;
+
+  const scrollable = target.closest(".picture-book-modal, .behind-panel, .creative-route-map, .auction-simulator, .fish-lab, .life-timeline, .sound-grid");
+  if (!scrollable) return false;
+
+  const canScrollY = scrollable.scrollHeight > scrollable.clientHeight + 2;
+  const canScrollX = scrollable.scrollWidth > scrollable.clientWidth + 2;
+
+  if (canScrollY) {
+    if (direction > 0 && scrollable.scrollTop + scrollable.clientHeight < scrollable.scrollHeight - 2) return true;
+    if (direction < 0 && scrollable.scrollTop > 2) return true;
   }
 
-  const rect = section.getBoundingClientRect();
-  return rect.top < window.innerHeight * 0.45 && rect.bottom > window.innerHeight * 0.55 ? section : null;
+  if (canScrollX) {
+    if (direction > 0 && scrollable.scrollLeft + scrollable.clientWidth < scrollable.scrollWidth - 2) return true;
+    if (direction < 0 && scrollable.scrollLeft > 2) return true;
+  }
+
+  return false;
+};
+
+const isNearPageSnapSection = () => {
+  return getVisiblePageSnapSections().some((section) => {
+    const rect = section.getBoundingClientRect();
+    return rect.top < window.innerHeight * 0.74 && rect.bottom > window.innerHeight * 0.26;
+  });
+};
+
+const isNavigatingBetweenSnapSections = (direction) => {
+  const currentIndex = getNearestPageSnapIndex();
+  const visiblePageSnapSections = getVisiblePageSnapSections();
+  const currentSection = visiblePageSnapSections[currentIndex];
+  const nextSection = visiblePageSnapSections[currentIndex + direction];
+
+  if (!currentSection || !nextSection) return false;
+
+  const currentRect = currentSection.getBoundingClientRect();
+  const nextRect = nextSection.getBoundingClientRect();
+
+  if (direction > 0) {
+    return Math.abs(currentRect.top) < window.innerHeight * 0.34 || nextRect.top < window.innerHeight * 0.82;
+  }
+
+  return Math.abs(currentRect.top) < window.innerHeight * 0.34 || nextRect.bottom > window.innerHeight * 0.18;
+};
+
+const shouldLetNativeScrollLead = (target, direction) => {
+  if (isInsideScrollableElement(target, direction)) return true;
+
+  const freeSection = getCurrentFreePageSection();
+  if (!freeSection) return false;
+
+  return canScrollInsideFreePageSection(freeSection, direction);
 };
 
 const canScrollInsideFreePageSection = (section, direction) => {
   if (!section) return false;
-
-  if (auctionSimulator?.classList.contains("is-open")) {
-    const simulatorRect = auctionSimulator.getBoundingClientRect();
-    const shouldSnapToSimulator =
-      direction > 0
-        ? simulatorRect.top > 24
-        : simulatorRect.top < -24 && simulatorRect.bottom > window.innerHeight * 0.2;
-
-    if (shouldSnapToSimulator) {
-      return false;
-    }
-  }
 
   const rect = section.getBoundingClientRect();
   const tolerance = 18;
@@ -783,9 +982,8 @@ window.addEventListener("wheel", (event) => {
   if (shouldSkipPageSnap(event)) return;
 
   const direction = event.deltaY > 0 ? 1 : -1;
-  const freeSection = getCurrentFreePageSection();
 
-  if (canScrollInsideFreePageSection(freeSection, direction)) {
+  if (shouldLetNativeScrollLead(event.target, direction)) {
     return;
   }
 
@@ -800,7 +998,7 @@ window.addEventListener("wheel", (event) => {
 
   if (Math.abs(pageSnapDelta) < 58) return;
 
-  const currentIndex = freeSection ? getPageSnapIndex(freeSection) : getNearestPageSnapIndex();
+  const currentIndex = getNearestPageSnapIndex();
   if (currentIndex < 0) return;
 
   const visiblePageSnapSections = getVisiblePageSnapSections();

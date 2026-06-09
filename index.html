@@ -34,6 +34,7 @@
         <p class="intro-line line-three">但漁船回來了</p>
         <button id="enterSite" class="intro-enter" type="button">跟著漁船回港</button>
       </div>
+      <button id="introSoundButton" class="intro-sound-button" type="button" aria-label="開啟主音樂">開啟聲音</button>
     </div>
     <div class="cursor-glow" aria-hidden="true"></div>
     <audio id="mainMusic" src="音樂/主音樂.mp3" loop preload="auto" autoplay></audio>
@@ -46,8 +47,11 @@
       <button class="nav-toggle" type="button" aria-label="開啟選單">☰</button>
       <div class="nav-links">
         <a href="#auction">第一鮪</a>
-        <a href="#culture">關於文化</a>
         <a href="#picture-book">文化繪本</a>
+        <a href="#fish">部位介紹</a>
+        <a href="#life-timeline">黑鮪魚時間軸</a>
+        <a href="#kuroshio-sound">黑潮之聲</a>
+        <a href="#behind-the-scene">幕後特展</a>
       </div>
     </nav>
 
@@ -60,8 +64,11 @@
           <span></span>
         </div>
         <div class="hero-content depth-layer" data-depth="0.08">
-          <p class="eyebrow reveal">Donggang Bluefin Tuna Heritage</p>
-          <h1 class="reveal">漁船靠岸時<br />東港的一天才正要開始</h1>
+          <p class="eyebrow reveal">凌晨四點</p>
+          <h1 class="reveal">
+            <span>東港的海還沒醒</span>
+            <span>但漁船回來了</span>
+          </h1>
           <p class="hero-subtitle reveal">從深海到港口，<br />一尾黑鮪魚的旅程，<br />串起漁民、市場與港口文化。</p>
           <div class="hero-actions reveal">
             <a class="button primary" href="#story">走進東港</a>
@@ -232,7 +239,7 @@
         </div>
       </section>
 
-      <section class="fish-section section-pad">
+      <section id="fish" class="fish-section section-pad">
         <div class="section-heading reveal">
           <p class="eyebrow">Interactive Bluefin Anatomy</p>
           <h2>黑鮪魚部位介紹</h2>
@@ -404,24 +411,202 @@
             邀請你走進幕後，
             看看這個作品誕生的過程。
           </p>
-          <a class="button primary" href="#">探索設計理念</a>
         </div>
         <div class="behind-grid reveal" aria-label="Design Concept 展示框架">
           <article>
-            <span>01</span>
-            <h3>設計理念</h3>
+            <button class="behind-card-trigger" type="button" data-behind-panel="origin" aria-controls="behindPanel" aria-expanded="false">
+              <span>01</span>
+              <h3>起點</h3>
+              <p>一切從凌晨四點開始</p>
+            </button>
           </article>
           <article>
-            <span>02</span>
-            <h3>視覺風格手冊</h3>
+            <button class="behind-card-trigger" type="button" data-behind-panel="colors" aria-controls="behindPanel" aria-expanded="false">
+              <span>02</span>
+              <h3>東港的顏色</h3>
+              <p>視覺風格手冊</p>
+            </button>
           </article>
           <article>
-            <span>03</span>
-            <h3>AI 創作流程</h3>
+            <button class="behind-card-trigger" type="button" data-behind-panel="route" aria-controls="behindPanel" aria-expanded="false">
+              <span>03</span>
+              <h3>創作航線</h3>
+              <p>AI 創作流程</p>
+            </button>
           </article>
           <article>
-            <span>04</span>
-            <h3>Prompt 展示館</h3>
+            <button class="behind-card-trigger" type="button" data-behind-panel="lab" aria-controls="behindPanel" aria-expanded="false">
+              <span>04</span>
+              <h3>AI 實驗室</h3>
+              <p>Prompt 與生成成果</p>
+            </button>
+          </article>
+        </div>
+        <div id="behindPanel" class="behind-panel" hidden>
+          <article class="behind-panel-item behind-origin-gallery" data-behind-content="origin">
+            <nav class="behind-breadcrumb" aria-label="幕後特展導覽">
+              <button class="behind-panel-close" type="button">← 幕後特展</button>
+              <span>/</span>
+              <strong>起點</strong>
+            </nav>
+            <h3>一切從凌晨四點開始</h3>
+            <div class="behind-story-panels">
+              <section>
+                <span>凌晨的港口</span>
+                <p>東港的海，總是在大多數人還沒醒來的時候開始熱鬧。</p>
+                <p>漁船在夜色中返航，碼頭的燈光映照著海面，魚市場逐漸甦醒。對許多人而言，黑鮪魚或許只是餐桌上的一道料理；但對東港來說，它承載的不只是漁獲，更是一種與海洋共存的生活方式。</p>
+              </section>
+              <section>
+                <span>跟著魚回家</span>
+                <p>本作品以「一尾黑鮪魚的一生」作為敘事主軸，帶領觀者從黑潮海域出發，跟隨漁船返港，經歷驗魚、拍賣、分切、上桌，以及黑鮪魚文化季等重要過程。</p>
+                <p>透過時間軸式的故事結構，讓文化不再只是被閱讀，而是被體驗。</p>
+              </section>
+              <section>
+                <span>成為旅程的一部分</span>
+                <p>在設計上，我希望使用者不是站在展覽外觀看介紹，而是成為旅程中的參與者。</p>
+                <p>因此網站採用沉浸式敘事方式，結合視覺動畫、聲音設計、互動體驗與 AI 協作創作，營造如同數位展覽般的觀看感受。</p>
+              </section>
+              <section>
+                <span>留下來的故事</span>
+                <p>這不只是關於一尾黑鮪魚的故事。更是關於東港人如何與海洋共生，如何在歲月與潮汐之間，延續一座漁港的文化記憶。</p>
+                <p>而這段旅程，也將隨著每一次漁船返港，持續向前。</p>
+              </section>
+            </div>
+          </article>
+          <article class="behind-panel-item" data-behind-content="colors">
+            <nav class="behind-breadcrumb" aria-label="幕後特展導覽">
+              <button class="behind-panel-close" type="button">← 幕後特展</button>
+              <span>/</span>
+              <strong>東港的顏色</strong>
+            </nav>
+            <h3>港口、黑潮與漁船燈火</h3>
+            <figure class="style-guide-board">
+              <img src="assets/視覺風格手冊.png" alt="東港黑鮪魚文化網站視覺風格手冊" />
+            </figure>
+          </article>
+          <article class="behind-panel-item" data-behind-content="route">
+            <nav class="behind-breadcrumb" aria-label="幕後特展導覽">
+              <button class="behind-panel-close" type="button">← 幕後特展</button>
+              <span>/</span>
+              <strong>創作航線</strong>
+            </nav>
+            <h3>從文化研究到 AI 協作</h3>
+            <p class="route-subtitle">一場從東港出發的數位文化策展</p>
+            <div class="creative-route-map" aria-label="創作航海日誌">
+              <div class="creative-route-line" aria-hidden="true"></div>
+              <article>
+                <span>第一站｜啟航</span>
+                <h5>讓一尾黑鮪魚開口說話</h5>
+                <p>一個問題成為整個專題的起點：「如果黑鮪魚能夠說話，它會如何介紹自己的一生？」我希望讓參觀者不是閱讀介紹，而是親自走過黑鮪魚從海洋到餐桌的旅程。</p>
+              </article>
+              <article>
+                <span>第二站｜文化研究</span>
+                <h5>把地方記憶整理成敘事基礎</h5>
+                <p>蒐集東港漁業文化、黑鮪魚洄游、拍賣流程、黑鮪魚季與地方記憶，將真實文化資料整理成網站敘事的基礎。</p>
+              </article>
+              <article>
+                <span>第三站｜故事設計</span>
+                <h5>從海洋一路回到餐桌</h5>
+                <p>將文化資料轉化為一條清楚的敘事航線：海洋 → 漁船捕撈 → 進港 → 驗魚 → 拍賣 → 分切 → 餐桌 → 文化祭典。</p>
+              </article>
+              <article>
+                <span>第四站｜影像生成</span>
+                <h5>建立時間軸裡的沉浸畫面</h5>
+                <p>利用 Kling AI 生成時間軸影片，透過提示詞設計、畫面測試與多次修改，建立符合東港黑鮪魚文化的視覺內容。</p>
+              </article>
+              <article>
+                <span>第五站｜聲音設計</span>
+                <h5>讓海洋與港口被聽見</h5>
+                <p>時間軸影片本身保留環境音，另外透過 Suno AI 製作網站瀏覽時的背景配樂，讓整體體驗更有海洋、港口與文化展覽的氛圍。</p>
+              </article>
+              <article>
+                <span>第六站｜網站開發</span>
+                <h5>網站開發</h5>
+                <p>透過 HTML、CSS、JavaScript 建立互動式文化網站，並優化響應式排版、影片播放、音樂控制、動畫效果與瀏覽體驗。</p>
+              </article>
+              <article>
+                <span>第七站｜成果完成</span>
+                <h5>完成一場可被感受的文化旅程</h5>
+                <p>從文化研究到 AI 協作，最後完成一場能被瀏覽、聆聽與感受的東港黑鮪魚文化旅程。</p>
+              </article>
+            </div>
+          </article>
+          <article class="behind-panel-item" data-behind-content="lab">
+            <nav class="behind-breadcrumb" aria-label="幕後特展導覽">
+              <button class="behind-panel-close" type="button">← 幕後特展</button>
+              <span>/</span>
+              <strong>AI 實驗室</strong>
+            </nav>
+            <h3>Prompt 調整過程與生成成果</h3>
+            <p class="ai-lab-intro">使用AI prompt 生成不是一次完成，而是透過觀察、修正與再生成，逐步接近理想成果。</p>
+            <div class="ai-lab-grid" aria-label="AI 創作歷程展示">
+              <article class="ai-lab-card">
+                <div class="ai-lab-head">
+                  <span>案例一｜拍賣場景</span>
+                  <h5>呈現真實東港黑鮪魚拍賣文化</h5>
+                </div>
+                <div class="ai-process-layout">
+                  <div class="ai-result-placeholder ai-video-result">
+                    <strong>初版成果</strong>
+                    <video src="assets/old_a.mp4" controls preload="metadata" playsinline aria-label="拍賣場景初版成果影片"></video>
+                  </div>
+                  <div class="ai-result-placeholder ai-video-result final">
+                    <strong>最終成果</strong>
+                    <video src="assets/auction.mp4" controls preload="metadata" playsinline aria-label="拍賣場景最終成果影片"></video>
+                  </div>
+                </div>
+                <section class="ai-analysis">
+                  <h6>發現問題</h6>
+                  <ul>
+                    <li>人物穿西裝</li>
+                    <li>像室內倉庫</li>
+                    <li>黑鮪魚不夠真實</li>
+                  </ul>
+                </section>
+                <section class="ai-adjustment">
+                  <h6>Prompt 調整方向</h6>
+                  <p>加入 Donggang Taiwan、open-air fish market、casual clothing fishermen、Pacific bluefin tuna，讓畫面更接近港邊拍賣現場。</p>
+                </section>
+                <button class="prompt-toggle" type="button" aria-expanded="false">查看 Prompt</button>
+                <div class="prompt-placeholder" hidden>
+                  <p><strong>初版 Prompt</strong>：A giant bluefin tuna displayed in the center of an empty Donggang auction hall,wet concrete floor reflecting golden light,buyers slowly walking toward the fish,Taiwan fishing harbor atmosphere,quiet anticipation before the auction begins,cinematic documentary,slow camera dolly movement,ultra realistic,4k,no Korean text,no Japanese text,no foreign language signs,Taiwan</p>
+                  <p><strong>Prompt 調整</strong>：Donggang Taiwan, open-air fish market, casual clothing fishermen, Pacific bluefin tuna.</p>
+                </div>
+              </article>
+              <article class="ai-lab-card">
+                <div class="ai-lab-head">
+                  <span>案例二｜文化祭典</span>
+                  <h5>呈現黑鮪魚季文化活動</h5>
+                </div>
+                <div class="ai-process-layout">
+                  <div class="ai-result-placeholder ai-video-result">
+                    <strong>初版成果</strong>
+                    <video src="assets/old_f.mp4" controls preload="metadata" playsinline aria-label="文化祭典初版成果影片"></video>
+                  </div>
+                  <div class="ai-result-placeholder ai-video-result final">
+                    <strong>最終成果</strong>
+                    <video src="assets/festival.mp4" controls preload="metadata" playsinline aria-label="文化祭典最終成果影片"></video>
+                  </div>
+                </div>
+                <section class="ai-analysis">
+                  <h6>發現問題</h6>
+                  <ul>
+                    <li>太像演唱會</li>
+                    <li>太歡樂</li>
+                    <li>缺少地方文化感</li>
+                  </ul>
+                </section>
+                <section class="ai-adjustment">
+                  <h6>Prompt 調整方向</h6>
+                  <p>加入 community banquet、Taiwanese seafood feast、cultural celebration、warm lantern lights，把畫面拉回地方辦桌與文化活動的氛圍。</p>
+                </section>
+                <button class="prompt-toggle" type="button" aria-expanded="false">查看 Prompt</button>
+                <div class="prompt-placeholder" hidden>
+                  <p><strong>初版 Prompt</strong>：Donggang Bluefin Tuna Festival,night concert beside the harbor,crowds cheering,stage lights illuminating the night sky,people enjoying bluefin tuna feast,traditional banquet tables filled with seafood,fireworks over the harbor,summer festival atmosphere,celebration of bluefin tuna season,warm golden lights,cinematic documentary,Taiwan local culture,epic ending,ultra realistic</p>
+                  <p><strong>Prompt 調整</strong>：community banquet, Taiwanese seafood feast, cultural celebration, warm lantern lights.</p>
+                </div>
+              </article>
+            </div>
           </article>
         </div>
       </section>
